@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   OXSNOW STUDIO — Design tokens
+   Deep matte black steel + brushed metallic silver + controlled fire
+   ========================================================================== */
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-2: #111111;
+  --color-ink-3: #161616;
+  --color-ink-4: #1c1c1c;
+
+  --color-silver: #c0c0c0;
+  --color-silver-2: #a8a8a8;
+  --color-steel: #8a8a8a;
+  --color-ash: #6b6b6b;
+
+  --color-ember: #ff4500;
+  --color-amber: #e25822;
+  --color-glow: #ff7a33;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --animate-ember: ember-rise 7s linear infinite;
+  --animate-flicker: flicker 5s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-scan: scan 6s ease-in-out infinite;
+}
+
+@keyframes ember-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-120vh) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.6;
+  }
+  47% {
+    opacity: 0.95;
+  }
+  62% {
+    opacity: 0.75;
+  }
+  65% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-silver-2);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: #0a0a0a;
+  }
+
+  /* Custom scrollbar — steel rail with ember thumb */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8a8a8a, #4a4a4a);
+    border-radius: 999px;
+    border: 2px solid #0a0a0a;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff4500, #8a8a8a);
+  }
+}
+
+@layer components {
+  /* Metallic silver text with a soft sheen */
+  .text-metal {
+    background: linear-gradient(180deg, #ffffff 0%, #d9d9d9 32%, #8a8a8a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Fire gradient for key titles / highlights */
+  .text-fire {
+    background: linear-gradient(100deg, #ff7a33 0%, #ff4500 45%, #e25822 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    border-color: color-mix(in srgb, var(--color-silver) 14%, transparent);
+  }
+
+  /* Dark metallic card */
+  .card {
+    position: relative;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--color-silver) 12%, transparent);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+      var(--color-ink-2);
+    transition:
+      border-color 0.35s ease,
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .card:hover {
+    border-color: color-mix(in srgb, var(--color-ember) 55%, transparent);
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ember) 20%, transparent),
+      0 18px 45px -18px rgba(255, 69, 0, 0.45);
+  }
+
+  /* Buttons --------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    color: #0a0a0a;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c0c0 45%, #8a8a8a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(180deg, #ffd0b8 0%, #ff4500 55%, #e25822 100%);
+    box-shadow: 0 0 26px rgba(255, 69, 0, 0.55);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    color: var(--color-silver);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid color-mix(in srgb, var(--color-silver) 30%, transparent);
+  }
+  .btn-ghost:hover {
+    color: #fff;
+    border-color: var(--color-ember);
+    box-shadow: 0 0 22px rgba(255, 69, 0, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-steel);
+  }
+
+  .rule-fire {
+    height: 2px;
+    width: 3.5rem;
+    background: linear-gradient(90deg, #ff4500, #e25822, transparent);
+  }
+}
+
+/* Film grain overlay (very subtle, global) */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

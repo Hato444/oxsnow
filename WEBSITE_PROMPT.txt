@@ -1,0 +1,79 @@
+**Website Prompt for Oxsnow Studio**
+
+Create a premium, cinematic website for **Oxsnow Studio** — a Lesotho-based umbrella film studio founded in 2023 by Lehlohonolo Mongangane, Sello Mokheseng, and Keletso Hato. The studio industrializes authentic Basotho culture and heritage through high-end storytelling, feature films, archival documentaries, broadcasting, distribution, and IP licensing.
+
+### Brand & Visual Identity (Strict)
+- Primary palette: Deep matte black (#0A0A0A / #111111) as the dominant background.
+- Accent metals: Brushed metallic silver / gunmetal (#C0C0C0, #A8A8A8, #8A8A8A) for borders, icons, buttons, and text highlights.
+- Fire accents: Controlled ember orange-red (#FF4500 / #E25822) and soft glowing amber used sparingly for CTAs, hover states, underlines, progress indicators, and subtle animated embers/particles. Never dominant.
+- White is strictly limited: only for small body text readability or very subtle separators. Never large white sections, cards, or backgrounds.
+- Overall feel: Dark, powerful, industrial-cinematic — like a high-end film studio dashboard mixed with cultural fire and steel. Think black steel frames, subtle metallic sheen, and controlled fire glow. High contrast, modern, premium, no clutter.
+
+### Typography
+- Headings: Bold, modern sans-serif with slight condensed weight (or cinematic display font). Metallic silver or soft fire gradient on key titles.
+- Body: Clean, highly legible sans-serif in light silver-gray.
+- Keep hierarchy strong and cinematic.
+
+### Core Structure & Pages
+
+**1. Homepage (Hero)**
+- Full-bleed dark cinematic hero with subtle animated fire particles or slow-moving film grain over black.
+- Bold headline: “Oxsnow Studio — Industrializing Basotho Stories”
+- Subhead: Mission line — “Crafting culturally rooted tales through high cinematic innovation.”
+- Primary CTA buttons (metallic silver with fire hover glow): “Explore Films” | “Watch Now” | “Join the Academy”
+- Short vision statement and three-pillar overview (VOD | Production Services | IP & Licensing) in dark metallic cards.
+- Scrolling section showcasing current slate / featured projects with dark film stills and silver titles.
+
+**2. About / Studio**
+- Founders story (Lehlohonolo Mongangane, Sello Mokheseng, Keletso Hato).
+- Mission & Vision clearly stated.
+- Values: Innovation, Transparency, Creativity, Autodidacticism — presented as metallic icon + short text blocks.
+- Problem/Solution narrative focused on creating jobs, preserving Basotho history, and building Lesotho’s film industry.
+
+**3. Films & Projects (Product Showcase)**
+- Grid or horizontal scroll of current and upcoming feature films, documentaries, and archival projects.
+- Each card: dark thumbnail, metallic title, short logline, status (In Production / Available / Coming Soon), and “Watch Trailer / Pre-order / Rent” button.
+- Filter by type: Feature | Documentary | Educational | Behind-the-Scenes.
+
+**4. Oxsnow VOD Storefront**
+- Clean dark video platform interface.
+- TVOD (rent current releases) and SVOD (Cultural Pass subscription) options.
+- Featured rows: New Releases, Basotho History Archive, Diaspora Favorites, Behind the Camera.
+- Secure, modern player preview area.
+
+**5. Events & Marketing**
+- Upcoming premieres, workshops, community screenings, and Academy sessions.
+- Event cards with date, location (or online), short description, and “Register / Buy Ticket” CTA.
+- Past events archive with photo/video highlights.
+
+**6. Services (B2B)**
+- Commercial production, broadcasting licensing, educational packages, and studio services.
+- Clear packages and “Request Quote” forms.
+
+**7. Academy / Pipeline**
+- Training workshops and talent development programs.
+- Application or enrollment section.
+
+**8. Dashboard / Analytics Side (Logged-in area)**
+- Clean dark admin/user dashboard for content creators, partners, and internal team.
+- Upload films, trailers, stills, and event materials.
+- Real-time analytics: views, watch time, revenue (TVOD/SVOD), geographic heat (Lesotho + diaspora), engagement.
+- Content management, event performance, and simple financial overview.
+- Role-based access (Admin / Creator / Viewer).
+
+**9. Contact / Partners**
+- Contact form, social links, and partnership inquiry for broadcasters, schools, government, and sponsors.
+
+### Key UX & Features
+- Fully responsive (mobile-first but desktop-cinematic).
+- Smooth dark-mode transitions and subtle fire-glow micro-interactions on buttons and cards.
+- Fast loading, high-quality image/video optimization.
+- Multi-language ready (English primary, Sesotho secondary option).
+- Strong SEO for “Basotho film”, “Lesotho cinema”, “African cultural storytelling”.
+- Secure payment integration for VOD and event tickets.
+- Newsletter signup with fire-accent CTA: “Stay connected to Basotho stories”.
+
+### Tone of Voice
+Powerful, authentic, ambitious, culturally proud, professional. Speak as a studio that is building an industry, not just making movies.
+
+Generate a complete, production-ready website design and structure following the above. Prioritize the black + metallic silver + controlled fire aesthetic throughout every section.
