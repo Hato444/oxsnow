@@ -11,7 +11,7 @@ export default function WatchModal({ item, onClose }) {
     <AnimatePresence onExitComplete={() => setCheckout(false)}>
       {item && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -22,31 +22,33 @@ export default function WatchModal({ item, onClose }) {
             onClick={onClose}
           />
 
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-black/60 text-silver backdrop-blur transition-colors hover:border-ember hover:text-ember sm:right-6 sm:top-6"
+          >
+            ✕
+          </button>
+
           <motion.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full max-w-4xl"
+            className="relative z-10 w-full max-w-3xl"
           >
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close"
-              className="absolute -top-11 right-0 text-xs font-semibold uppercase tracking-[0.24em] text-silver-2 transition-colors hover:text-ember"
-            >
-              Close ✕
-            </button>
+            <div className="card flex max-h-[88svh] flex-col overflow-hidden">
+              <div className="shrink-0">
+                <VideoPlayer
+                  src={item.src}
+                  poster={item.poster}
+                  title={item.title}
+                  autoPlay
+                />
+              </div>
 
-            <div className="card overflow-hidden">
-              <VideoPlayer
-                src={item.src}
-                poster={item.poster}
-                title={item.title}
-                autoPlay
-              />
-
-              <div className="p-6">
+              <div className="min-h-0 flex-1 overflow-y-auto p-6">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <h2 className="text-xl font-bold text-metal sm:text-2xl">
                     {item.title}
