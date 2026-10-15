@@ -161,7 +161,7 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
             />
           )}
           <div className="absolute inset-0 grid place-items-center bg-black/30">
-            <p className="text-xs uppercase tracking-[0.3em] text-ash">
+            <p className="text-xs uppercase tracking-[0.3em] text-ash keep-light">
               Trailer coming soon
             </p>
           </div>
@@ -201,7 +201,7 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
             </div>
           </div>
 
-          <div className="flex items-center gap-3 px-4 py-3 text-silver">
+          <div className="flex items-center gap-3 px-4 py-3 text-silver keep-light">
             <button
               type="button"
               onClick={toggle}
@@ -246,12 +246,12 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
               />
             </div>
 
-            <span className="text-xs tabular-nums text-silver-2">
-              {fmt(current)} <span className="text-ash">/</span> {fmt(duration)}
+            <span className="text-xs tabular-nums text-silver-2 keep-light">
+              {fmt(current)} <span className="text-ash keep-light">/</span> {fmt(duration)}
             </span>
 
             <div className="ml-auto flex items-center gap-3">
-              <span className="hidden text-[0.6rem] uppercase tracking-[0.3em] text-ash sm:block">
+              <span className="hidden text-[0.6rem] uppercase tracking-[0.3em] text-ash keep-light sm:block">
                 Oxsnow · HD
               </span>
               <button

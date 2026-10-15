@@ -80,12 +80,12 @@ export default function VodPage() {
               <p className="text-[0.6rem] uppercase tracking-[0.3em] text-ember">
                 Featured Premiere
               </p>
-              <p className="mt-1 text-xl font-bold text-metal">
+              <p className="mt-1 text-xl font-bold text-white keep-light">
                 Konono — now streaming
               </p>
             </div>
             <div className="absolute bottom-6 right-6 z-10 hidden sm:block">
-              <span className="rounded-full border border-white/15 bg-black/40 px-4 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-silver backdrop-blur">
+              <span className="rounded-full border border-white/15 bg-black/40 px-4 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                 Secure Player · HD
               </span>
             </div>

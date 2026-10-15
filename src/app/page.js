@@ -192,7 +192,7 @@ export default function Home() {
                     />
                   )}
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/85 to-transparent" />
-                  <span className="relative z-10 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver backdrop-blur">
+                  <span className="relative z-10 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                     {f.status}
                   </span>
                 </div>

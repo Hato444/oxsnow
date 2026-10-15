@@ -80,7 +80,7 @@ export default function EmberBackground() {
       {/* Controlled fire glow — ambient radial washes */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0"
+        className="ember-wash pointer-events-none fixed inset-0 z-0"
         style={{
           background:
             "radial-gradient(60% 45% at 82% 8%, rgba(255,69,0,0.12), transparent 60%)," +
@@ -91,7 +91,7 @@ export default function EmberBackground() {
       <canvas
         ref={canvasRef}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0"
+        className="ember-canvas pointer-events-none fixed inset-0 z-0"
       />
     </>
   );

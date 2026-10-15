@@ -195,7 +195,7 @@ export default function AboutPage() {
 
           <div className="mt-12 grid gap-8 lg:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-white/10 bg-black/30 p-8">
+              <div className="h-full rounded-2xl border border-white/10 bg-ink-3 p-8">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-ash">
                   The Problem
                 </h3>

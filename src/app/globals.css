@@ -252,3 +252,93 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   LIGHT THEME
+   Tokens flip under html.light; media overlays (.keep-light) stay white.
+   ========================================================================== */
+html.light {
+  color-scheme: light;
+  --color-ink: #f3f2ef;
+  --color-ink-2: #ffffff;
+  --color-ink-3: #eceae5;
+  --color-ink-4: #e3e0da;
+  --color-silver: #262626;
+  --color-silver-2: #3d3d3d;
+  --color-steel: #5c5c5c;
+  --color-ash: #8a8a8a;
+  --color-ember: #e8420a;
+  --color-amber: #c9431a;
+  --color-glow: #ff6a2a;
+}
+
+html.light .text-metal {
+  background: linear-gradient(180deg, #1a1a1a 0%, #3d3d3d 36%, #707070 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.light .text-white:not(.keep-light) {
+  color: #171717;
+}
+html.light .hover\:text-white:hover {
+  color: #171717;
+}
+html.light .keep-light {
+  color: #ffffff;
+}
+
+html.light .border-white\/10 {
+  border-color: rgb(0 0 0 / 0.1);
+}
+html.light .border-white\/12 {
+  border-color: rgb(0 0 0 / 0.12);
+}
+html.light .border-white\/15 {
+  border-color: rgb(0 0 0 / 0.15);
+}
+html.light .hover\:border-white\/30:hover {
+  border-color: rgb(0 0 0 / 0.3);
+}
+
+html.light .card {
+  background: #ffffff;
+  border-color: rgb(0 0 0 / 0.1);
+}
+
+html.light .btn-primary {
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff7a33 0%, #ff4500 55%, #c9431a 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+html.light .btn-primary:hover {
+  background: linear-gradient(180deg, #ff8a4d 0%, #ff4500 50%, #a83a17 100%);
+  box-shadow: 0 0 26px rgba(255, 69, 0, 0.45);
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #eceae5;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b7b2aa, #8a857d);
+  border-color: #eceae5;
+}
+
+html.light .ember-wash {
+  opacity: 0.5;
+}
+html.light .ember-canvas {
+  opacity: 0.55;
+}
+
+/* Theme toggle icon swap: sun in dark mode, moon in light mode */
+.theme-icon-moon {
+  display: none;
+}
+html.light .theme-icon-moon {
+  display: block;
+}
+html.light .theme-icon-sun {
+  display: none;
+}
