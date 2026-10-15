@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { filmFilters } from "@/lib/site";
 
@@ -46,18 +47,29 @@ export default function FilmsGrid({ films }) {
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
               className="card group flex flex-col overflow-hidden"
             >
-              <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
-                <div
-                  className="absolute inset-0 opacity-70"
-                  style={{
-                    background:
-                      "radial-gradient(120% 90% at 20% 0%, rgba(255,69,0,0.20), transparent 55%), radial-gradient(90% 80% at 100% 120%, rgba(192,192,192,0.10), transparent 60%)",
-                  }}
-                />
+              <div className="relative flex h-56 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
+                {f.cover ? (
+                  <Image
+                    src={f.cover}
+                    alt={f.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 opacity-70"
+                    style={{
+                      background:
+                        "radial-gradient(120% 90% at 20% 0%, rgba(255,69,0,0.20), transparent 55%), radial-gradient(90% 80% at 100% 120%, rgba(192,192,192,0.10), transparent 60%)",
+                    }}
+                  />
+                )}
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
                 <span className="relative z-10 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver backdrop-blur">
                   {f.status}
                 </span>
-                <span className="absolute right-4 top-4 text-[0.6rem] uppercase tracking-[0.2em] text-ash">
+                <span className="absolute right-4 top-4 z-10 text-[0.6rem] uppercase tracking-[0.2em] text-ash">
                   {f.year}
                 </span>
               </div>

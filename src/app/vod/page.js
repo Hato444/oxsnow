@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import { vodRows } from "@/lib/site";
 
@@ -53,11 +54,18 @@ export default function VodPage() {
       <Reveal delay={0.1}>
         <div className="card relative mt-14 overflow-hidden">
           <div className="relative flex aspect-[16/8] items-center justify-center bg-gradient-to-br from-ink-3 via-black to-ink-2">
+            <Image
+              src="/posters/konono.jpg"
+              alt="Konono"
+              fill
+              sizes="(max-width: 768px) 100vw, 1200px"
+              className="object-cover object-top opacity-70"
+            />
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(70% 100% at 20% 0%, rgba(255,69,0,0.18), transparent 55%), radial-gradient(80% 90% at 100% 120%, rgba(192,192,192,0.08), transparent 60%)",
+                  "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.7) 100%), radial-gradient(70% 100% at 20% 0%, rgba(255,69,0,0.18), transparent 55%)",
               }}
             />
             <button
@@ -72,7 +80,7 @@ export default function VodPage() {
                 Featured Premiere
               </p>
               <p className="mt-1 text-xl font-bold text-metal">
-                Thaba Bosiu: Echoes
+                Konono — now streaming
               </p>
             </div>
             <div className="absolute bottom-6 right-6 z-10 hidden sm:block">
@@ -146,14 +154,29 @@ export default function VodPage() {
               {group.items.map((item, i) => (
                 <Reveal key={item.title} delay={i * 0.05} className="snap-start">
                   <article className="card group w-[220px] shrink-0 overflow-hidden">
-                    <div className="relative h-32 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                      <div
-                        className="absolute inset-0 opacity-60"
-                        style={{
-                          background:
-                            "radial-gradient(120% 90% at 25% 0%, rgba(255,69,0,0.18), transparent 55%)",
-                        }}
-                      />
+                    <div className="relative h-56 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
+                      {item.cover ? (
+                        <Image
+                          src={item.cover}
+                          alt={item.title}
+                          fill
+                          sizes="220px"
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <>
+                          <div
+                            className="absolute inset-0 opacity-60"
+                            style={{
+                              background:
+                                "radial-gradient(120% 90% at 25% 0%, rgba(255,69,0,0.18), transparent 55%)",
+                            }}
+                          />
+                          <span className="absolute inset-0 grid place-items-center text-[0.6rem] uppercase tracking-[0.22em] text-ash">
+                            Cover coming soon
+                          </span>
+                        </>
+                      )}
                       <span className="absolute inset-0 grid place-items-center opacity-0 transition-opacity group-hover:opacity-100">
                         <span className="grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/50 backdrop-blur">
                           <span className="ml-0.5 block h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent border-l-ember" />

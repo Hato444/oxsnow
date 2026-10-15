@@ -39,77 +39,67 @@ export const pillars = [
 
 export const films = [
   {
-    title: "The Blanket Kingdom",
-    type: "Feature",
-    status: "In Production",
-    year: "2026",
-    logline:
-      "A young filmmaker returns to the highlands to document a dying craft, unearthing the fire that built a nation.",
-    runtime: "112 min",
-  },
-  {
-    title: "Thaba Bosiu: Echoes",
-    type: "Documentary",
-    status: "Available",
-    year: "2025",
-    logline:
-      "An archival journey into the mountain fortress that became the birthplace of the Basotho nation.",
-    runtime: "84 min",
-  },
-  {
-    title: "Pitseng",
-    type: "Feature",
-    status: "Coming Soon",
-    year: "2026",
-    logline:
-      "Two brothers on opposite sides of a changing Maseru face the price of progress.",
-    runtime: "98 min",
-  },
-  {
-    title: "Mokorotlo Rising",
-    type: "Educational",
+    title: "Konono",
+    type: "Action-Drama",
     status: "Available",
     year: "2024",
     logline:
-      "A vivid classroom series on Basotho music, dance and the language of the mountains.",
-    runtime: "6 x 22 min",
+      "A young man trains nonstop after his friend is murdered by a gang leader, then confronts the gangster with violence to avenge his late friend.",
+    runtime: "Feature",
+    cover: "/posters/konono.jpg",
   },
   {
-    title: "Behind the Fire",
-    type: "Behind-the-Scenes",
-    status: "In Production",
+    title: "Lehlaba-phieo",
+    type: "Tragedy",
+    status: "Coming Soon",
     year: "2026",
     logline:
-      "Cameras turn on the crew. The making of an industry, one set at a time.",
-    runtime: "10 x 15 min",
+      "Inspired by the story of Abel and Cain, Tokollo deceives his younger brother and leads him into a death zone, taking matters into his own hands and disposing of the body to hide the evidence.",
+    runtime: "11 min",
+    cover: "/posters/lehlaba-phieo.jpg",
   },
   {
-    title: "Sesotho Stories Vol. I",
+    title: "Phirimana",
+    type: "Horror",
+    status: "Available",
+    year: "2025",
+    logline:
+      "A young woman suffers vivid sleep paralysis. In her dream a figure haunts her and she must escape for her life — but as she snaps back to reality, the same incident resets.",
+    runtime: "7 min",
+    cover: "/posters/phirimana.jpg",
+  },
+  {
+    title: "Ho Lekane",
     type: "Documentary",
     status: "Coming Soon",
     year: "2026",
     logline:
-      "Oral histories from elders across the ten districts, preserved before they fade.",
-    runtime: "57 min",
+      "In a generation of modern youth, drug and substance abuse spreads like a slow virus that destroys young futures. This documentary reveals the consequences of substance abuse in daily life, steering young people away from consumption.",
+    runtime: "9 min",
+    cover: null,
   },
 ];
 
 export const filmFilters = [
   "All",
-  "Feature",
+  "Action-Drama",
+  "Tragedy",
+  "Horror",
   "Documentary",
-  "Educational",
-  "Behind-the-Scenes",
 ];
+
+export const posters = films
+  .filter((f) => f.cover)
+  .map((f) => ({ title: f.title, year: f.year, src: f.cover, href: "/films" }));
 
 export const vodRows = [
   {
     row: "New Releases",
     items: [
-      { title: "Thaba Bosiu: Echoes", meta: "Documentary • 2025" },
-      { title: "Pitseng", meta: "Feature • Pre-order" },
-      { title: "Behind the Fire", meta: "Series • 2026" },
-      { title: "Mokorotlo Rising", meta: "Educational • 2024" },
+      { title: "Konono", meta: "Action-Drama • 2024", cover: "/posters/konono.jpg" },
+      { title: "Lehlaba-phieo", meta: "Tragedy • 2026", cover: "/posters/lehlaba-phieo.jpg" },
+      { title: "Phirimana", meta: "Horror • 2025", cover: "/posters/phirimana.jpg" },
+      { title: "Ho Lekane", meta: "Documentary • 2026", cover: null },
     ],
   },
   {
