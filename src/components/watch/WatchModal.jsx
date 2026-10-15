@@ -6,12 +6,18 @@ import VideoPlayer from "@/components/VideoPlayer";
 
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
+  const locked = true;
   const infoRef = useRef(null);
+  const actionsRef = useRef(null);
 
   const revealActions = () => {
-    const el = infoRef.current;
-    if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    const info = infoRef.current;
+    const actions = actionsRef.current;
+    if (!info || !actions) return;
+    const infoRect = info.getBoundingClientRect();
+    const actRect = actions.getBoundingClientRect();
+    const delta = actRect.top - infoRect.top;
+    info.scrollTo({ top: info.scrollTop + delta - 16, behavior: "smooth" });
   };
 
   return (
@@ -51,7 +57,8 @@ export default function WatchModal({ item, onClose }) {
                   src={item.src}
                   poster={item.poster}
                   title={item.title}
-                  autoPlay
+                  locked={locked}
+                  onLocked={revealActions}
                   onPlay={revealActions}
                 />
               </div>
@@ -77,17 +84,22 @@ export default function WatchModal({ item, onClose }) {
                   </p>
                 )}
 
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setCheckout((v) => !v)}
-                    className="btn btn-primary"
-                  >
-                    Rent · M25
-                  </button>
-                  <button type="button" className="btn btn-ghost">
-                    Add to Watchlist
-                  </button>
+                <div ref={actionsRef} className="mt-5 scroll-mt-4">
+                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
+                    Rent to watch the full film
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setCheckout((v) => !v)}
+                      className="btn btn-primary"
+                    >
+                      Rent · M25
+                    </button>
+                    <button type="button" className="btn btn-ghost">
+                      Add to Watchlist
+                    </button>
+                  </div>
                 </div>
 
                 <AnimatePresence>

@@ -58,7 +58,15 @@ function Icon({ name }) {
   return null;
 }
 
-export default function VideoPlayer({ src, poster, title = "", autoPlay = false, onPlay }) {
+export default function VideoPlayer({
+  src,
+  poster,
+  title = "",
+  autoPlay = false,
+  onPlay,
+  locked = false,
+  onLocked,
+}) {
   const wrapRef = useRef(null);
   const videoRef = useRef(null);
   const hideTimer = useRef(null);
@@ -86,6 +94,14 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
     if (v.paused) v.play().catch(() => {});
     else v.pause();
   }, []);
+
+  const requestPlay = useCallback(() => {
+    if (locked) {
+      if (onLocked) onLocked();
+      return;
+    }
+    toggle();
+  }, [locked, onLocked, toggle]);
 
   useEffect(() => {
     const onFs = () => setFullscreen(Boolean(document.fullscreenElement));
@@ -135,7 +151,7 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
           preload="metadata"
           autoPlay={autoPlay}
           className="h-full w-full object-contain"
-          onClick={toggle}
+          onClick={requestPlay}
           onPlay={() => {
             setPlaying(true);
             bump();
@@ -171,12 +187,26 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false,
       {src && !playing && (
         <button
           type="button"
-          onClick={toggle}
-          aria-label="Play"
+          onClick={requestPlay}
+          aria-label={locked ? "Rent to watch" : "Play"}
           className="absolute inset-0 grid place-items-center"
         >
-          <span className="grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/40 backdrop-blur transition-all hover:border-ember hover:shadow-[0_0_44px_-4px_rgba(255,69,0,0.85)]">
-            <span className="ml-1 block h-0 w-0 border-y-[13px] border-l-[20px] border-y-transparent border-l-ember" />
+          <span className="flex flex-col items-center gap-3">
+            <span className="grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/40 backdrop-blur transition-all hover:border-ember hover:shadow-[0_0_44px_-4px_rgba(255,69,0,0.85)]">
+              {locked ? (
+                <svg viewBox="0 0 24 24" className="h-7 w-7 text-silver keep-light" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <rect x="4" y="10" width="16" height="11" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <span className="ml-1 block h-0 w-0 border-y-[13px] border-l-[20px] border-y-transparent border-l-ember" />
+              )}
+            </span>
+            {locked && (
+              <span className="rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-silver keep-light backdrop-blur">
+                Rent to watch
+              </span>
+            )}
           </span>
         </button>
       )}
