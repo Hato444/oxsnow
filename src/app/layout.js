@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EmberBackground from "@/components/EmberBackground";
+import WatchProvider from "@/components/watch/WatchProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,10 +44,12 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="grain relative min-h-full flex flex-col bg-ink text-silver-2 font-sans">
-        <EmberBackground />
-        <Header />
-        <main className="relative z-10 flex-1">{children}</main>
-        <Footer />
+        <WatchProvider>
+          <EmberBackground />
+          <Header />
+          <main className="relative z-10 flex-1">{children}</main>
+          <Footer />
+        </WatchProvider>
       </body>
     </html>
   );

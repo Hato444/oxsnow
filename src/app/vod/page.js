@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
+import WatchTrigger from "@/components/watch/WatchTrigger";
 import { vodRows } from "@/lib/site";
 
 export const metadata = {
@@ -145,15 +146,23 @@ export default function VodPage() {
                 <h2 className="text-2xl font-bold tracking-tight text-metal">
                   {group.row}
                 </h2>
-                <span className="text-[0.65rem] uppercase tracking-[0.24em] text-ash">
-                  See all →
+                <span className="select-none text-[0.65rem] uppercase tracking-[0.24em] text-ash">
+                  See all
                 </span>
               </div>
             </Reveal>
             <div className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
               {group.items.map((item, i) => (
                 <Reveal key={item.title} delay={i * 0.05} className="snap-start">
-                  <article className="card group w-[220px] shrink-0 overflow-hidden">
+                  <WatchTrigger
+                    item={{
+                      title: item.title,
+                      meta: item.meta,
+                      poster: item.cover,
+                      src: item.src,
+                    }}
+                    className="card group w-[220px] shrink-0 overflow-hidden text-left"
+                  >
                     <div className="relative h-56 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
                       {item.cover ? (
                         <Image
@@ -191,7 +200,7 @@ export default function VodPage() {
                         {item.meta}
                       </p>
                     </div>
-                  </article>
+                  </WatchTrigger>
                 </Reveal>
               ))}
             </div>

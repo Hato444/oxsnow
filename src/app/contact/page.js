@@ -47,6 +47,12 @@ export default function ContactPage() {
               >
                 {site.email}
               </a>
+              <a
+                href={`tel:${site.phone.replace(/\s+/g, "")}`}
+                className="mt-2 block text-sm font-semibold text-silver-2 transition-colors hover:text-ember"
+              >
+                {site.phone}
+              </a>
               <p className="mt-2 text-sm text-steel">{site.location}</p>
               <div className="mt-5 flex gap-3">
                 {["Sesotho", "English"].map((l) => (

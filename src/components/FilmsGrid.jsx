@@ -4,9 +4,11 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { filmFilters } from "@/lib/site";
+import { useWatch } from "@/components/watch/WatchProvider";
 
 export default function FilmsGrid({ films }) {
   const [filter, setFilter] = useState("All");
+  const { open } = useWatch();
 
   const shown = useMemo(
     () => (filter === "All" ? films : films.filter((f) => f.type === filter)),
@@ -45,7 +47,30 @@ export default function FilmsGrid({ films }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="card group flex flex-col overflow-hidden"
+              role="button"
+              tabIndex={0}
+              onClick={() =>
+                open({
+                  title: f.title,
+                  meta: `${f.type} · ${f.year} · ${f.runtime}`,
+                  poster: f.cover,
+                  src: f.src,
+                  logline: f.logline,
+                })
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  open({
+                    title: f.title,
+                    meta: `${f.type} · ${f.year} · ${f.runtime}`,
+                    poster: f.cover,
+                    src: f.src,
+                    logline: f.logline,
+                  });
+                }
+              }}
+              className="card group flex cursor-pointer flex-col overflow-hidden"
             >
               <div className="relative flex h-56 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
                 {f.cover ? (

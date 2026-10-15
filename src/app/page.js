@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
+import WatchTrigger from "@/components/watch/WatchTrigger";
 import { films, pillars, site, stats, values } from "@/lib/site";
 
 export default function Home() {
@@ -161,20 +163,36 @@ export default function Home() {
         <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:thin]">
           {featured.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05} className="snap-start">
-              <Link
-                href="/films"
-                className="card group block h-full w-[280px] shrink-0 overflow-hidden sm:w-[320px]"
+              <WatchTrigger
+                item={{
+                  title: f.title,
+                  meta: `${f.type} · ${f.year}`,
+                  poster: f.cover,
+                  src: f.src,
+                  logline: f.logline,
+                }}
+                className="card group block h-full w-[280px] shrink-0 overflow-hidden text-left sm:w-[320px]"
               >
-                <div className="relative flex h-44 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
-                  <div
-                    className="absolute inset-0 opacity-60"
-                    style={{
-                      background:
-                        "radial-gradient(120% 90% at 15% 0%, rgba(255,69,0,0.22), transparent 55%), radial-gradient(90% 80% at 100% 120%, rgba(192,192,192,0.10), transparent 60%)",
-                    }}
-                  />
-                  <div className="absolute right-4 top-4 h-16 w-px bg-white/10" />
-                  <span className="relative z-10 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver backdrop-blur">
+                <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
+                  {f.cover ? (
+                    <Image
+                      src={f.cover}
+                      alt={f.title}
+                      fill
+                      sizes="320px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div
+                      className="absolute inset-0 opacity-60"
+                      style={{
+                        background:
+                          "radial-gradient(120% 90% at 15% 0%, rgba(255,69,0,0.22), transparent 55%), radial-gradient(90% 80% at 100% 120%, rgba(192,192,192,0.10), transparent 60%)",
+                      }}
+                    />
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/85 to-transparent" />
+                  <span className="relative z-10 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver backdrop-blur">
                     {f.status}
                   </span>
                 </div>
@@ -189,7 +207,7 @@ export default function Home() {
                     {f.logline}
                   </p>
                 </div>
-              </Link>
+              </WatchTrigger>
             </Reveal>
           ))}
         </div>

@@ -4,9 +4,13 @@ export const site = {
   mission: "Crafting culturally rooted tales through high cinematic innovation.",
   founded: 2023,
   founders: ["Lehlohonolo Mongangane", "Sello Mokheseng", "Keletso Hato"],
-  email: "hello@oxsnow.studio",
+  email: "oxsnowstudio@gmail.com",
+  phone: "+266 5768 0573",
   location: "Maseru, Lesotho",
 };
+
+const demoTrailer =
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 
 export const nav = [
   { label: "Home", href: "/" },
@@ -97,6 +101,7 @@ export const films = [
       "A young man trains nonstop after his friend is murdered by a gang leader, then confronts the gangster with violence to avenge his late friend.",
     runtime: "Feature",
     cover: "/posters/konono.jpg",
+    src: demoTrailer,
   },
   {
     title: "Lehlaba-phieo",
@@ -107,6 +112,7 @@ export const films = [
       "Inspired by the story of Abel and Cain, Tokollo deceives his younger brother and leads him into a death zone, taking matters into his own hands and disposing of the body to hide the evidence.",
     runtime: "11 min",
     cover: "/posters/lehlaba-phieo.jpg",
+    src: demoTrailer,
   },
   {
     title: "Phirimana",
@@ -117,6 +123,7 @@ export const films = [
       "A young woman suffers vivid sleep paralysis. In her dream a figure haunts her and she must escape for her life — but as she snaps back to reality, the same incident resets.",
     runtime: "7 min",
     cover: "/posters/phirimana.jpg",
+    src: demoTrailer,
   },
   {
     title: "Ho Lekane",
@@ -146,10 +153,10 @@ export const vodRows = [
   {
     row: "New Releases",
     items: [
-      { title: "Konono", meta: "Action-Drama • 2024", cover: "/posters/konono.jpg" },
-      { title: "Lehlaba-phieo", meta: "Tragedy • 2026", cover: "/posters/lehlaba-phieo.jpg" },
-      { title: "Phirimana", meta: "Horror • 2025", cover: "/posters/phirimana.jpg" },
-      { title: "Ho Lekane", meta: "Documentary • 2026", cover: null },
+      { title: "Konono", meta: "Action-Drama • 2024", cover: "/posters/konono.jpg", src: demoTrailer },
+      { title: "Lehlaba-phieo", meta: "Tragedy • 2026", cover: "/posters/lehlaba-phieo.jpg", src: demoTrailer },
+      { title: "Phirimana", meta: "Horror • 2025", cover: "/posters/phirimana.jpg", src: demoTrailer },
+      { title: "Ho Lekane", meta: "Documentary • 2026", cover: null, src: null },
     ],
   },
   {

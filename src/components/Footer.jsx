@@ -89,6 +89,14 @@ export default function Footer() {
                 {site.email}
               </a>
             </li>
+            <li>
+              <a
+                href={`tel:${site.phone.replace(/\s+/g, "")}`}
+                className="transition-colors hover:text-ember"
+              >
+                {site.phone}
+              </a>
+            </li>
             <li>Est. {site.founded}</li>
           </ul>
         </div>
