@@ -58,7 +58,7 @@ function Icon({ name }) {
   return null;
 }
 
-export default function VideoPlayer({ src, poster, title = "", autoPlay = false }) {
+export default function VideoPlayer({ src, poster, title = "", autoPlay = false, onPlay }) {
   const wrapRef = useRef(null);
   const videoRef = useRef(null);
   const hideTimer = useRef(null);
@@ -139,6 +139,7 @@ export default function VideoPlayer({ src, poster, title = "", autoPlay = false 
           onPlay={() => {
             setPlaying(true);
             bump();
+            if (onPlay) onPlay();
           }}
           onPause={() => {
             setPlaying(false);

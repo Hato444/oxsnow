@@ -133,7 +133,7 @@ export const films = [
     logline:
       "In a generation of modern youth, drug and substance abuse spreads like a slow virus that destroys young futures. This documentary reveals the consequences of substance abuse in daily life, steering young people away from consumption.",
     runtime: "9 min",
-    cover: null,
+    cover: "/posters/ho-lekane.jpg",
   },
 ];
 
@@ -156,7 +156,7 @@ export const vodRows = [
       { title: "Konono", meta: "Action-Drama • 2024", cover: "/posters/konono.jpg", src: demoTrailer },
       { title: "Lehlaba-phieo", meta: "Tragedy • 2026", cover: "/posters/lehlaba-phieo.jpg", src: demoTrailer },
       { title: "Phirimana", meta: "Horror • 2025", cover: "/posters/phirimana.jpg", src: demoTrailer },
-      { title: "Ho Lekane", meta: "Documentary • 2026", cover: null, src: null },
+      { title: "Ho Lekane", meta: "Documentary • 2026", cover: "/posters/ho-lekane.jpg", src: null },
     ],
   },
   {

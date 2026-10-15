@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
 
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
+  const infoRef = useRef(null);
+
+  const revealActions = () => {
+    const el = infoRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  };
 
   return (
     <AnimatePresence onExitComplete={() => setCheckout(false)}>
@@ -45,10 +52,14 @@ export default function WatchModal({ item, onClose }) {
                   poster={item.poster}
                   title={item.title}
                   autoPlay
+                  onPlay={revealActions}
                 />
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto p-6">
+              <div
+                ref={infoRef}
+                className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-6"
+              >
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <h2 className="text-xl font-bold text-metal sm:text-2xl">
                     {item.title}

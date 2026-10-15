@@ -221,6 +221,14 @@
     width: 3.5rem;
     background: linear-gradient(90deg, #ff4500, #e25822, transparent);
   }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Film grain overlay (very subtle, global) */
