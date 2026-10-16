@@ -66,6 +66,8 @@ export default function VideoPlayer({
   onPlay,
   locked = false,
   onLocked,
+  onBack,
+  backLabel = "Back",
   hoverPreview = null,
 }) {
   const wrapRef = useRef(null);
@@ -118,6 +120,16 @@ export default function VideoPlayer({
     if (v) v.volume = volume;
   }, [volume]);
 
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !autoPlay) return;
+    v.volume = volume;
+    v.muted = false;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, src]);
+
   const seek = (e) => {
     const v = videoRef.current;
     if (!v || !duration) return;
@@ -143,6 +155,15 @@ export default function VideoPlayer({
       onMouseLeave={() => setShowControls(false)}
       className="group relative aspect-video w-full overflow-hidden bg-black"
     >
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="absolute left-3 top-3 z-30 flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur transition-colors hover:border-ember hover:text-ember"
+        >
+          <span aria-hidden>&#8592;</span> {backLabel}
+        </button>
+      )}
       {src ? (
         <video
           ref={videoRef}

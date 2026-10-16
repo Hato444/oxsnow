@@ -101,7 +101,7 @@ export const films = [
       "A young man trains nonstop after his friend is murdered by a gang leader, then confronts the gangster with violence to avenge his late friend.",
     runtime: "Feature",
     cover: "/posters/konono.jpg",
-    src: "/movies/Konono. Mp4 Movie(1).mp4",
+    src: "/trailers/Teaser Molamu 1080p.mp4",
     teaser: "/trailers/Teaser Molamu 1080p.mp4",
   },
   {
@@ -113,7 +113,7 @@ export const films = [
       "Inspired by the story of Abel and Cain, Tokollo deceives his younger brother and leads him into a death zone, taking matters into his own hands and disposing of the body to hide the evidence.",
     runtime: "11 min",
     cover: "/posters/lehlaba-phieo.jpg",
-    src: "/movies/Lehlaba-Phieo mov..mp4",
+    src: "/trailers/TRAILER LEHLABA-PHIEO.mov",
     teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov",
   },
   {
@@ -125,7 +125,7 @@ export const films = [
       "A young woman suffers vivid sleep paralysis. In her dream a figure haunts her and she must escape for her life - but as she snaps back to reality, the same incident resets.",
     runtime: "7 min",
     cover: "/posters/phirimana.jpg",
-    src: "/movies/PHIRIMANA.mp4",
+    src: "/trailers/phirimana trailer.mp4",
     teaser: "/trailers/phirimana trailer.mp4",
   },
   {
@@ -137,7 +137,7 @@ export const films = [
       "In a generation of modern youth, drug and substance abuse spreads like a slow virus that destroys young futures. This documentary reveals the consequences of substance abuse in daily life, steering young people away from consumption.",
     runtime: "9 min",
     cover: "/posters/ho-lekane.jpg",
-    src: "/movies/HO LEKANE.mov.mov",
+    src: "/trailers/HO LEKANE Trailer.mp4",
     teaser: "/trailers/HO LEKANE Trailer.mp4",
   },
 ];
@@ -158,10 +158,10 @@ export const vodRows = [
   {
     row: "New Releases",
     items: [
-      { title: "Konono", meta: "Action-Drama - 2024", cover: "/posters/konono.jpg", src: "/movies/Konono. Mp4 Movie(1).mp4", teaser: "/trailers/Teaser Molamu 1080p.mp4" },
-      { title: "Lehlaba-phieo", meta: "Tragedy - 2026", cover: "/posters/lehlaba-phieo.jpg", src: "/movies/Lehlaba-Phieo mov..mp4", teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov" },
-      { title: "Phirimana", meta: "Horror - 2025", cover: "/posters/phirimana.jpg", src: "/movies/PHIRIMANA.mp4", teaser: "/trailers/phirimana trailer.mp4" },
-      { title: "Ho Lekane", meta: "Documentary - 2026", cover: "/posters/ho-lekane.jpg", src: "/movies/HO LEKANE.mov.mov", teaser: "/trailers/HO LEKANE Trailer.mp4" },
+      { title: "Konono", meta: "Action-Drama - 2024", cover: "/posters/konono.jpg", src: "/trailers/Teaser Molamu 1080p.mp4", teaser: "/trailers/Teaser Molamu 1080p.mp4" },
+      { title: "Lehlaba-phieo", meta: "Tragedy - 2026", cover: "/posters/lehlaba-phieo.jpg", src: "/trailers/TRAILER LEHLABA-PHIEO.mov", teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov" },
+      { title: "Phirimana", meta: "Horror - 2025", cover: "/posters/phirimana.jpg", src: "/trailers/phirimana trailer.mp4", teaser: "/trailers/phirimana trailer.mp4" },
+      { title: "Ho Lekane", meta: "Documentary - 2026", cover: "/posters/ho-lekane.jpg", src: "/trailers/HO LEKANE Trailer.mp4", teaser: "/trailers/HO LEKANE Trailer.mp4" },
     ],
   },
   {

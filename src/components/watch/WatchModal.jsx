@@ -1,14 +1,30 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
 
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
-  const locked = true;
+  const [watchingTeaser, setWatchingTeaser] = useState(false);
+  const locked = !watchingTeaser;
   const infoRef = useRef(null);
   const actionsRef = useRef(null);
+  const playerRef = useRef(null);
+
+  const playTeaser = () => {
+    setWatchingTeaser(true);
+    if (playerRef.current) {
+      playerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const stopTeaser = () => setWatchingTeaser(false);
+
+  useEffect(() => {
+    setWatchingTeaser(false);
+    setCheckout(false);
+  }, [item]);
 
   const revealActions = () => {
     const info = infoRef.current;
@@ -52,14 +68,18 @@ export default function WatchModal({ item, onClose }) {
             className="relative z-10 w-full max-w-3xl"
           >
             <div className="card flex max-h-[88svh] flex-col overflow-hidden">
-              <div className="shrink-0">
+              <div ref={playerRef} className="shrink-0 scroll-mt-2">
                 <VideoPlayer
-                  src={item.src}
+                  key={watchingTeaser ? "teaser" : "film"}
+                  src={watchingTeaser ? item.teaser || item.src : item.src}
                   poster={item.poster}
-                  title={item.title}
+                  title={watchingTeaser ? `${item.title} — Official Teaser` : item.title}
                   locked={locked}
+                  autoPlay={watchingTeaser}
                   onLocked={revealActions}
-                  onPlay={revealActions}
+                  onPlay={watchingTeaser ? undefined : revealActions}
+                  onBack={watchingTeaser ? stopTeaser : undefined}
+                  backLabel="Back to film"
                   hoverPreview={item.teaser}
                 />
               </div>
@@ -87,18 +107,22 @@ export default function WatchModal({ item, onClose }) {
 
                 <div ref={actionsRef} className="mt-5 scroll-mt-4">
                     <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
-                      Rent to watch the full film
+                      {watchingTeaser ? "You're watching the teaser" : "Rent to watch the full film"}
                     </p>
                     <div className="mt-3 flex flex-wrap items-center gap-3">
-                      <button type="button" className="btn btn-ghost">
-                        Watch Teaser
-                      </button>
                       <button
                         type="button"
                         onClick={() => setCheckout((v) => !v)}
                         className="btn btn-primary"
                       >
                         Rent - M25
+                      </button>
+                      <button
+                        type="button"
+                        onClick={watchingTeaser ? stopTeaser : playTeaser}
+                        className="btn btn-ghost"
+                      >
+                        {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
                       </button>
                       <button type="button" className="btn btn-ghost">
                         Add to Watchlist
