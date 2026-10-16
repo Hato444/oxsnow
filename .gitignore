@@ -24,10 +24,9 @@
 .DS_Store
 *.pem
 
-# large media (served from /public but never committed)
+# full films are too large for git (GitHub rejects >100MB) - host externally
 /public/movies/
-/public/teasers/
-/public/trailers/
+# teasers/trailers are pushed so Vercel can serve hover previews
 
 # debug
 npm-debug.log*
