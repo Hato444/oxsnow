@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import WatchTrigger from "@/components/watch/WatchTrigger";
+import HoverVideo from "@/components/HoverVideo";
 import { vodRows } from "@/lib/site";
 
 export const metadata = {
@@ -160,11 +161,18 @@ export default function VodPage() {
                       meta: item.meta,
                       poster: item.cover,
                       src: item.src,
+                      teaser: item.teaser,
                     }}
                     className="card group w-[220px] shrink-0 overflow-hidden text-left"
                   >
                     <div className="relative h-56 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                      {item.cover ? (
+                      {item.teaser ? (
+                        <HoverVideo
+                          src={item.teaser}
+                          poster={item.cover}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : item.cover ? (
                         <Image
                           src={item.cover}
                           alt={item.title}

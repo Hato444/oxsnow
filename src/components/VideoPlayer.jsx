@@ -66,6 +66,7 @@ export default function VideoPlayer({
   onPlay,
   locked = false,
   onLocked,
+  hoverPreview = null,
 }) {
   const wrapRef = useRef(null);
   const videoRef = useRef(null);
@@ -150,6 +151,7 @@ export default function VideoPlayer({
           playsInline
           preload="metadata"
           autoPlay={autoPlay}
+          muted={muted}
           className="h-full w-full object-contain"
           onClick={requestPlay}
           onPlay={() => {

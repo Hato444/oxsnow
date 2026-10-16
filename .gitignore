@@ -24,6 +24,11 @@
 .DS_Store
 *.pem
 
+# large media (served from /public but never committed)
+/public/movies/
+/public/teasers/
+/public/trailers/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

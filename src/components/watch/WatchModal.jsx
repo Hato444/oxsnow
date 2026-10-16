@@ -60,6 +60,7 @@ export default function WatchModal({ item, onClose }) {
                   locked={locked}
                   onLocked={revealActions}
                   onPlay={revealActions}
+                  hoverPreview={item.teaser}
                 />
               </div>
 
@@ -85,21 +86,24 @@ export default function WatchModal({ item, onClose }) {
                 )}
 
                 <div ref={actionsRef} className="mt-5 scroll-mt-4">
-                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
-                    Rent to watch the full film
-                  </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCheckout((v) => !v)}
-                      className="btn btn-primary"
-                    >
-                      Rent · M25
-                    </button>
-                    <button type="button" className="btn btn-ghost">
-                      Add to Watchlist
-                    </button>
-                  </div>
+                    <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
+                      Rent to watch the full film
+                    </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <button type="button" className="btn btn-ghost">
+                        Watch Teaser
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCheckout((v) => !v)}
+                        className="btn btn-primary"
+                      >
+                        Rent - M25
+                      </button>
+                      <button type="button" className="btn btn-ghost">
+                        Add to Watchlist
+                      </button>
+                    </div>
                 </div>
 
                 <AnimatePresence>

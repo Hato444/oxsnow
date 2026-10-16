@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import WatchTrigger from "@/components/watch/WatchTrigger";
+import HoverVideo from "@/components/HoverVideo";
 import { films, pillars, site, stats, values } from "@/lib/site";
 
 export default function Home() {
@@ -166,15 +167,22 @@ export default function Home() {
               <WatchTrigger
                 item={{
                   title: f.title,
-                  meta: `${f.type} · ${f.year}`,
+                  meta: `${f.type} - ${f.year}`,
                   poster: f.cover,
                   src: f.src,
+                  teaser: f.teaser,
                   logline: f.logline,
                 }}
                 className="card group block h-full w-[280px] shrink-0 overflow-hidden text-left sm:w-[320px]"
               >
-                <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
-                  {f.cover ? (
+                <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
+                  {f.teaser ? (
+                    <HoverVideo
+                      src={f.teaser}
+                      poster={f.cover}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : f.cover ? (
                     <Image
                       src={f.cover}
                       alt={f.title}
@@ -192,7 +200,7 @@ export default function Home() {
                     />
                   )}
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/85 to-transparent" />
-                  <span className="relative z-10 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
+                  <span className="relative z-10 ml-4 mb-4 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                     {f.status}
                   </span>
                 </div>
@@ -201,7 +209,7 @@ export default function Home() {
                     {f.title}
                   </h3>
                   <p className="mt-1 text-[0.7rem] uppercase tracking-[0.18em] text-ember">
-                    {f.type} · {f.year}
+                    {f.type} - {f.year}
                   </p>
                   <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-steel">
                     {f.logline}

@@ -36,21 +36,21 @@ export const founders = [
     name: "Sello Mokheseng",
     role: "Co-Founder · Production & Partnerships",
     initials: "SM",
-    bio: "Drives the studio's productions from script to screen — building crews, scaling the slate and connecting local talent with the wider industry.",
+    bio: "Drives the studio's productions from script to screen - building crews, scaling the slate and connecting local talent with the wider industry.",
     photo: null,
   },
   {
     name: "Keletso Hato",
     role: "Co-Founder · Technology & Operations",
     initials: "KH",
-    bio: "Shapes the studio's digital backbone — from the VOD platform to the tools that put Basotho stories in front of the world.",
+    bio: "Shapes the studio's digital backbone - from the VOD platform to the tools that put Basotho stories in front of the world.",
     photo: null,
   },
 ];
 
 export const about = {
   story: [
-    "Oxsnow Studio is a film company built as an umbrella studio — handling multiple films, broadcasting, distribution and the licensing of intellectual property and ownership rights.",
+    "Oxsnow Studio is a film company built as an umbrella studio - handling multiple films, broadcasting, distribution and the licensing of intellectual property and ownership rights.",
     "It was founded in 2023 by self-taught filmmaker Lehlohonolo Mongangane, and later registered legally under the Ministry of Trade alongside co-founders Sello Mokheseng and Keletso Hato.",
     "We believe in the transformative power of compelling storytelling, artistry and cutting-edge creativity. What makes us unique is not just our expertise, but our commitment to bringing powerful tales to reality through advanced cinematic innovation.",
   ],
@@ -63,10 +63,10 @@ export const about = {
     "A huge gap created by an ineffective film industry in Lesotho.",
   ],
   solutions: [
-    "Giving creative filmmakers nationwide a sense of belonging — producing multiple films where they can contribute and apply their skills.",
+    "Giving creative filmmakers nationwide a sense of belonging - producing multiple films where they can contribute and apply their skills.",
     "Producing multiple feature films that enable skill training and job creation, allowing the community to make a living from filmmaking.",
     "Documenting and preserving Basotho history through a cinematic experience for the younger, upcoming generation.",
-    "Contribution, participation and investment that can shift the industry towards success — linking local services, talent development and global tourism.",
+    "Contribution, participation and investment that can shift the industry towards success - linking local services, talent development and global tourism.",
   ],
 };
 
@@ -75,7 +75,7 @@ export const pillars = [
     id: "vod",
     title: "Oxsnow VOD",
     tag: "Streaming",
-    copy: "Rent current releases or unlock the Cultural Pass — a living archive of Basotho history, heritage and diaspora stories.",
+    copy: "Rent current releases or unlock the Cultural Pass - a living archive of Basotho history, heritage and diaspora stories.",
   },
   {
     id: "production",
@@ -87,7 +87,7 @@ export const pillars = [
     id: "ip",
     title: "IP & Licensing",
     tag: "Library",
-    copy: "Owned cultural IP, format development and licensing — turning authentic Basotho narratives into lasting assets.",
+    copy: "Owned cultural IP, format development and licensing - turning authentic Basotho narratives into lasting assets.",
   },
 ];
 
@@ -101,7 +101,8 @@ export const films = [
       "A young man trains nonstop after his friend is murdered by a gang leader, then confronts the gangster with violence to avenge his late friend.",
     runtime: "Feature",
     cover: "/posters/konono.jpg",
-    src: demoTrailer,
+    src: "/movies/Konono. Mp4 Movie(1).mp4",
+    teaser: "/trailers/Teaser Molamu 1080p.mp4",
   },
   {
     title: "Lehlaba-phieo",
@@ -112,7 +113,8 @@ export const films = [
       "Inspired by the story of Abel and Cain, Tokollo deceives his younger brother and leads him into a death zone, taking matters into his own hands and disposing of the body to hide the evidence.",
     runtime: "11 min",
     cover: "/posters/lehlaba-phieo.jpg",
-    src: demoTrailer,
+    src: "/movies/Lehlaba-Phieo mov..mp4",
+    teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov",
   },
   {
     title: "Phirimana",
@@ -120,10 +122,11 @@ export const films = [
     status: "Available",
     year: "2025",
     logline:
-      "A young woman suffers vivid sleep paralysis. In her dream a figure haunts her and she must escape for her life — but as she snaps back to reality, the same incident resets.",
+      "A young woman suffers vivid sleep paralysis. In her dream a figure haunts her and she must escape for her life - but as she snaps back to reality, the same incident resets.",
     runtime: "7 min",
     cover: "/posters/phirimana.jpg",
-    src: demoTrailer,
+    src: "/movies/PHIRIMANA.mp4",
+    teaser: "/trailers/phirimana trailer.mp4",
   },
   {
     title: "Ho Lekane",
@@ -134,6 +137,8 @@ export const films = [
       "In a generation of modern youth, drug and substance abuse spreads like a slow virus that destroys young futures. This documentary reveals the consequences of substance abuse in daily life, steering young people away from consumption.",
     runtime: "9 min",
     cover: "/posters/ho-lekane.jpg",
+    src: "/movies/HO LEKANE.mov.mov",
+    teaser: "/trailers/HO LEKANE Trailer.mp4",
   },
 ];
 
@@ -153,10 +158,10 @@ export const vodRows = [
   {
     row: "New Releases",
     items: [
-      { title: "Konono", meta: "Action-Drama • 2024", cover: "/posters/konono.jpg", src: demoTrailer },
-      { title: "Lehlaba-phieo", meta: "Tragedy • 2026", cover: "/posters/lehlaba-phieo.jpg", src: demoTrailer },
-      { title: "Phirimana", meta: "Horror • 2025", cover: "/posters/phirimana.jpg", src: demoTrailer },
-      { title: "Ho Lekane", meta: "Documentary • 2026", cover: "/posters/ho-lekane.jpg", src: null },
+      { title: "Konono", meta: "Action-Drama - 2024", cover: "/posters/konono.jpg", src: "/movies/Konono. Mp4 Movie(1).mp4", teaser: "/trailers/Teaser Molamu 1080p.mp4" },
+      { title: "Lehlaba-phieo", meta: "Tragedy - 2026", cover: "/posters/lehlaba-phieo.jpg", src: "/movies/Lehlaba-Phieo mov..mp4", teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov" },
+      { title: "Phirimana", meta: "Horror - 2025", cover: "/posters/phirimana.jpg", src: "/movies/PHIRIMANA.mp4", teaser: "/trailers/phirimana trailer.mp4" },
+      { title: "Ho Lekane", meta: "Documentary - 2026", cover: "/posters/ho-lekane.jpg", src: "/movies/HO LEKANE.mov.mov", teaser: "/trailers/HO LEKANE Trailer.mp4" },
     ],
   },
   {
@@ -182,7 +187,7 @@ export const vodRows = [
 export const values = [
   {
     title: "Innovation",
-    copy: "Cinematic craft pushed with every tool available — from set to screen.",
+    copy: "Cinematic craft pushed with every tool available - from set to screen.",
   },
   {
     title: "Transparency",
@@ -194,7 +199,7 @@ export const values = [
   },
   {
     title: "Autodidacticism",
-    copy: "We teach ourselves, then teach each other — building talent on the ground.",
+    copy: "We teach ourselves, then teach each other - building talent on the ground.",
   },
 ];
 

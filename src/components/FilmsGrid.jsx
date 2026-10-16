@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { filmFilters } from "@/lib/site";
 import { useWatch } from "@/components/watch/WatchProvider";
+import HoverVideo from "@/components/HoverVideo";
 
 export default function FilmsGrid({ films }) {
   const [filter, setFilter] = useState("All");
@@ -52,9 +53,10 @@ export default function FilmsGrid({ films }) {
               onClick={() =>
                 open({
                   title: f.title,
-                  meta: `${f.type} · ${f.year} · ${f.runtime}`,
+                  meta: `${f.type} - ${f.year} - ${f.runtime}`,
                   poster: f.cover,
                   src: f.src,
+                  teaser: f.teaser,
                   logline: f.logline,
                 })
               }
@@ -63,17 +65,24 @@ export default function FilmsGrid({ films }) {
                   e.preventDefault();
                   open({
                     title: f.title,
-                    meta: `${f.type} · ${f.year} · ${f.runtime}`,
+                    meta: `${f.type} - ${f.year} - ${f.runtime}`,
                     poster: f.cover,
                     src: f.src,
+                    teaser: f.teaser,
                     logline: f.logline,
                   });
                 }
               }}
               className="card group flex cursor-pointer flex-col overflow-hidden"
             >
-              <div className="relative flex h-56 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black p-4">
-                {f.cover ? (
+              <div className="relative flex h-56 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
+                {f.teaser ? (
+                  <HoverVideo
+                    src={f.teaser}
+                    poster={f.cover}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : f.cover ? (
                   <Image
                     src={f.cover}
                     alt={f.title}
@@ -91,7 +100,7 @@ export default function FilmsGrid({ films }) {
                   />
                 )}
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
-                <span className="relative z-10 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
+                <span className="relative z-10 ml-4 mb-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                   {f.status}
                 </span>
                 <span className="absolute right-4 top-4 z-10 text-[0.6rem] uppercase tracking-[0.2em] text-ash">
