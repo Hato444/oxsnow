@@ -41,7 +41,7 @@ export default function Header() {
         <Link
           href="/"
           aria-label={`${site.name} — home`}
-          className="flex items-center"
+          className="flex shrink-0 items-center"
         >
           <Image
             src={site.logo}
@@ -49,11 +49,11 @@ export default function Header() {
             width={1855}
             height={496}
             priority
-            className="h-10 w-auto sm:h-11"
+            className="h-auto w-[160px] object-contain sm:w-[190px] lg:w-[212px]"
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
           {nav.map((item) => {
             const active = pathname === item.href;
             return (
@@ -99,7 +99,7 @@ export default function Header() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center rounded-md border border-white/15 text-silver hover:border-ember hover:text-white md:hidden"
+            className="grid h-10 w-10 place-items-center rounded-md border border-white/15 text-silver hover:border-ember hover:text-white lg:hidden"
           >
             <span className="flex flex-col gap-1.5">
               <span
@@ -124,7 +124,7 @@ export default function Header() {
 
       {/* Mobile drop panel */}
       <div
-        className={`overflow-hidden border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 md:hidden ${
+        className={`overflow-hidden border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 lg:hidden ${
           open ? "max-h-96" : "max-h-0"
         }`}
       >
