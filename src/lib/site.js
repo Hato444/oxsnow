@@ -7,7 +7,7 @@ export const site = {
   email: "oxsnowstudio@gmail.com",
   phone: "+266 5768 0573",
   location: "Maseru, Lesotho",
-  logo: "/brand/oxsnow-logo.jpg",
+  logo: "/brand/oxsnow-logo.png",
 };
 
 const demoTrailer =
