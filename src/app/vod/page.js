@@ -181,7 +181,7 @@ export default function VodPage() {
                         <HoverVideo
                           src={item.preview || item.teaser}
                           poster={item.cover}
-                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="absolute inset-0 h-full w-full object-cover"
                         />
                       ) : item.cover ? (
                         <Image

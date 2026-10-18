@@ -83,7 +83,7 @@ export default function FilmsGrid({ films }) {
                   <HoverVideo
                     src={f.preview || f.teaser}
                     poster={f.cover}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : f.cover ? (
                   <Image

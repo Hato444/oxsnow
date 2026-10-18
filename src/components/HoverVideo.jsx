@@ -7,6 +7,7 @@ export default function HoverVideo({ src, poster, className = "" }) {
   const ref = useRef(null);
   const [armed, setArmed] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   // Warm the clip (buffer it) as soon as the card nears the viewport, so the
   // first hover plays instantly instead of downloading then.
@@ -29,7 +30,7 @@ export default function HoverVideo({ src, poster, className = "" }) {
           io.disconnect();
         }
       },
-      { rootMargin: "400px 0px" },
+      { rootMargin: "600px 0px" },
     );
     io.observe(v);
     return () => io.disconnect();
@@ -44,48 +45,54 @@ export default function HoverVideo({ src, poster, className = "" }) {
     } catch {}
   }, [armed]);
 
-  if (!src || failed) {
-    return poster ? (
-      <Image
-        src={poster}
-        alt=""
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        className={className}
-      />
-    ) : null;
-  }
+  const cover = poster ? (
+    <Image
+      src={poster}
+      alt=""
+      fill
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      className="object-cover"
+    />
+  ) : null;
+
+  if (!src || failed) return cover;
 
   return (
-    <video
-      ref={ref}
-      src={src}
-      poster={poster || undefined}
-      className={className}
-      muted
-      loop
-      playsInline
-      preload={armed ? "auto" : "none"}
-      disablePictureInPicture
-      onPointerEnter={(e) => {
-        if (e.pointerType === "touch") return;
-        const v = ref.current;
-        if (!v) return;
-        try {
-          v.currentTime = 0;
-          const p = v.play();
-          if (p && p.catch) p.catch(() => {});
-        } catch {}
-      }}
-      onPointerLeave={() => {
-        const v = ref.current;
-        if (!v) return;
-        try {
-          v.pause();
-          v.currentTime = 0;
-        } catch {}
-      }}
-      onError={() => setFailed(true)}
-    />
+    <>
+      {cover}
+      <video
+        ref={ref}
+        src={src}
+        className={`${className} transition-opacity duration-500 ease-out ${
+          playing ? "opacity-100" : "opacity-0"
+        }`}
+        muted
+        loop
+        playsInline
+        preload={armed ? "auto" : "metadata"}
+        disablePictureInPicture
+        onPlaying={() => setPlaying(true)}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "touch") return;
+          const v = ref.current;
+          if (!v) return;
+          try {
+            v.currentTime = 0;
+            const p = v.play();
+            if (p && p.catch) p.catch(() => {});
+          } catch {}
+        }}
+        onPointerLeave={() => {
+          const v = ref.current;
+          if (!v) return;
+          try {
+            v.pause();
+            v.currentTime = 0;
+          } catch {}
+          setPlaying(false);
+        }}
+        onError={() => setFailed(true)}
+      />
+    </>
   );
 }

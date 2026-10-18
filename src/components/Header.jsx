@@ -37,11 +37,11 @@ export default function Header() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-end gap-3 px-5 sm:px-8">
+      <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <Link
           href="/"
           aria-label={`${site.name} — home`}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="flex items-center"
         >
           <Image
             src={site.logo}
@@ -60,7 +60,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-2.5 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
+                className={`relative px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
                   active ? "text-white" : "text-silver-2 hover:text-white"
                 }`}
               >
@@ -76,6 +76,9 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] sm:inline-flex">
+            Watch Now
+          </Link>
           <button
             type="button"
             onClick={toggleTheme}

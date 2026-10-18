@@ -176,11 +176,11 @@ export default function Home() {
                 className="card group block h-full w-[280px] shrink-0 overflow-hidden text-left sm:w-[320px]"
               >
                 <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                  {f.teaser ? (
+                  {f.preview || f.teaser ? (
                     <HoverVideo
-                      src={f.teaser}
+                      src={f.preview || f.teaser}
                       poster={f.cover}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   ) : f.cover ? (
                     <Image
