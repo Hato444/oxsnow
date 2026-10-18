@@ -76,9 +76,9 @@ export default function FilmsGrid({ films }) {
               className="card group flex cursor-pointer flex-col overflow-hidden"
             >
               <div className="relative flex h-56 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                {f.teaser ? (
+                {f.preview || f.teaser ? (
                   <HoverVideo
-                    src={f.teaser}
+                    src={f.preview || f.teaser}
                     poster={f.cover}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />

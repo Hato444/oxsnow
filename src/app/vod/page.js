@@ -166,9 +166,9 @@ export default function VodPage() {
                     className="card group w-[220px] shrink-0 overflow-hidden text-left"
                   >
                     <div className="relative h-56 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                      {item.teaser ? (
+                      {item.preview || item.teaser ? (
                         <HoverVideo
-                          src={item.teaser}
+                          src={item.preview || item.teaser}
                           poster={item.cover}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />

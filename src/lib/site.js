@@ -101,8 +101,9 @@ export const films = [
       "A young man trains nonstop after his friend is murdered by a gang leader, then confronts the gangster with violence to avenge his late friend.",
     runtime: "Feature",
     cover: "/posters/konono.jpg",
-    src: "/trailers/Teaser Molamu 1080p.mp4",
-    teaser: "/trailers/Teaser Molamu 1080p.mp4",
+    src: "/teasers/Teaser Molamu 1080p.mp4",
+    teaser: "/teasers/Teaser Molamu 1080p.mp4",
+    preview: "/previews/konono.mp4",
   },
   {
     title: "Lehlaba-phieo",
@@ -115,6 +116,7 @@ export const films = [
     cover: "/posters/lehlaba-phieo.jpg",
     src: "/trailers/TRAILER LEHLABA-PHIEO.mov",
     teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov",
+    preview: "/previews/lehlaba-phieo.mp4",
   },
   {
     title: "Phirimana",
@@ -127,6 +129,7 @@ export const films = [
     cover: "/posters/phirimana.jpg",
     src: "/trailers/phirimana trailer.mp4",
     teaser: "/trailers/phirimana trailer.mp4",
+    preview: "/previews/phirimana.mp4",
   },
   {
     title: "Ho Lekane",
@@ -139,6 +142,7 @@ export const films = [
     cover: "/posters/ho-lekane.jpg",
     src: "/trailers/HO LEKANE Trailer.mp4",
     teaser: "/trailers/HO LEKANE Trailer.mp4",
+    preview: "/previews/ho-lekane.mp4",
   },
 ];
 
@@ -158,10 +162,10 @@ export const vodRows = [
   {
     row: "New Releases",
     items: [
-      { title: "Konono", meta: "Action-Drama - 2024", cover: "/posters/konono.jpg", src: "/trailers/Teaser Molamu 1080p.mp4", teaser: "/trailers/Teaser Molamu 1080p.mp4" },
-      { title: "Lehlaba-phieo", meta: "Tragedy - 2026", cover: "/posters/lehlaba-phieo.jpg", src: "/trailers/TRAILER LEHLABA-PHIEO.mov", teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov" },
-      { title: "Phirimana", meta: "Horror - 2025", cover: "/posters/phirimana.jpg", src: "/trailers/phirimana trailer.mp4", teaser: "/trailers/phirimana trailer.mp4" },
-      { title: "Ho Lekane", meta: "Documentary - 2026", cover: "/posters/ho-lekane.jpg", src: "/trailers/HO LEKANE Trailer.mp4", teaser: "/trailers/HO LEKANE Trailer.mp4" },
+      { title: "Konono", meta: "Action-Drama - 2024", cover: "/posters/konono.jpg", src: "/teasers/Teaser Molamu 1080p.mp4", teaser: "/teasers/Teaser Molamu 1080p.mp4", preview: "/previews/konono.mp4" },
+      { title: "Lehlaba-phieo", meta: "Tragedy - 2026", cover: "/posters/lehlaba-phieo.jpg", src: "/trailers/TRAILER LEHLABA-PHIEO.mov", teaser: "/trailers/TRAILER LEHLABA-PHIEO.mov", preview: "/previews/lehlaba-phieo.mp4" },
+      { title: "Phirimana", meta: "Horror - 2025", cover: "/posters/phirimana.jpg", src: "/trailers/phirimana trailer.mp4", teaser: "/trailers/phirimana trailer.mp4", preview: "/previews/phirimana.mp4" },
+      { title: "Ho Lekane", meta: "Documentary - 2026", cover: "/posters/ho-lekane.jpg", src: "/trailers/HO LEKANE Trailer.mp4", teaser: "/trailers/HO LEKANE Trailer.mp4", preview: "/previews/ho-lekane.mp4" },
     ],
   },
   {
