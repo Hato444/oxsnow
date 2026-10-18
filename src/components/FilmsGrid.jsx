@@ -11,10 +11,12 @@ export default function FilmsGrid({ films }) {
   const [filter, setFilter] = useState("All");
   const { open } = useWatch();
 
-  const shown = useMemo(
-    () => (filter === "All" ? films : films.filter((f) => f.type === filter)),
-    [filter, films],
-  );
+  const shown = useMemo(() => {
+    const list =
+      filter === "All" ? films : films.filter((f) => f.type === filter);
+    // Newest first, oldest last.
+    return [...list].sort((a, b) => Number(b.year) - Number(a.year));
+  }, [filter, films]);
 
   return (
     <div>
@@ -57,6 +59,7 @@ export default function FilmsGrid({ films }) {
                   poster: f.cover,
                   src: f.src,
                   teaser: f.teaser,
+                  movie: f.movie,
                   logline: f.logline,
                 })
               }

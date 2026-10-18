@@ -71,7 +71,7 @@ export default function WatchModal({ item, onClose }) {
               <div ref={playerRef} className="shrink-0 scroll-mt-2">
                 <VideoPlayer
                   key={watchingTeaser ? "teaser" : "film"}
-                  src={watchingTeaser ? item.teaser || item.src : item.src}
+                  src={watchingTeaser ? item.teaser || item.src : item.movie || item.src}
                   poster={item.poster}
                   title={watchingTeaser ? `${item.title} — Official Teaser` : item.title}
                   locked={locked}
@@ -117,13 +117,15 @@ export default function WatchModal({ item, onClose }) {
                       >
                         Rent - M25
                       </button>
-                      <button
-                        type="button"
-                        onClick={watchingTeaser ? stopTeaser : playTeaser}
-                        className="btn btn-ghost"
-                      >
-                        {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
-                      </button>
+                      {(item.teaser || item.src) && (
+                        <button
+                          type="button"
+                          onClick={watchingTeaser ? stopTeaser : playTeaser}
+                          className="btn btn-ghost"
+                        >
+                          {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
+                        </button>
+                      )}
                       <button type="button" className="btn btn-ghost">
                         Add to Watchlist
                       </button>

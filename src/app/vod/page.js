@@ -52,40 +52,50 @@ export default function VodPage() {
         </p>
       </Reveal>
 
-      {/* Player preview */}
+      {/* Featured premiere — hover to preview, click to open */}
       <Reveal delay={0.1}>
-        <div className="card relative mt-14 overflow-hidden">
+        <WatchTrigger
+          item={{
+            title: "Lehlaba-phieo",
+            meta: "Tragedy - 2026",
+            poster: "/posters/lehlaba-phieo.jpg",
+            src: "/trailers/lehlaba-phieo-trailer.mp4",
+            teaser: "/trailers/lehlaba-phieo-trailer.mp4",
+            preview: "/previews/lehlaba-phieo.mp4",
+            movie: null,
+            logline:
+              "Inspired by the story of Abel and Cain, Tokollo deceives his younger brother and leads him into a death zone, taking matters into his own hands and disposing of the body to hide the evidence.",
+          }}
+          className="card group relative mt-14 block overflow-hidden"
+        >
           <div className="relative flex aspect-[16/8] items-center justify-center bg-gradient-to-br from-ink-3 via-black to-ink-2">
-            <Image
-              src="/posters/konono.jpg"
-              alt="Konono"
-              fill
-              sizes="(max-width: 768px) 100vw, 1200px"
-              className="object-cover object-top opacity-70"
+            <HoverVideo
+              src="/previews/lehlaba-phieo.mp4"
+              poster="/posters/lehlaba-phieo.jpg"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             <div
-              className="absolute inset-0"
+              className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.7) 100%), radial-gradient(70% 100% at 20% 0%, rgba(255,69,0,0.18), transparent 55%)",
+                  "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.7) 100%), radial-gradient(70% 100% at 20% 0%, rgba(255,69,0,0.18), transparent 55%)",
               }}
             />
-            <button
-              type="button"
-              aria-label="Play featured title"
-              className="group relative z-10 grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/40 backdrop-blur transition-all hover:border-ember hover:shadow-[0_0_40px_-5px_rgba(255,69,0,0.8)]"
+            <span
+              aria-hidden
+              className="pointer-events-none relative z-10 grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/40 backdrop-blur transition-all group-hover:border-ember group-hover:shadow-[0_0_40px_-5px_rgba(255,69,0,0.8)]"
             >
               <span className="ml-1 block h-0 w-0 border-y-[12px] border-l-[18px] border-y-transparent border-l-silver transition-colors group-hover:border-l-ember" />
-            </button>
-            <div className="absolute bottom-6 left-6 z-10 text-left">
+            </span>
+            <div className="pointer-events-none absolute bottom-6 left-6 z-10 text-left">
               <p className="text-[0.6rem] uppercase tracking-[0.3em] text-ember">
                 Featured Premiere
               </p>
               <p className="mt-1 text-xl font-bold text-white keep-light">
-                Konono — now streaming
+                Lehlaba-Phieo — coming soon
               </p>
             </div>
-            <div className="absolute bottom-6 right-6 z-10 hidden sm:block">
+            <div className="pointer-events-none absolute bottom-6 right-6 z-10 hidden sm:block">
               <span className="rounded-full border border-white/15 bg-black/40 px-4 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                 Secure Player · HD
               </span>
@@ -93,7 +103,7 @@ export default function VodPage() {
             {/* scanning light line */}
             <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ember/60 to-transparent animate-scan" />
           </div>
-        </div>
+        </WatchTrigger>
       </Reveal>
 
       {/* Plans */}
@@ -162,6 +172,7 @@ export default function VodPage() {
                       poster: item.cover,
                       src: item.src,
                       teaser: item.teaser,
+                      movie: item.movie,
                     }}
                     className="card group w-[220px] shrink-0 overflow-hidden text-left"
                   >
