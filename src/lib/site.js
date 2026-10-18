@@ -31,21 +31,21 @@ export const founders = [
     role: "Founder · Director & Lead Filmmaker",
     initials: "LM",
     bio: "A self-taught filmmaker who founded Oxsnow Studio in 2023, turning a relentless love of cinema into Lesotho's most ambitious storytelling house.",
-    photo: null,
+    photo: "/founders/lm.jpg",
   },
   {
     name: "Sello Mokheseng",
     role: "Co-Founder · Production & Partnerships",
     initials: "SM",
     bio: "Drives the studio's productions from script to screen - building crews, scaling the slate and connecting local talent with the wider industry.",
-    photo: null,
+    photo: "/founders/sm.jpg",
   },
   {
     name: "Keletso Hato",
     role: "Co-Founder · Technology & Operations",
     initials: "KH",
     bio: "Shapes the studio's digital backbone - from the VOD platform to the tools that put Basotho stories in front of the world.",
-    photo: null,
+    photo: "/founders/kh.jpg",
   },
 ];
 
