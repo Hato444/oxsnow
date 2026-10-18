@@ -49,7 +49,7 @@ export default function Header() {
             width={1855}
             height={496}
             priority
-            className="h-auto w-[160px] object-contain sm:w-[190px] lg:w-[212px]"
+            className="h-auto w-[160px] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.45)] sm:w-[190px] lg:w-[212px]"
           />
         </Link>
 
