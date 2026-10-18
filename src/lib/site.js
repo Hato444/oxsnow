@@ -99,7 +99,7 @@ export const films = [
   {
     title: "Molamu",
     type: "Documentary",
-    status: "Available",
+    status: "Coming Soon",
     year: "2026",
     logline:
       "A Basotho documentary digging deeper into the importance of molamu in Basotho culture and heritage. It preserves and teaches the uses and benefits of Lebetlela - from our ancient forefathers to our modern elders.",
