@@ -5,7 +5,7 @@ export const site = {
   founded: 2023,
   founders: ["Lehlohonolo Mongangane", "Sello Mokheseng", "Keletso Hato"],
   email: "oxsnowstudio@gmail.com",
-  phone: "+266 5768 0573",
+  phone: "+266 6279 7598",
   location: "Maseru, Lesotho",
   logo: "/brand/oxsnow-logo.png",
 };
