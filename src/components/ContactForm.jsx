@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const interests = ["Production", "Broadcasting", "Schools", "Government", "Sponsorship", "Press"];
 
@@ -8,14 +9,13 @@ const inputClass =
   "mt-2 h-11 w-full rounded-lg border border-white/15 bg-ink px-4 text-sm text-silver outline-none transition-colors placeholder:text-ash focus:border-ember";
 
 export default function ContactForm() {
-  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | handoff
+  const [mailto, setMailto] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
     organisation: "",
     message: "",
-    website: "", // honeypot
   });
   const [selected, setSelected] = useState([]);
 
@@ -24,52 +24,104 @@ export default function ContactForm() {
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    setStatus("sending");
-    setError("");
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, interests: selected }),
-      });
+    const interestLabel = selected.length ? selected.join(", ") : "General";
+    const subject = `[Website] ${interestLabel} inquiry — ${form.name}`;
 
-      const data = await res.json().catch(() => ({}));
+    const body = [
+      "New enquiry from the Oxsnow Studio website",
+      "------------------------------------------",
+      "",
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      `Organisation: ${form.organisation || "—"}`,
+      `Interested in: ${interestLabel}`,
+      "",
+      "Message:",
+      form.message,
+      "",
+      "—",
+      "Oxsnow Studio · Maseru, Lesotho · +266 6279 7598",
+    ].join("\n");
 
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Something went wrong. Please try again.");
-      }
+    const href = `mailto:oxsnowstudio@gmail.com?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
 
-      setStatus("sent");
-      setForm({ name: "", email: "", organisation: "", message: "", website: "" });
-      setSelected([]);
-    } catch (err) {
-      setStatus("error");
-      setError(err.message || "Something went wrong. Please try again.");
-    }
+    setMailto(href);
+    setStatus("handoff");
+    window.location.href = href;
   }
 
-  if (status === "sent") {
+  function reset() {
+    setStatus("idle");
+    setMailto("");
+    setForm({ name: "", email: "", organisation: "", message: "" });
+    setSelected([]);
+  }
+
+  if (status === "handoff") {
     return (
-      <div className="card flex flex-col items-center justify-center gap-4 p-12 text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-ember bg-ember/10">
-          <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7 stroke-ember" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-        </div>
-        <h3 className="text-xl font-black tracking-tight text-white">Message Sent</h3>
-        <p className="max-w-sm text-sm leading-relaxed text-steel">
-          Thanks for reaching out. We read every inquiry and reply within two business days.
-        </p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="mt-2 rounded-full border border-white/15 px-6 py-2.5 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-silver-2 transition-colors hover:border-ember hover:text-white"
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="card relative flex flex-col items-center justify-center gap-5 overflow-hidden p-12 text-center"
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ember to-transparent"
+        />
+
+        <motion.div
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ember bg-ember/10 shadow-[0_0_35px_-8px_rgba(255,69,0,0.9)]"
         >
-          Send Another
-        </button>
-      </div>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            className="h-7 w-7 stroke-ember"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M4 6h16v12H4z" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+        </motion.div>
+
+        <p className="eyebrow !text-ember">Concierge handoff</p>
+        <h3 className="text-2xl font-black tracking-tight text-white">
+          Your message is already written.
+        </h3>
+        <p className="max-w-sm text-sm leading-relaxed text-steel">
+          Your mail app is opening with the enquiry pre-addressed to Oxsnow and
+          ready to go. One tap on <span className="font-semibold text-silver">Send</span> and it&apos;s ours.
+        </p>
+
+        <p className="text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-ash">
+          Pre-addressed · Pre-written · Zero friction
+        </p>
+
+        <div className="mt-1 flex flex-wrap justify-center gap-3">
+          <a href={mailto} className="btn btn-primary">
+            Open Mail App Again
+          </a>
+          <button type="button" onClick={reset} className="btn btn-ghost">
+            Edit Message
+          </button>
+        </div>
+
+        <p className="text-[0.65rem] text-ash">
+          Nothing opened? Use the button above — or write to{" "}
+          <span className="text-silver-2">oxsnowstudio@gmail.com</span>.
+        </p>
+      </motion.div>
     );
   }
 
@@ -143,30 +195,8 @@ export default function ContactForm() {
         />
       </label>
 
-      {/* honeypot — hidden from humans, bots fill it in */}
-      <input
-        type="text"
-        name="website"
-        value={form.website}
-        onChange={set("website")}
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        className="absolute -left-[9999px] h-0 w-0 opacity-0"
-      />
-
-      {status === "error" && (
-        <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">
-          {error}
-        </p>
-      )}
-
-      <button
-        type="submit"
-        disabled={status === "sending"}
-        className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {status === "sending" ? "Sending…" : "Send Inquiry"}
+      <button type="submit" className="btn btn-primary w-full">
+        Send Inquiry
       </button>
       <p className="text-center text-[0.65rem] tracking-wide text-ash">
         We reply within two business days.
