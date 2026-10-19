@@ -8,9 +8,23 @@ export default function HoverVideo({ src, poster, className = "" }) {
   const [armed, setArmed] = useState(false);
   const [failed, setFailed] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [touch, setTouch] = useState(false);
+
+  // Touch devices have no hover — previews auto-play while in view instead.
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
+    const update = () => {
+      const saveData = navigator.connection && navigator.connection.saveData;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setTouch(mq.matches && !saveData && !reduced);
+    };
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
 
   // Warm the clip (buffer it) as soon as the card nears the viewport, so the
-  // first hover plays instantly instead of downloading then.
+  // first hover (or in-view autoplay) starts instantly instead of downloading.
   useEffect(() => {
     const v = ref.current;
     if (!v || !src || failed || armed) return;
@@ -45,6 +59,60 @@ export default function HoverVideo({ src, poster, className = "" }) {
     } catch {}
   }, [armed]);
 
+  // Mobile/tablet: play when mostly visible, pause when scrolled away.
+  useEffect(() => {
+    if (!touch || !armed || failed) return;
+    const v = ref.current;
+    if (!v) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      play(v);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            play(v);
+          } else {
+            pause(v);
+            setPlaying(false);
+          }
+        }
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(v);
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        pause(v);
+        setPlaying(false);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [touch, armed, failed]);
+
+  function play(v) {
+    try {
+      v.muted = true;
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    } catch {}
+  }
+
+  function pause(v) {
+    try {
+      v.pause();
+    } catch {}
+  }
+
   const cover = poster ? (
     <Image
       src={poster}
@@ -73,20 +141,20 @@ export default function HoverVideo({ src, poster, className = "" }) {
         disablePictureInPicture
         onPlaying={() => setPlaying(true)}
         onPointerEnter={(e) => {
-          if (e.pointerType === "touch") return;
+          if (e.pointerType === "touch" || touch) return;
           const v = ref.current;
           if (!v) return;
           try {
             v.currentTime = 0;
-            const p = v.play();
-            if (p && p.catch) p.catch(() => {});
+            play(v);
           } catch {}
         }}
-        onPointerLeave={() => {
+        onPointerLeave={(e) => {
+          if (e.pointerType === "touch" || touch) return;
           const v = ref.current;
           if (!v) return;
           try {
-            v.pause();
+            pause(v);
             v.currentTime = 0;
           } catch {}
           setPlaying(false);

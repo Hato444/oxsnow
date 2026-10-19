@@ -55,11 +55,9 @@ export default function ContactForm() {
     window.location.href = href;
   }
 
-  function reset() {
+  function editMessage() {
+    // keep everything the visitor typed — just go back to the form
     setStatus("idle");
-    setMailto("");
-    setForm({ name: "", email: "", organisation: "", message: "" });
-    setSelected([]);
   }
 
   if (status === "handoff") {
@@ -112,7 +110,7 @@ export default function ContactForm() {
           <a href={mailto} className="btn btn-primary">
             Open Mail App Again
           </a>
-          <button type="button" onClick={reset} className="btn btn-ghost">
+          <button type="button" onClick={editMessage} className="btn btn-ghost">
             Edit Message
           </button>
         </div>
