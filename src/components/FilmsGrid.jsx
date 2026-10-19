@@ -5,11 +5,24 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { filmFilters } from "@/lib/site";
 import { useWatch } from "@/components/watch/WatchProvider";
+import WatchlistButton from "@/components/watch/WatchlistButton";
 import HoverVideo from "@/components/HoverVideo";
 
 export default function FilmsGrid({ films }) {
   const [filter, setFilter] = useState("All");
   const { open } = useWatch();
+
+  const modalItem = (f) => ({
+    title: f.title,
+    meta: `${f.type} - ${f.year} - ${f.runtime}`,
+    poster: f.cover,
+    src: f.src,
+    teaser: f.teaser,
+    movie: f.movie,
+    logline: f.logline,
+    status: f.status,
+    preview: f.preview,
+  });
 
   const shown = useMemo(() => {
     const list =
@@ -52,28 +65,11 @@ export default function FilmsGrid({ films }) {
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
               role="button"
               tabIndex={0}
-              onClick={() =>
-                open({
-                  title: f.title,
-                  meta: `${f.type} - ${f.year} - ${f.runtime}`,
-                  poster: f.cover,
-                  src: f.src,
-                  teaser: f.teaser,
-                  movie: f.movie,
-                  logline: f.logline,
-                })
-              }
+              onClick={() => open(modalItem(f))}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  open({
-                    title: f.title,
-                    meta: `${f.type} - ${f.year} - ${f.runtime}`,
-                    poster: f.cover,
-                    src: f.src,
-                    teaser: f.teaser,
-                    logline: f.logline,
-                  });
+                  open(modalItem(f));
                 }
               }}
               className="card group flex cursor-pointer flex-col overflow-hidden"
@@ -106,9 +102,13 @@ export default function FilmsGrid({ films }) {
                 <span className="relative z-10 ml-4 mb-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
                   {f.status}
                 </span>
-                <span className="absolute right-4 top-4 z-10 text-[0.6rem] uppercase tracking-[0.2em] text-ash">
+                <span className="absolute left-4 top-4 z-10 text-[0.6rem] uppercase tracking-[0.2em] text-ash">
                   {f.year}
                 </span>
+                <WatchlistButton
+                  item={modalItem(f)}
+                  className="absolute right-4 top-4 z-20"
+                />
               </div>
 
               <div className="flex flex-1 flex-col p-5">

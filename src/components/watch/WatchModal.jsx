@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
+import { useWatchlist } from "./WatchlistProvider";
 
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
   const [watchingTeaser, setWatchingTeaser] = useState(false);
+  const { has, toggle } = useWatchlist();
   const locked = !watchingTeaser;
   const infoRef = useRef(null);
   const actionsRef = useRef(null);
@@ -126,8 +128,12 @@ export default function WatchModal({ item, onClose }) {
                           {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
                         </button>
                       )}
-                      <button type="button" className="btn btn-ghost">
-                        Add to Watchlist
+                      <button
+                        type="button"
+                        onClick={() => toggle(item)}
+                        className={`btn ${has(item.title) ? "btn-ghost !border-ember/60 !text-ember" : "btn-ghost"}`}
+                      >
+                        {has(item.title) ? "✓ On Watchlist" : "Add to Watchlist"}
                       </button>
                     </div>
                 </div>

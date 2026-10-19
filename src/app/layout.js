@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EmberBackground from "@/components/EmberBackground";
 import WatchProvider from "@/components/watch/WatchProvider";
+import WatchlistProvider from "@/components/watch/WatchlistProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,10 +51,12 @@ export default function RootLayout({ children }) {
           {`try{if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light')}catch(e){}`}
         </Script>
         <WatchProvider>
-          <EmberBackground />
-          <Header />
-          <main className="relative z-10 flex-1">{children}</main>
-          <Footer />
+          <WatchlistProvider>
+            <EmberBackground />
+            <Header />
+            <main className="relative z-10 flex-1">{children}</main>
+            <Footer />
+          </WatchlistProvider>
         </WatchProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import WatchTrigger from "@/components/watch/WatchTrigger";
+import WatchlistButton from "@/components/watch/WatchlistButton";
 import HoverVideo from "@/components/HoverVideo";
 import { vodRows } from "@/lib/site";
 
@@ -165,17 +166,18 @@ export default function VodPage() {
             <div className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
               {group.items.map((item, i) => (
                 <Reveal key={item.title} delay={i * 0.05} className="snap-start">
-                  <WatchTrigger
-                    item={{
-                      title: item.title,
-                      meta: item.meta,
-                      poster: item.cover,
-                      src: item.src,
-                      teaser: item.teaser,
-                      movie: item.movie,
-                    }}
-                    className="card group w-[220px] shrink-0 overflow-hidden text-left"
-                  >
+                    <WatchTrigger
+                      item={{
+                        title: item.title,
+                        meta: item.meta,
+                        poster: item.cover,
+                        src: item.src,
+                        teaser: item.teaser,
+                        movie: item.movie,
+                        preview: item.preview,
+                      }}
+                      className="card group relative w-[220px] shrink-0 overflow-hidden text-left"
+                    >
                     <div className="relative h-56 overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
                       {item.preview || item.teaser ? (
                         <HoverVideo
@@ -205,10 +207,18 @@ export default function VodPage() {
                           </span>
                         </>
                       )}
-                      <span className="absolute inset-0 grid place-items-center opacity-0 transition-opacity group-hover:opacity-100">
-                        <span className="grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/50 backdrop-blur">
-                          <span className="ml-0.5 block h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent border-l-ember" />
-                        </span>
+                      <span className="absolute right-3 top-3 z-20">
+                        <WatchlistButton
+                          item={{
+                            title: item.title,
+                            meta: item.meta,
+                            poster: item.cover,
+                            src: item.src,
+                            teaser: item.teaser,
+                            movie: item.movie,
+                            preview: item.preview,
+                          }}
+                        />
                       </span>
                     </div>
                     <div className="p-4">

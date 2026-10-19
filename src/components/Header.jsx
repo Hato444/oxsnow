@@ -5,11 +5,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav, site } from "@/lib/site";
+import { useWatchlist } from "@/components/watch/WatchlistProvider";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { count } = useWatchlist();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -79,6 +81,34 @@ export default function Header() {
           <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] sm:inline-flex">
             Watch Now
           </Link>
+          <Link
+            href="/watchlist"
+            aria-label={`My watchlist (${count} saved)`}
+            title="My watchlist"
+            className={`relative grid h-10 w-10 place-items-center rounded-md border transition-colors ${
+              pathname === "/watchlist"
+                ? "border-ember text-ember"
+                : "border-white/15 text-silver hover:border-ember hover:text-ember"
+            }`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill={count > 0 ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+            </svg>
+            {count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-ember px-1 text-[0.6rem] font-black leading-[18px] text-ink shadow-[0_0_12px_-2px_rgba(255,69,0,0.9)]">
+                {count > 9 ? "9+" : count}
+              </span>
+            )}
+          </Link>
           <button
             type="button"
             onClick={toggleTheme}
@@ -140,6 +170,19 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/watchlist"
+            className={`flex items-center justify-between border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
+              pathname === "/watchlist" ? "text-ember" : "text-silver-2"
+            }`}
+          >
+            Watchlist
+            {count > 0 && (
+              <span className="grid min-w-[22px] place-items-center rounded-full bg-ember px-1.5 text-[0.65rem] font-black leading-[22px] text-ink">
+                {count}
+              </span>
+            )}
+          </Link>
           <Link href="/vod" className="btn btn-primary mt-4 w-full">
             Watch Now
           </Link>
