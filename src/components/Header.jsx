@@ -82,6 +82,29 @@ export default function Header() {
             Watch Now
           </Link>
           <Link
+            href="/community"
+            aria-label="Community"
+            title="Community"
+            className={`grid h-10 w-10 place-items-center rounded-md border transition-colors ${
+              pathname === "/community"
+                ? "border-ember text-ember"
+                : "border-white/15 text-silver hover:border-ember hover:text-ember"
+            }`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z" />
+            </svg>
+          </Link>
+          <Link
             href="/watchlist"
             aria-label={`My watchlist (${count} saved)`}
             title="My watchlist"

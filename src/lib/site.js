@@ -18,6 +18,7 @@ export const nav = [
   { label: "About", href: "/about" },
   { label: "Films", href: "/films" },
   { label: "VOD", href: "/vod" },
+  { label: "Community", href: "/community" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
