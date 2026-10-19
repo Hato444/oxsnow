@@ -78,7 +78,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] sm:inline-flex">
+          <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] xl:inline-flex">
             Watch Now
           </Link>
           <Link

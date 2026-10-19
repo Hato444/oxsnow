@@ -104,6 +104,16 @@ export default function CommunityPage() {
   }, [load]);
 
   const uid = useMemo(() => (typeof window === "undefined" ? "anon" : getUid()), []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      if (lightbox) setLightbox(null);
+      else if (menuFor) setMenuFor(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox, menuFor]);
   const published = posts.filter((p) => p.published);
   const drafts = posts.filter((p) => !p.published);
 
@@ -409,6 +419,10 @@ export default function CommunityPage() {
           </div>
         </aside>
       </div>
+
+      {menuFor && (
+        <div className="fixed inset-0 z-20" onClick={() => setMenuFor(null)} />
+      )}
 
       {lightbox && (
         <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/90 p-4 backdrop-blur" onClick={() => setLightbox(null)}>
