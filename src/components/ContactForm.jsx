@@ -95,7 +95,7 @@ export default function ContactForm() {
           </svg>
         </motion.div>
 
-        <p className="eyebrow !text-ember">Concierge handoff</p>
+        <p className="eyebrow !text-ember">The Oxsnow Line</p>
         <h3 className="text-2xl font-black tracking-tight text-white">
           Your message is already written.
         </h3>
