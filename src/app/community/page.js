@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { posters } from "@/lib/site";
 import {
   getAllPosts,
@@ -286,8 +287,8 @@ export default function CommunityPage() {
           <article key={post.id} className="card overflow-hidden">
             <header className="flex items-start justify-between gap-4 p-5 pb-3">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-ember/40 bg-gradient-to-br from-ink-2 to-black text-sm font-black text-ember">
-                  O
+                <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border border-ember/40 bg-ink-2">
+                  <Image src="/brand/SM LOGO.jpeg" alt="Oxsnow Studio" fill sizes="44px" className="object-cover" />
                 </span>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
