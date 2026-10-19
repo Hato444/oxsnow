@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { posters } from "@/lib/site";
 import {
   getAllPosts,
   getMedia,
@@ -256,7 +258,8 @@ export default function CommunityPage() {
         />
       )}
 
-      <div className="mt-10 space-y-6">
+      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="space-y-6">
         {loading && (
           <div className="card animate-pulse p-8 text-sm text-ash">Loading the channel…</div>
         )}
@@ -308,11 +311,7 @@ export default function CommunityPage() {
               )}
             </header>
 
-            {post.text && (
-              <p className="whitespace-pre-wrap px-5 pb-4 text-sm leading-relaxed text-silver-2 [overflow-wrap:anywhere]">
-                {post.text}
-              </p>
-            )}
+            {post.text && <PostText text={post.text} />}
 
             {post.media && post.media.length > 0 && (
               <div className={`grid gap-1 bg-black ${post.media.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
@@ -366,6 +365,49 @@ export default function CommunityPage() {
             )}
           </article>
         ))}
+        </div>
+
+        <aside className="hidden space-y-4 lg:block">
+          <div className="card p-5">
+            <p className="eyebrow !text-ember">From the slate</p>
+            <div className="mt-4 space-y-3">
+              {posters.slice(0, 3).map((p) => (
+                <Link key={p.title} href={p.href} className="group flex items-center gap-3">
+                  <span className="relative h-14 w-11 shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
+                    <img src={p.src} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-bold text-white group-hover:text-ember">{p.title}</span>
+                    <span className="text-[0.6rem] uppercase tracking-[0.16em] text-ash">{p.year}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <Link href="/films" className="mt-5 block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-ember hover:text-white">
+              Explore all films →
+            </Link>
+          </div>
+
+          <div className="card p-5">
+            <p className="eyebrow !text-ember">The storefront</p>
+            <p className="mt-3 text-sm leading-relaxed text-steel">
+              Rent current releases or open the full archive with the Cultural Pass.
+            </p>
+            <Link href="/vod" className="btn btn-primary mt-4 w-full !py-2.5 !text-[0.7rem]">
+              Enter VOD
+            </Link>
+          </div>
+
+          <div className="card p-5">
+            <p className="eyebrow !text-ember">Work with us</p>
+            <p className="mt-3 text-sm leading-relaxed text-steel">
+              Broadcasters, schools, funders and future filmmakers — the door is open.
+            </p>
+            <Link href="/contact" className="mt-4 block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-silver-2 hover:text-white">
+              Start a conversation →
+            </Link>
+          </div>
+        </aside>
       </div>
 
       {lightbox && (
@@ -375,6 +417,32 @@ export default function CommunityPage() {
         </div>
       )}
     </section>
+  );
+}
+
+function PostText({ text }) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > 320;
+
+  return (
+    <div className="px-5 pb-4">
+      <p
+        className={`whitespace-pre-wrap text-sm leading-relaxed text-silver-2 [overflow-wrap:anywhere] ${
+          long && !open ? "line-clamp-4" : ""
+        }`}
+      >
+        {text}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-ember hover:text-white"
+        >
+          {open ? "Show less" : "Read more"}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -455,6 +523,8 @@ function Comments({ post, uid, admin, onAdd, onDelete }) {
 function Composer({ editing, onClose, onSaved }) {
   const [text, setText] = useState(editing?.text || "");
   const [pinned, setPinned] = useState(Boolean(editing?.pinned));
+  const [author, setAuthor] = useState(editing?.author || "Oxsnow Studio");
+  const [role, setRole] = useState(editing?.role || "Official Studio Channel");
   const [existing, setExisting] = useState(editing?.media || []);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -505,8 +575,8 @@ function Composer({ editing, onClose, onSaved }) {
         media,
         pinned,
         published,
-        author: "Oxsnow Studio",
-        role: "Official Studio Channel",
+        author: author.trim() || "Oxsnow Studio",
+        role: role.trim() || "Official Studio Channel",
         createdAt: editing?.createdAt || Date.now(),
         updatedAt: Date.now(),
         likedBy: editing?.likedBy || [],
@@ -526,6 +596,25 @@ function Composer({ editing, onClose, onSaved }) {
       <div className="flex items-center justify-between gap-3">
         <p className="eyebrow !text-ember">{editing ? "Edit post" : "New post"}</p>
         <button type="button" onClick={onClose} className="text-ash hover:text-white">✕</button>
+      </div>
+
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        <input
+          type="text"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          placeholder="Author name"
+          maxLength={40}
+          className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
+        />
+        <input
+          type="text"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          placeholder="Role / title"
+          maxLength={60}
+          className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
+        />
       </div>
 
       <textarea
