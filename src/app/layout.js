@@ -50,14 +50,14 @@ export default function RootLayout({ children }) {
         <Script id="theme-init" strategy="beforeInteractive">
           {`try{if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light')}catch(e){}`}
         </Script>
-        <WatchProvider>
-          <WatchlistProvider>
+        <WatchlistProvider>
+          <WatchProvider>
             <EmberBackground />
             <Header />
             <main className="relative z-10 flex-1">{children}</main>
             <Footer />
-          </WatchlistProvider>
-        </WatchProvider>
+          </WatchProvider>
+        </WatchlistProvider>
       </body>
     </html>
   );
