@@ -1,8 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import Reveal from "@/components/Reveal";
-import WatchTrigger from "@/components/watch/WatchTrigger";
-import HoverVideo from "@/components/HoverVideo";
+import FeaturedRail from "@/components/FeaturedRail";
 import { films, pillars, site, stats, values } from "@/lib/site";
 
 export default function Home() {
@@ -160,65 +158,8 @@ export default function Home() {
           </Reveal>
         </div>
 
-        {/* Horizontal scroll rail */}
-        <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:thin]">
-          {featured.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.05} className="snap-start">
-              <WatchTrigger
-                item={{
-                  title: f.title,
-                  meta: `${f.type} - ${f.year}`,
-                  poster: f.cover,
-                  src: f.src,
-                  teaser: f.teaser,
-                  logline: f.logline,
-                }}
-                className="card group block h-full w-[280px] shrink-0 overflow-hidden text-left sm:w-[320px]"
-              >
-                <div className="relative flex h-48 items-end overflow-hidden bg-gradient-to-br from-ink-3 via-ink-2 to-black">
-                  {f.preview || f.teaser ? (
-                    <HoverVideo
-                      src={f.preview || f.teaser}
-                      poster={f.cover}
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                  ) : f.cover ? (
-                    <Image
-                      src={f.cover}
-                      alt={f.title}
-                      fill
-                      sizes="320px"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0 opacity-60"
-                      style={{
-                        background:
-                          "radial-gradient(120% 90% at 15% 0%, rgba(255,69,0,0.22), transparent 55%), radial-gradient(90% 80% at 100% 120%, rgba(192,192,192,0.10), transparent 60%)",
-                      }}
-                    />
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/85 to-transparent" />
-                  <span className="relative z-10 ml-4 mb-4 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-silver keep-light backdrop-blur">
-                    {f.status}
-                  </span>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-base font-bold text-white transition-colors group-hover:text-ember">
-                    {f.title}
-                  </h3>
-                  <p className="mt-1 text-[0.7rem] uppercase tracking-[0.18em] text-ember">
-                    {f.type} - {f.year}
-                  </p>
-                  <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-steel">
-                    {f.logline}
-                  </p>
-                </div>
-              </WatchTrigger>
-            </Reveal>
-          ))}
-        </div>
+        {/* Cinematic rail */}
+        <FeaturedRail films={featured} />
       </section>
 
       {/* ============================ VALUES ============================ */}
