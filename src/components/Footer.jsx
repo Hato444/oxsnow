@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { nav, site } from "@/lib/site";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(""); // "" | "busy" | "joined" | "error"
-  const year = new Date().getFullYear();
+  const [year, setYear] = useState("");
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   async function subscribe(e) {
     e.preventDefault();
