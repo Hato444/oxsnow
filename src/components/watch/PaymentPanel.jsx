@@ -38,6 +38,7 @@ const METHODS = [
     logo: "/brand/payments/mpesa.jpg",
     hint: "Lesotho",
     available: true,
+    fullBadge: true,
   },
   {
     id: "ecocash",
@@ -255,24 +256,43 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
                       : "border-white/12 bg-white/[0.02] hover:border-white/30"
                   } ${!m.available && !active ? "opacity-75" : ""}`}
                 >
-                  <span className="grid h-[38px] w-[92px] shrink-0 place-items-center overflow-hidden rounded-md bg-white p-1.5">
-                    <img
-                      src={m.logo}
-                      alt=""
-                      className="max-h-full max-w-full object-contain"
-                      draggable={false}
-                    />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-xs font-semibold text-silver-2">{m.name}</span>
-                    <span
-                      className={`block text-[0.55rem] uppercase tracking-[0.16em] ${
-                        active ? "text-ember" : "text-ash"
-                      }`}
-                    >
-                      {m.hint}
-                    </span>
-                  </span>
+                  {m.fullBadge ? (
+                    <>
+                      <span
+                        className="grid h-[38px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-md"
+                        style={{ backgroundColor: "#B40001" }}
+                      >
+                        <img
+                          src={m.logo}
+                          alt=""
+                          className="h-full w-full object-contain"
+                          draggable={false}
+                        />
+                      </span>
+                      <span className="min-w-0 flex-1" />
+                    </>
+                  ) : (
+                    <>
+                      <span className="grid h-[38px] w-[92px] shrink-0 place-items-center overflow-hidden rounded-md bg-white p-1.5">
+                        <img
+                          src={m.logo}
+                          alt=""
+                          className="max-h-full max-w-full object-contain"
+                          draggable={false}
+                        />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-xs font-semibold text-silver-2">{m.name}</span>
+                        <span
+                          className={`block text-[0.55rem] uppercase tracking-[0.16em] ${
+                            active ? "text-ember" : "text-ash"
+                          }`}
+                        >
+                          {m.hint}
+                        </span>
+                      </span>
+                    </>
+                  )}
                   <span
                     aria-hidden="true"
                     className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border text-[0.55rem] transition-colors duration-200 ${
