@@ -61,7 +61,7 @@ export default function WatchModal({ item, onClose }) {
             aria-label="Close"
             className="absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-black/60 text-silver keep-light backdrop-blur transition-colors hover:border-ember hover:text-ember sm:right-6 sm:top-6"
           >
-            âœ•
+            ✕
           </button>
 
           <motion.div
@@ -77,7 +77,7 @@ export default function WatchModal({ item, onClose }) {
                   key={watchingTeaser ? "teaser" : "film"}
                   src={watchingTeaser ? item.teaser || item.src : item.movie || item.src}
                   poster={item.poster}
-                  title={watchingTeaser ? `${item.title} â€” Official Teaser` : item.title}
+                  title={watchingTeaser ? `${item.title} — Official Teaser` : item.title}
                   locked={locked}
                   autoPlay={watchingTeaser}
                   onLocked={revealActions}
@@ -136,7 +136,7 @@ export default function WatchModal({ item, onClose }) {
                         onClick={() => toggle(item)}
                         className={`btn ${has(item.title) ? "btn-ghost !border-ember/60 !text-ember" : "btn-ghost"}`}
                       >
-                        {has(item.title) ? "âœ“ On Watchlist" : "Add to Watchlist"}
+                        {has(item.title) ? "✓ On Watchlist" : "Add to Watchlist"}
                       </button>
                     </div>
                 </div>
