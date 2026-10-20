@@ -250,27 +250,24 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
                   aria-checked={active}
                   aria-label={`${m.name}${m.available ? "" : " (coming soon)"}`}
                   onClick={() => !pending && setMethod(m.id)}
-                  className={`group flex h-[76px] items-center gap-2.5 rounded-xl border px-3 text-left transition-[border-color,background-color] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ember ${
+                  className={`group flex h-[84px] items-center gap-2.5 rounded-xl border px-3 text-left transition-[border-color,background-color] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ember ${
                     active
                       ? "border-ember/80 bg-ember/8"
                       : "border-white/12 bg-white/[0.02] hover:border-white/30"
                   } ${!m.available && !active ? "opacity-75" : ""}`}
                 >
                   {m.fullBadge ? (
-                    <>
-                      <span
-                        className="grid h-[38px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-md"
-                        style={{ backgroundColor: "#B40001" }}
-                      >
-                        <img
-                          src={m.logo}
-                          alt=""
-                          className="h-full w-full object-contain"
-                          draggable={false}
-                        />
-                      </span>
-                      <span className="min-w-0 flex-1" />
-                    </>
+                    <span
+                      className="grid h-[48px] min-w-0 flex-1 place-items-center overflow-hidden rounded-md"
+                      style={{ backgroundColor: "#B40001" }}
+                    >
+                      <img
+                        src={m.logo}
+                        alt=""
+                        className="h-full w-full object-contain"
+                        draggable={false}
+                      />
+                    </span>
                   ) : (
                     <>
                       <span className="grid h-[38px] w-[92px] shrink-0 place-items-center overflow-hidden rounded-md bg-white p-1.5">
