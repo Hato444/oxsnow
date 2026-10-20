@@ -35,9 +35,9 @@ const METHODS = [
   {
     id: "mpesa",
     name: "M-PESA",
-    logo: "/brand/payments/mpesa.jpg",
+    logo: "/brand/payments/mpesa.png",
     available: true,
-    badgeBg: "#E70101",
+    badgeBg: "#FFFFFF",
   },
   {
     id: "ecocash",
@@ -256,7 +256,7 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
                   } ${!m.available && !active ? "opacity-75" : ""}`}
                 >
                   <span
-                    className="grid h-[48px] min-w-0 flex-1 place-items-center overflow-hidden rounded-md"
+                    className="grid h-[64px] min-w-0 flex-1 place-items-center overflow-hidden rounded-md"
                     style={{ backgroundColor: m.badgeBg }}
                   >
                     <img
