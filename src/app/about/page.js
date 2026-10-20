@@ -197,7 +197,7 @@ export default function AboutPage() {
             <Reveal>
               <div className="h-full rounded-2xl border border-white/10 bg-ink-3 p-8">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-ash">
-                  The Problem
+                  The Challenges
                 </h3>
                 <ul className="mt-6 space-y-4">
                   {about.problem.map((p) => (
@@ -225,9 +225,12 @@ export default function AboutPage() {
                   </h3>
                   <ul className="mt-6 space-y-4">
                     {about.solutions.map((s) => (
-                      <li key={s} className="flex gap-3 text-sm leading-relaxed text-silver-2">
+                      <li key={s.title} className="flex gap-3 text-sm leading-relaxed text-silver-2">
                         <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-ember" />
-                        {s}
+                        <span>
+                          <strong className="font-bold text-white">{s.title}:</strong>{" "}
+                          {s.copy}
+                        </span>
                       </li>
                     ))}
                   </ul>

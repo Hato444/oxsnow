@@ -59,16 +59,28 @@ export const about = {
   mission:
     "To craft the art of storytelling with culturally rooted stories and tales through high cinematic innovation.",
   problem: [
-    "A lack of film sector activity where filmmakers, actors and actresses can express their talents.",
-    "A high unemployment rate in Lesotho.",
-    "Our archived tales, books and Basotho history going overlooked.",
-    "A huge gap created by an ineffective film industry in Lesotho.",
+    "Limited opportunities for filmmakers and performers to develop and showcase their talent.",
+    "High unemployment and limited career pathways in Lesotho\u2019s creative sector.",
+    "Underrepresentation and loss of Basotho heritage, stories, and historical knowledge.",
+    "An underdeveloped film industry with limited infrastructure, investment, and institutional support.",
   ],
   solutions: [
-    "Giving creative filmmakers nationwide a sense of belonging - producing multiple films where they can contribute and apply their skills.",
-    "Producing multiple feature films that enable skill training and job creation, allowing the community to make a living from filmmaking.",
-    "Documenting and preserving Basotho history through a cinematic experience for the younger, upcoming generation.",
-    "Contribution, participation and investment that can shift the industry towards success - linking local services, talent development and global tourism.",
+    {
+      title: "Talent Development",
+      copy: "Empower local filmmakers and performers through collaborative productions and professional skills development.",
+    },
+    {
+      title: "Job Creation",
+      copy: "Produce feature films that create employment, build industry skills, and generate sustainable livelihoods.",
+    },
+    {
+      title: "Cultural Preservation",
+      copy: "Document and preserve Basotho heritage, history, and stories through cinematic storytelling.",
+    },
+    {
+      title: "Industry Growth",
+      copy: "Attract investment, strengthen local production networks, and promote Lesotho\u2019s creative economy and cultural tourism.",
+    },
   ],
 };
 

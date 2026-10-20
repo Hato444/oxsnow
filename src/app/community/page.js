@@ -1,23 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { posters } from "@/lib/site";
-import {
-  getAllPosts,
-  getMedia,
-  putMedia,
-  putPost,
-  removeMedia,
-  removePost,
-  seedIfEmpty,
-} from "@/lib/communityStore";
 
-const ADMIN_KEY = process.env.NEXT_PUBLIC_COMMUNITY_ADMIN_KEY || "oxsnow2026";
 const UID_KEY = "oxsnow-community-uid";
 const NAME_KEY = "oxsnow-community-name";
-const ADMIN_SESSION = "oxsnow-community-admin";
+const EMAIL_KEY = "oxsnow-community-email";
 
 function getUid() {
   try {
@@ -48,44 +38,33 @@ function timeLabel(ts) {
   }
 }
 
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...opts,
+    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+  });
+  const data = await res.json().catch(() => ({ ok: false }));
+  if (!res.ok || !data.ok) throw new Error(data.error || "Request failed");
+  return data;
+}
+
 export default function CommunityPage() {
   const [posts, setPosts] = useState([]);
-  const [urls, setUrls] = useState({});
   const [loading, setLoading] = useState(true);
-  const [admin, setAdmin] = useState(false);
-  const [composer, setComposer] = useState(null); // null | { editing?: post }
+  const [founder, setFounder] = useState(false);
+  const [composer, setComposer] = useState(null);
   const [openComments, setOpenComments] = useState({});
   const [lightbox, setLightbox] = useState(null);
   const [menuFor, setMenuFor] = useState(null);
-  const blobUrls = useRef([]);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      await seedIfEmpty();
-      const all = await getAllPosts();
-      all.sort(
-        (a, b) =>
-          Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) ||
-          b.createdAt - a.createdAt
-      );
-      setPosts(all);
-
-      const map = {};
-      for (const post of all) {
-        for (const m of post.media || []) {
-          if (m.url) {
-            map[m.url] = m.url;
-          } else if (m.mediaId) {
-            const blob = await getMedia(m.mediaId);
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              blobUrls.current.push(url);
-              map[m.mediaId] = url;
-            }
-          }
-        }
-      }
-      setUrls(map);
+      const deviceId = getUid();
+      const data = await api(`/api/community?device=${encodeURIComponent(deviceId)}`);
+      setPosts(data.posts);
+      setFounder(data.founder);
     } catch (err) {
       console.error("[community] load failed", err);
     } finally {
@@ -94,116 +73,109 @@ export default function CommunityPage() {
   }, []);
 
   useEffect(() => {
-    try {
-      setAdmin(sessionStorage.getItem(ADMIN_SESSION) === "1");
-    } catch {}
-    load();
-    return () => {
-      blobUrls.current.forEach((u) => URL.revokeObjectURL(u));
-      blobUrls.current = [];
-    };
+    // defer so setState inside load() never runs synchronously in the effect
+    const t = setTimeout(load, 0);
+    return () => clearTimeout(t);
   }, [load]);
-
-  const uid = useMemo(() => (typeof window === "undefined" ? "anon" : getUid()), []);
 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key !== "Escape") return;
       if (lightbox) setLightbox(null);
       else if (menuFor) setMenuFor(null);
+      else if (loginOpen) setLoginOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [lightbox, menuFor]);
+  }, [lightbox, menuFor, loginOpen]);
+
   const published = posts.filter((p) => p.published);
   const drafts = posts.filter((p) => !p.published);
 
-  const srcOf = (m) => (m.url ? urls[m.url] || m.url : urls[m.mediaId] || "");
-
-  function unlock() {
-    const key = window.prompt("Enter the Oxsnow admin key");
-    if (key === null) return;
-    if (key === ADMIN_KEY) {
-      try {
-        sessionStorage.setItem(ADMIN_SESSION, "1");
-      } catch {}
-      setAdmin(true);
-    } else {
-      window.alert("Incorrect admin key.");
-    }
+  async function handleLogin(password) {
+    await api("/api/auth/login", { method: "POST", body: { password } });
+    setLoginOpen(false);
+    await load();
   }
 
-  function lock() {
-    try {
-      sessionStorage.removeItem(ADMIN_SESSION);
-    } catch {}
-    setAdmin(false);
+  async function logout() {
+    await api("/api/auth/logout", { method: "POST" });
+    setFounder(false);
     setComposer(null);
+    await load();
   }
 
   async function toggleLike(post) {
-    const liked = (post.likedBy || []).includes(uid);
-    const next = {
-      ...post,
-      likedBy: liked
-        ? post.likedBy.filter((x) => x !== uid)
-        : [...(post.likedBy || []), uid],
-    };
-    setPosts((ps) => ps.map((p) => (p.id === post.id ? next : p)));
-    await putPost(next);
+    // optimistic
+    const prevLiked = post.liked;
+    const prevCount = post.likeCount;
+    setPosts((ps) =>
+      ps.map((p) =>
+        p.id === post.id
+          ? { ...p, liked: !prevLiked, likeCount: prevCount + (prevLiked ? -1 : 1) }
+          : p
+      )
+    );
+    try {
+      const data = await api(`/api/community/${post.id}/like`, {
+        method: "POST",
+        body: { deviceId: getUid() },
+      });
+      setPosts((ps) =>
+        ps.map((p) => (p.id === post.id ? { ...p, liked: data.liked, likeCount: data.likeCount } : p))
+      );
+    } catch (err) {
+      console.error("[community] like failed", err);
+      // rollback
+      setPosts((ps) =>
+        ps.map((p) => (p.id === post.id ? { ...p, liked: prevLiked, likeCount: prevCount } : p))
+      );
+    }
   }
 
-  async function submitComment(post, name, text) {
-    const clean = text.trim().slice(0, 500);
-    if (!clean) return false;
-    const next = {
-      ...post,
-      comments: [
-        ...(post.comments || []),
-        {
-          id: `c-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          uid,
-          name: name.trim().slice(0, 40) || "Community member",
-          text: clean,
-          createdAt: Date.now(),
-        },
-      ],
-    };
-    setPosts((ps) => ps.map((p) => (p.id === post.id ? next : p)));
-    await putPost(next);
+  async function submitComment(post, name, email, text) {
+    const data = await api(`/api/community/${post.id}/comments`, {
+      method: "POST",
+      body: { name, email, text, deviceId: getUid() },
+    });
+    setPosts((ps) =>
+      ps.map((p) =>
+        p.id === post.id ? { ...p, comments: [...p.comments, data.comment] } : p
+      )
+    );
     return true;
   }
 
   async function deleteComment(post, comment) {
-    if (!admin && comment.uid !== uid) return;
     if (!window.confirm("Delete this comment?")) return;
-    const next = {
-      ...post,
-      comments: (post.comments || []).filter((c) => c.id !== comment.id),
-    };
-    setPosts((ps) => ps.map((p) => (p.id === post.id ? next : p)));
-    await putPost(next);
+    try {
+      await api(`/api/community/comments/${comment.id}?device=${encodeURIComponent(getUid())}`, {
+        method: "DELETE",
+      });
+      setPosts((ps) =>
+        ps.map((p) =>
+          p.id === post.id ? { ...p, comments: p.comments.filter((c) => c.id !== comment.id) } : p
+        )
+      );
+    } catch (err) {
+      console.error("[community] delete comment failed", err);
+    }
   }
 
   async function togglePin(post) {
-    const next = { ...post, pinned: !post.pinned };
-    setPosts((ps) => ps.map((p) => (p.id === post.id ? next : p)));
-    await putPost(next);
+    await api(`/api/community/${post.id}`, { method: "PUT", body: { pinned: !post.pinned } });
+    await load();
   }
 
   async function togglePublish(post) {
-    const next = { ...post, published: !post.published };
-    setPosts((ps) => ps.map((p) => (p.id === post.id ? next : p)));
-    await putPost(next);
+    await api(`/api/community/${post.id}`, { method: "PUT", body: { published: !post.published } });
+    await load();
   }
 
   async function deletePost(post) {
     if (!window.confirm("Delete this post permanently?")) return;
     setPosts((ps) => ps.filter((p) => p.id !== post.id));
-    for (const m of post.media || []) {
-      if (m.mediaId) await removeMedia(m.mediaId);
-    }
-    await removePost(post.id);
+    await api(`/api/community/${post.id}`, { method: "DELETE" });
   }
 
   return (
@@ -223,24 +195,24 @@ export default function CommunityPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {admin ? (
+          {founder ? (
             <>
               <button type="button" onClick={() => setComposer({})} className="btn btn-primary !py-2.5 !text-[0.7rem]">
                 New Post
               </button>
-              <button type="button" onClick={lock} className="rounded-full border border-white/15 px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-steel hover:border-ember hover:text-white">
+              <button type="button" onClick={logout} className="rounded-full border border-white/15 px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-steel hover:border-ember hover:text-white">
                 Lock Admin
               </button>
             </>
           ) : (
-            <button type="button" onClick={unlock} className="rounded-full border border-white/12 px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-ash hover:border-ember hover:text-white">
+            <button type="button" onClick={() => setLoginOpen(true)} className="rounded-full border border-white/12 px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-ash hover:border-ember hover:text-white">
               Admin
             </button>
           )}
         </div>
       </div>
 
-      {admin && drafts.length > 0 && (
+      {founder && drafts.length > 0 && (
         <div className="card mt-8 p-5">
           <p className="eyebrow !text-ember">Drafts &amp; unpublished</p>
           <div className="mt-3 space-y-2">
@@ -256,6 +228,13 @@ export default function CommunityPage() {
             ))}
           </div>
         </div>
+      )}
+
+      {loginOpen && (
+        <LoginModal
+          onClose={() => setLoginOpen(false)}
+          onSuccess={handleLogin}
+        />
       )}
 
       {composer && (
@@ -305,7 +284,7 @@ export default function CommunityPage() {
                 </div>
               </div>
 
-              {admin && (
+              {founder && (
                 <div className="relative">
                   <button type="button" onClick={() => setMenuFor(menuFor === post.id ? null : post.id)} aria-label="Post actions" className="grid h-8 w-8 place-items-center rounded-md border border-white/10 text-silver-2 hover:border-ember hover:text-white">
                     ⋯
@@ -327,13 +306,12 @@ export default function CommunityPage() {
             {post.media && post.media.length > 0 && (
               <div className={`grid gap-1 bg-black ${post.media.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {post.media.map((m, i) => {
-                  const src = srcOf(m);
-                  if (!src) return null;
+                  if (!m.url) return null;
                   if (m.type === "video") {
                     return (
                       <video
                         key={i}
-                        src={src}
+                        src={m.url}
                         controls
                         playsInline
                         preload="metadata"
@@ -342,8 +320,8 @@ export default function CommunityPage() {
                     );
                   }
                   return (
-                    <button key={i} type="button" onClick={() => setLightbox(src)} className="group relative block aspect-video overflow-hidden bg-black">
-                      <img src={src} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+                    <button key={i} type="button" onClick={() => setLightbox(m.url)} className="group relative block aspect-video overflow-hidden bg-black">
+                      <img src={m.url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
                     </button>
                   );
                 })}
@@ -351,11 +329,11 @@ export default function CommunityPage() {
             )}
 
             <div className="flex items-center gap-6 border-t border-white/10 px-5 py-3">
-              <button type="button" onClick={() => toggleLike(post)} className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors ${(post.likedBy || []).includes(uid) ? "text-ember" : "text-steel hover:text-white"}`}>
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill={(post.likedBy || []).includes(uid) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden>
+              <button type="button" onClick={() => toggleLike(post)} className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors ${post.liked ? "text-ember" : "text-steel hover:text-white"}`}>
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill={post.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden>
                   <path d="M12 21s-7-4.5-9.5-8.5C.5 9 2 5.5 5.5 5.5c2 0 3.5 1.5 4.5 3 1-1.5 2.5-3 4.5-3C18 5.5 19.5 9 18 12.5 17 14.5 12 21 12 21z" />
                 </svg>
-                {(post.likedBy || []).length}
+                {post.likeCount}
               </button>
               <button type="button" onClick={() => setOpenComments((o) => ({ ...o, [post.id]: !o[post.id] }))} className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-steel hover:text-white">
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -368,8 +346,8 @@ export default function CommunityPage() {
             {openComments[post.id] && (
               <Comments
                 post={post}
-                uid={uid}
-                admin={admin}
+                uid={getUid()}
+                founder={founder}
                 onAdd={submitComment}
                 onDelete={deleteComment}
               />
@@ -461,27 +439,88 @@ function PostText({ text }) {
   );
 }
 
-function Comments({ post, uid, admin, onAdd, onDelete }) {
-  const [name, setName] = useState("");
-  const [text, setText] = useState("");
+function LoginModal({ onClose, onSuccess }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
+  async function submit(e) {
+    e.preventDefault();
+    if (busy || !password) return;
+    setBusy(true);
+    setError("");
     try {
-      setName(localStorage.getItem(NAME_KEY) || "");
+      await onSuccess(password);
+      onClose();
+    } catch (err) {
+      setError(err.message || "Incorrect password.");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur" onClick={onClose}>
+      <div className="card w-full max-w-sm p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <p className="eyebrow !text-ember">Founder Access</p>
+          <button type="button" onClick={onClose} className="text-ash hover:text-white">✕</button>
+        </div>
+        <p className="mt-3 text-sm text-steel">Enter the founder password to manage the channel.</p>
+        <form onSubmit={submit} className="mt-4 space-y-3">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            autoFocus
+            className="h-10 w-full rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
+          />
+          {error && <p className="text-xs font-semibold text-red-300">{error}</p>}
+          <button type="submit" disabled={busy || !password} className="btn btn-primary w-full disabled:opacity-60">
+            {busy ? "Checking…" : "Unlock"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Comments({ post, uid, founder, onAdd, onDelete }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const initializedRef = useRef(false);
+
+  function ensurePrefilled() {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+    try {
+      const savedName = localStorage.getItem(NAME_KEY) || "";
+      const savedEmail = localStorage.getItem(EMAIL_KEY) || "";
+      if (savedName) setName(savedName);
+      if (savedEmail) setEmail(savedEmail);
     } catch {}
-  }, []);
+  }
 
   async function submit(e) {
     e.preventDefault();
     if (!text.trim() || busy) return;
     setBusy(true);
+    setError("");
     try {
-      localStorage.setItem(NAME_KEY, name.trim());
-    } catch {}
-    const ok = await onAdd(post, name, text);
-    if (ok) setText("");
-    setBusy(false);
+      try {
+        localStorage.setItem(NAME_KEY, name.trim());
+        localStorage.setItem(EMAIL_KEY, email.trim());
+      } catch {}
+      await onAdd(post, name, email, text);
+      setText("");
+    } catch (err) {
+      setError(err.message || "Could not post comment.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -495,11 +534,14 @@ function Comments({ post, uid, admin, onAdd, onDelete }) {
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-silver">
                 {c.name}
+                {c.email && (
+                  <span className="ml-2 font-normal text-ash">· {c.email}</span>
+                )}
                 <span className="ml-2 font-normal text-ash">{timeLabel(c.createdAt)}</span>
               </p>
               <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-silver-2 [overflow-wrap:anywhere]">{c.text}</p>
             </div>
-            {(admin || c.uid === uid) && (
+            {(founder || c.deviceId === uid) && (
               <button type="button" onClick={() => onDelete(post, c)} aria-label="Delete comment" className="text-ash hover:text-red-300">✕</button>
             )}
           </div>
@@ -509,7 +551,7 @@ function Comments({ post, uid, admin, onAdd, onDelete }) {
         )}
       </div>
 
-      <form onSubmit={submit} className="mt-4 grid gap-2 sm:grid-cols-[140px_1fr_auto]">
+      <form onSubmit={submit} onFocus={ensurePrefilled} className="mt-4 grid gap-2 sm:grid-cols-2">
         <input
           type="text"
           value={name}
@@ -519,20 +561,62 @@ function Comments({ post, uid, admin, onAdd, onDelete }) {
           className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
         />
         <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email (optional)"
+          maxLength={120}
+          className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
+        />
+        <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Write a comment…"
           maxLength={500}
           required
-          className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember"
+          className="h-10 rounded-lg border border-white/12 bg-ink px-3 text-sm text-silver outline-none placeholder:text-ash focus:border-ember sm:col-span-2"
         />
-        <button type="submit" disabled={busy} className="btn btn-primary !py-2 disabled:opacity-60">
+        {error && <p className="text-xs font-semibold text-red-300 sm:col-span-2">{error}</p>}
+        <button type="submit" disabled={busy} className="btn btn-primary !py-2 disabled:opacity-60 sm:col-span-2 sm:w-fit">
           {busy ? "Posting…" : "Comment"}
         </button>
       </form>
     </div>
   );
+}
+
+function compressImage(file) {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith("image/")) return resolve(file);
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1920;
+      let { width, height } = img;
+      if (width > MAX || height > MAX) {
+        const scale = MAX / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name, { type: "image/jpeg" }) : file),
+        "image/jpeg",
+        0.82
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(file);
+    };
+    img.src = url;
+  });
 }
 
 function Composer({ editing, onClose, onSaved }) {
@@ -546,12 +630,19 @@ function Composer({ editing, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef(null);
+  const previewsRef = useRef([]);
 
   useEffect(() => {
-    const next = files.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
-    setPreviews(next);
-    return () => next.forEach((p) => URL.revokeObjectURL(p.url));
-  }, [files]);
+    return () => previewsRef.current.forEach((p) => URL.revokeObjectURL(p.url));
+  }, []);
+
+  function updateFiles(next) {
+    previewsRef.current.forEach((p) => URL.revokeObjectURL(p.url));
+    const nextPreviews = next.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
+    previewsRef.current = nextPreviews;
+    setFiles(next);
+    setPreviews(nextPreviews);
+  }
 
   function onFiles(e) {
     const picked = Array.from(e.target.files || []).slice(0, 6);
@@ -565,8 +656,18 @@ function Composer({ editing, onClose, onSaved }) {
     } else {
       setError("");
     }
-    setFiles((prev) => [...prev, ...valid].slice(0, 6));
+    updateFiles([...files, ...valid].slice(0, 6));
     if (fileRef.current) fileRef.current.value = "";
+  }
+
+  async function uploadFile(file) {
+    const toUpload = file.type.startsWith("image/") ? await compressImage(file) : file;
+    const fd = new FormData();
+    fd.append("file", toUpload);
+    const res = await fetch("/api/community/upload", { method: "POST", body: fd });
+    const data = await res.json().catch(() => ({ ok: false }));
+    if (!res.ok || !data.ok) throw new Error(data.error || "Upload failed");
+    return data.media;
   }
 
   async function save(published) {
@@ -580,28 +681,26 @@ function Composer({ editing, onClose, onSaved }) {
     try {
       const media = [...existing];
       for (const file of files) {
-        const id = (crypto.randomUUID && crypto.randomUUID()) || `m-${Date.now()}-${Math.random()}`;
-        await putMedia(id, file);
-        media.push({ type: file.type.startsWith("video/") ? "video" : "image", mediaId: id });
+        const m = await uploadFile(file);
+        media.push(m);
       }
-      const post = {
-        id: editing?.id || ((crypto.randomUUID && crypto.randomUUID()) || `p-${Date.now()}`),
-        text: text.trim(),
-        media,
-        pinned,
-        published,
-        author: author.trim() || "Oxsnow Studio",
-        role: role.trim() || "Official Studio Channel",
-        createdAt: editing?.createdAt || Date.now(),
-        updatedAt: Date.now(),
-        likedBy: editing?.likedBy || [],
-        comments: editing?.comments || [],
-      };
-      await putPost(post);
+      await api("/api/community", {
+        method: "POST",
+        body: {
+          id: editing?.id,
+          updating: Boolean(editing?.id),
+          text: text.trim(),
+          media,
+          pinned,
+          published,
+          author: author.trim() || "Oxsnow Studio",
+          role: role.trim() || "Official Studio Channel",
+        },
+      });
       await onSaved();
     } catch (err) {
       console.error("[community] save failed", err);
-      setError("Could not save the post. Please try again.");
+      setError(err.message || "Could not save the post. Please try again.");
       setBusy(false);
     }
   }
@@ -661,7 +760,7 @@ function Composer({ editing, onClose, onSaved }) {
               ) : (
                 <img src={p.url} alt="" className="h-full w-full object-cover" />
               )}
-              <button type="button" onClick={() => setFiles((fs) => fs.filter((_, j) => j !== i))} className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-black/70 text-xs text-silver">✕</button>
+              <button type="button" onClick={() => updateFiles(files.filter((_, j) => j !== i))} className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-black/70 text-xs text-silver">✕</button>
             </div>
           ))}
         </div>
@@ -676,7 +775,7 @@ function Composer({ editing, onClose, onSaved }) {
           <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} className="accent-ember" />
           Pin to top
         </label>
-        <span className="ml-auto text-[0.6rem] uppercase tracking-[0.16em] text-ash">Up to 6 files · 60 MB each</span>
+        <span className="ml-auto text-[0.6rem] uppercase tracking-[0.16em] text-ash">Up to 6 files · 4 MB each</span>
       </div>
 
       {error && (
