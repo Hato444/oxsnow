@@ -67,6 +67,36 @@ CREATE TABLE IF NOT EXISTS newsletter (
   created_at BIGINT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS orders (
+  id TEXT PRIMARY KEY,
+  movie_id TEXT NOT NULL,
+  user_key TEXT DEFAULT '',
+  amount_minor INTEGER NOT NULL,
+  currency TEXT NOT NULL DEFAULT 'LSL',
+  status TEXT NOT NULL DEFAULT 'pending',
+  phone TEXT DEFAULT '',
+  provider TEXT DEFAULT 'mpesa',
+  provider_ref TEXT DEFAULT '',
+  created_at BIGINT NOT NULL,
+  expires_at BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS entitlements (
+  user_key TEXT NOT NULL,
+  movie_id TEXT NOT NULL,
+  order_id TEXT NOT NULL,
+  paid_at BIGINT NOT NULL,
+  PRIMARY KEY (user_key, movie_id)
+);
+
+CREATE TABLE IF NOT EXISTS payment_audit (
+  id BIGSERIAL PRIMARY KEY,
+  order_id TEXT NOT NULL,
+  event TEXT NOT NULL,
+  detail TEXT DEFAULT '',
+  created_at BIGINT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_likes_post ON likes(post_id);
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
 CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
