@@ -62,6 +62,11 @@ CREATE TABLE IF NOT EXISTS meta (
   value TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS newsletter (
+  email TEXT PRIMARY KEY,
+  created_at BIGINT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_likes_post ON likes(post_id);
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
 CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);

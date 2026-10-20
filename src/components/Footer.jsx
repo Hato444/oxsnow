@@ -1,15 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { nav, site } from "@/lib/site";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const [year, setYear] = useState("");
+  const [status, setStatus] = useState(""); // "" | "busy" | "joined" | "error"
+  const year = new Date().getFullYear();
 
-  useEffect(() => setYear(new Date().getFullYear()), []);
+  async function subscribe(e) {
+    e.preventDefault();
+    if (status === "busy") return;
+    setStatus("busy");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({ ok: false }));
+      if (!res.ok || !data.ok) throw new Error(data.error || "Failed");
+      setStatus("joined");
+      setEmail("");
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
     <footer className="relative z-10 mt-24 border-t border-white/10 bg-ink-2/60">
@@ -23,12 +40,8 @@ export default function Footer() {
             </h3>
           </div>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              setEmail("");
-            }}
-            className="flex w-full max-w-md items-center gap-2"
+            onSubmit={subscribe}
+            className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-center"
           >
             <input
               type="email"
@@ -36,11 +49,15 @@ export default function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              disabled={status === "joined"}
               className="h-12 w-full rounded-full border border-white/15 bg-ink px-5 text-sm text-silver outline-none transition-colors placeholder:text-ash focus:border-ember"
             />
-            <button type="submit" className="btn btn-primary h-12 shrink-0">
-              {sent ? "Joined" : "Join"}
+            <button type="submit" disabled={status === "busy" || status === "joined"} className="btn btn-primary h-12 shrink-0 disabled:opacity-60">
+              {status === "busy" ? "Joining…" : status === "joined" ? "Joined ✓" : status === "error" ? "Retry" : "Join"}
             </button>
+            {status === "error" && (
+              <span className="text-xs font-semibold text-red-300 sm:sr-only">Failed — try again</span>
+            )}
           </form>
         </div>
       </div>
