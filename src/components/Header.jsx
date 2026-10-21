@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { nav, navPrimary, navSecondary, site } from "@/lib/site";
+import { nav, navContact, navPrimary, navSecondary, site } from "@/lib/site";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
 import { LANGS } from "@/lib/i18n";
 import { useLang } from "@/components/lang/LangProvider";
@@ -257,6 +257,23 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          {/* Contact — 6th item, closing the row next to Studio */}
+          <Link
+            href={navContact.href}
+            className={`relative ml-0.5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
+              pathname === navContact.href
+                ? "text-white"
+                : "text-silver-2 hover:text-white"
+            }`}
+          >
+            {t(navContact.label)}
+            <span
+              className={`absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-ember to-transparent transition-opacity ${
+                pathname === navContact.href ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-3">

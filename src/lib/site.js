@@ -34,10 +34,14 @@ export const navExtra = [
 ];
 
 // Desktop top bar splits into a short primary row + a "Studio" dropdown so
-// the bar never overflows at lg widths. Footer/mobile stay flat (all items).
+// the bar never overflows at lg widths. Contact sits top-level after Studio
+// (contact reads last in any nav). Footer/mobile stay flat (all items).
 const PRIMARY_HREFS = ["/", "/films", "/vod", "/events"];
 export const navPrimary = nav.filter((i) => PRIMARY_HREFS.includes(i.href));
-export const navSecondary = nav.filter((i) => !PRIMARY_HREFS.includes(i.href));
+export const navContact = nav.find((i) => i.href === "/contact");
+export const navSecondary = nav.filter(
+  (i) => !PRIMARY_HREFS.includes(i.href) && i.href !== "/contact"
+);
 
 export const vision =
   "To industrialize the origin and authenticity of Basotho culture and heritage across storytelling, artistry and creative spaces worldwide.";
