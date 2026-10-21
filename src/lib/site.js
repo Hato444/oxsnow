@@ -15,12 +15,22 @@ const demoTrailer =
 
 export const nav = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
   { label: "Films", href: "/films" },
   { label: "VOD", href: "/vod" },
+  { label: "Events", href: "/events" },
+  { label: "Services", href: "/services" },
+  { label: "Academy", href: "/academy" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+// Extra destinations surfaced in the footer + mobile menu only — the top bar
+// keeps community/gallery as icon shortcuts so the nav never overflows.
+export const navExtra = [
   { label: "Community", href: "/community" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { label: "Watchlist", href: "/watchlist" },
+  { label: "My Account", href: "/account" },
 ];
 
 export const vision =
@@ -247,3 +257,193 @@ export const stats = [
   { value: "24+", label: "Titles in Slate" },
   { value: "3", label: "Founders" },
 ];
+
+/* ============================ EVENTS ============================ */
+
+export const events = [
+  {
+    id: "molamu-premiere",
+    title: "Molamu — National Premiere",
+    type: "Premiere",
+    status: "upcoming",
+    date: "2026-12-05",
+    time: "18:00",
+    venue: "Ster-Kinekor, Maseru Mall",
+    city: "Maseru",
+    online: false,
+    price: "M120",
+    seats: "Limited — 180 seats",
+    copy:
+      "The world premiere of Molamu, our documentary on Lebetlela and the place of the molamu in Basotho heritage. Red carpet, Q&A with the directors, and a live molamu demonstration after the screening.",
+    cta: "Reserve a Seat",
+  },
+  {
+    id: "academy-intake-1",
+    title: "Academy — Intake I Applications",
+    type: "Academy",
+    status: "upcoming",
+    date: "2026-11-14",
+    time: "23:59",
+    venue: "Online",
+    city: "Lesotho-wide",
+    online: true,
+    price: "Free to apply",
+    seats: "24 places",
+    copy:
+      "Applications open for the first Oxsnow Academy intake — a 12-week hands-on pipeline in directing, camera, sound and post. Train on a real production slate, earn a real credit.",
+    cta: "Apply Now",
+  },
+  {
+    id: "community-screening-maseru",
+    title: "Community Screening — Maseru",
+    type: "Screening",
+    status: "upcoming",
+    date: "2026-11-22",
+    time: "16:00",
+    venue: "Letšeng Hall",
+    city: "Maseru",
+    online: false,
+    price: "Free",
+    seats: "Open seating",
+    copy:
+      "An open-air afternoon of short films from the Oxsnow slate — Ho Lekane, Phirimana and Konono on a big screen, with the crews in the crowd. Bring the family.",
+    cta: "Register Free",
+  },
+  {
+    id: "molamu-community-tour",
+    title: "Molamu Highlands Tour",
+    type: "Screening",
+    status: "upcoming",
+    date: "2027-01-17",
+    time: "14:00",
+    venue: "District screenings — Teyateyaneng, Hlotse, Mohale's Hoek",
+    city: "Across Lesotho",
+    online: false,
+    price: "Free",
+    seats: "Community venues",
+    copy:
+      "Taking Molamu back to the elders and villages it was filmed among — three district screenings with transport home for cast, crew and community contributors.",
+    cta: "Follow the Tour",
+  },
+];
+
+export const pastEvents = [
+  {
+    title: "Sesotho Story Lab — Workshop 03",
+    date: "2026-09-12",
+    venue: "Oxsnow Studio, Maseru",
+    copy: "A weekend lab on archival documentary craft — rights, elders' consent, and preserving tape.",
+  },
+  {
+    title: "Lehlaba-phieo — Friends & Family Screening",
+    date: "2026-08-02",
+    venue: "Private screening, Maseru",
+    copy: "First audience for the Abel-and-Cain retelling, with cast and crew Q&A.",
+  },
+  {
+    title: "Oxsnow at Lesotho Fashion & Film Week",
+    date: "2026-06-20",
+    venue: "Maseru",
+    copy: "Studio showcase — slate presentation to broadcasters, sponsors and government partners.",
+  },
+];
+
+/* ============================ SERVICES ============================ */
+
+export const services = [
+  {
+    id: "commercial",
+    tag: "B2B",
+    title: "Commercial Production",
+    copy:
+      "End-to-end commercial film — concept, crew, shoot, post and delivery. TVCs, brand films, NGO campaigns and government communications shot in Lesotho to international standard.",
+    includes: [
+      "Creative development & scripting",
+      "Full crew, camera & lighting package",
+      "Direction, production & on-set management",
+      "Edit, colour, sound design & mastering",
+      "Delivery in every format broadcasters ask for",
+    ],
+  },
+  {
+    id: "broadcast",
+    tag: "Library",
+    title: "Broadcasting & Licensing",
+    copy:
+      "License the Oxsnow library — features, documentaries and archival footage — for broadcast, festivals, education and cultural institutions across Africa and the diaspora.",
+    includes: [
+      "Broadcast & VOD rights licensing",
+      "Archival footage licensing",
+      "Festival & theatrical booking support",
+      "Co-production & distribution deals",
+      "IP & ownership rights administration",
+    ],
+  },
+  {
+    id: "education",
+    tag: "Schools",
+    title: "Educational Packages",
+    copy:
+      "Basotho history and heritage on screen, packaged for schools and universities — films plus study guides, classroom licences and visiting-crew workshops.",
+    includes: [
+      "Classroom screening licences",
+      "Study guides aligned to the curriculum",
+      "Student workshop visits",
+      "Bulk institutional pricing",
+      "Sesotho & English materials",
+    ],
+  },
+  {
+    id: "studio",
+    tag: "Facility",
+    title: "Studio Services",
+    copy:
+      "Hire the machinery of Oxsnow — equipment, post facilities and experienced local crew — for your own productions, wherever you shoot in the Kingdom.",
+    includes: [
+      "Camera, grip & lighting hire",
+      "Editing & colour grading suites",
+      "Sound recordists & boom operators",
+      "Fixers, drivers & location scouting",
+      "Production accounting & logistics",
+    ],
+  },
+];
+
+/* ============================ ACADEMY ============================ */
+
+export const academy = {
+  eyebrow: "The Oxsnow Academy",
+  headline: "Learn the craft. Earn the credit.",
+  intro:
+    "The Academy is not a classroom — it's a pipeline. Trainees work live productions from day one, mentored by the crews making the Oxsnow slate. When you finish, you leave with a real credit on a real film.",
+  duration: "12 weeks",
+  intake: "24 places per intake",
+  cost: "Free for the first intake — sponsored placements",
+  tracks: [
+    {
+      id: "direction",
+      title: "Directing & Story",
+      copy: "Script, shot list, block, direct. Run a set and make actors do the impossible twice.",
+    },
+    {
+      id: "camera",
+      title: "Camera & Lighting",
+      copy: "Sensor to screen — exposure, composition, movement, and lighting for black steel and fire.",
+    },
+    {
+      id: "sound",
+      title: "Sound & Post",
+      copy: "Location sound, boom craft, edit, colour and mix — the half of cinema audiences feel but never see.",
+    },
+    {
+      id: "producing",
+      title: "Producing & Production",
+      copy: "Budgets, schedules, crews, permissions — the industrial side of industrialising stories.",
+    },
+  ],
+  steps: [
+    { step: "01", title: "Apply", copy: "Submit the form — no degree, no gear, no experience required. Hunger is the entry fee." },
+    { step: "02", title: "Train", copy: "Twelve weeks across four tracks, taught on live Oxsnow productions." },
+    { step: "03", title: "Ship", copy: "Leave with a screen credit on a released Oxsnow film and a place in the crew roster." },
+  ],
+};

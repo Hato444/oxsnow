@@ -97,9 +97,31 @@ CREATE TABLE IF NOT EXISTS payment_audit (
   created_at BIGINT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS academy_applications (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT DEFAULT '',
+  district TEXT DEFAULT '',
+  track TEXT DEFAULT '',
+  why TEXT DEFAULT '',
+  status TEXT DEFAULT 'new',
+  created_at BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT DEFAULT '',
+  password_hash TEXT NOT NULL,
+  created_at BIGINT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_likes_post ON likes(post_id);
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
 CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_academy_created ON academy_applications(created_at DESC);
 `;
 
 const SEEDS = [
