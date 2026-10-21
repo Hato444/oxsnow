@@ -9,11 +9,63 @@ import { useWatchlist } from "@/components/watch/WatchlistProvider";
 import { LANGS } from "@/lib/i18n";
 import { useLang } from "@/components/lang/LangProvider";
 
+// 16px inline icons for the utility menu — drawn to sit on the text baseline
+const svgBase = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": true,
+};
+const MENU_ICONS = {
+  community: (
+    <svg {...svgBase} className="h-4 w-4 shrink-0">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3 19.5c0-3.2 2.7-5 6-5s6 1.8 6 5" />
+      <path d="M16.2 5.6a3 3 0 0 1 0 5.4" />
+      <path d="M17.6 14.9c1.9.8 3.4 2.4 3.4 4.6" />
+    </svg>
+  ),
+  gallery: (
+    <svg {...svgBase} className="h-4 w-4 shrink-0">
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <circle cx="8.5" cy="10" r="1.6" />
+      <path d="M4.5 17.5l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5" />
+    </svg>
+  ),
+  watchlist: (
+    <svg {...svgBase} className="h-4 w-4 shrink-0">
+      <path d="M2.5 12S6 6.2 12 6.2 21.5 12 21.5 12 18 17.8 12 17.8 2.5 12 2.5 12z" />
+      <circle cx="12" cy="12" r="2.6" />
+    </svg>
+  ),
+  account: (
+    <svg {...svgBase} className="h-4 w-4 shrink-0">
+      <circle cx="12" cy="8.2" r="3.6" />
+      <path d="M4.8 20c0-3.9 3.3-6.1 7.2-6.1s7.2 2.2 7.2 6.1" />
+    </svg>
+  ),
+  moon: (
+    <svg {...svgBase} className="h-3.5 w-3.5 shrink-0">
+      <path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a7 7 0 0 0 10 10z" />
+    </svg>
+  ),
+  sun: (
+    <svg {...svgBase} className="h-3.5 w-3.5 shrink-0">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1 1M17.4 17.4l1 1M5.6 18.4l1-1M17.4 6.6l1-1" />
+    </svg>
+  ),
+};
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
   const [utilOpen, setUtilOpen] = useState(false);
+  const [light, setLight] = useState(false);
   const pathname = usePathname();
   const { count } = useWatchlist();
   const { lang, setLang, t } = useLang();
@@ -25,6 +77,15 @@ export default function Header() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // sync the theme toggle with the DOM after mount (deferred — no setState in effect body)
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setLight(document.documentElement.classList.contains("light")),
+      0
+    );
+    return () => clearTimeout(timer);
   }, []);
 
   // close every menu on navigation (deferred — no setState in the effect body)
@@ -50,13 +111,12 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [studioOpen, utilOpen]);
 
-  const toggleTheme = () => {
-    const el = document.documentElement;
-    const next = !el.classList.contains("light");
-    el.classList.toggle("light", next);
+  const applyTheme = (nextLight) => {
+    document.documentElement.classList.toggle("light", nextLight);
     try {
-      localStorage.setItem("theme", next ? "light" : "dark");
+      localStorage.setItem("theme", nextLight ? "light" : "dark");
     } catch {}
+    setLight(nextLight);
   };
 
   return (
@@ -279,24 +339,25 @@ export default function Header() {
                     Browse
                   </p>
                   {[
-                    { label: t("Community"), href: "/community" },
-                    { label: t("Gallery"), href: "/gallery" },
-                    { label: t("Watchlist"), href: "/watchlist", badge: count },
-                    { label: t("My Account"), href: "/account" },
+                    { label: t("Community"), href: "/community", icon: MENU_ICONS.community },
+                    { label: t("Gallery"), href: "/gallery", icon: MENU_ICONS.gallery },
+                    { label: t("Watchlist"), href: "/watchlist", icon: MENU_ICONS.watchlist, badge: count },
+                    { label: t("My Account"), href: "/account", icon: MENU_ICONS.account },
                   ].map((entry) => (
                     <Link
                       key={entry.href}
                       href={entry.href}
                       role="menuitem"
                       onClick={() => setUtilOpen(false)}
-                      className={`group flex items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
+                      className={`group flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
                         pathname === entry.href
                           ? "bg-white/6 text-white"
                           : "text-silver-2 hover:bg-white/6 hover:text-ember"
                       }`}
                     >
+                      {entry.icon}
                       {entry.label}
-                      <span className="flex items-center gap-2">
+                      <span className="ml-auto flex items-center gap-2">
                         {entry.badge > 0 && (
                           <span className="grid min-w-[20px] place-items-center rounded-full bg-ember px-1.5 text-[0.6rem] font-black leading-[20px] text-ink">
                             {entry.badge > 9 ? "9+" : entry.badge}
@@ -312,17 +373,40 @@ export default function Header() {
                     </Link>
                   ))}
                   <div className="mx-3.5 my-1.5 h-px bg-white/8" />
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={toggleTheme}
-                    className="group flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-silver-2 transition-colors hover:bg-white/6 hover:text-ember"
-                  >
-                    {t("Theme")}
-                    <span aria-hidden className="text-ember opacity-0 transition-all duration-200 group-hover:opacity-100">
-                      →
+                  <div className="flex items-center justify-between px-3.5 py-2.5">
+                    <span className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-silver-2">
+                      {light ? MENU_ICONS.sun : MENU_ICONS.moon}
+                      {t("Theme")}
                     </span>
-                  </button>
+                    <div
+                      role="group"
+                      aria-label={t("Theme")}
+                      className="flex items-center rounded-full border border-white/15 p-0.5"
+                    >
+                      <button
+                        type="button"
+                        aria-label="Dark"
+                        aria-pressed={!light}
+                        onClick={() => applyTheme(false)}
+                        className={`grid h-6 w-6 place-items-center rounded-full transition-colors ${
+                          !light ? "bg-ember text-ink" : "text-ash hover:text-silver"
+                        }`}
+                      >
+                        {MENU_ICONS.moon}
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Light"
+                        aria-pressed={light}
+                        onClick={() => applyTheme(true)}
+                        className={`grid h-6 w-6 place-items-center rounded-full transition-colors ${
+                          light ? "bg-ember text-ink" : "text-ash hover:text-silver"
+                        }`}
+                      >
+                        {MENU_ICONS.sun}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
