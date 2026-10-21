@@ -2,8 +2,44 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { nav, navExtra, site } from "@/lib/site";
+import { nav, navExtra, site, socials } from "@/lib/site";
 import { useLang } from "@/components/lang/LangProvider";
+
+const socialSvg = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.8,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": true,
+};
+const SOCIAL_ICONS = {
+  TikTok: (
+    <svg {...socialSvg} className="h-[18px] w-[18px]">
+      <path d="M13.5 3.5v10.8a3.7 3.7 0 1 1-3.2-3.7" />
+      <path d="M13.5 3.5c.5 2.6 2.3 4.2 5 4.5" />
+    </svg>
+  ),
+  Instagram: (
+    <svg {...socialSvg} className="h-[18px] w-[18px]">
+      <rect x="3" y="3" width="18" height="18" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  Facebook: (
+    <svg {...socialSvg} className="h-[18px] w-[18px]">
+      <path d="M13.8 21v-8h2.7l.5-3.2h-3.2V7.7c0-.9.3-1.6 1.7-1.6h1.6V3.3c-.6-.1-1.6-.2-2.7-.2-2.7 0-4.5 1.6-4.5 4.5v2.2H7.5V13h2.4v8z" />
+    </svg>
+  ),
+  YouTube: (
+    <svg {...socialSvg} className="h-[18px] w-[18px]">
+      <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+      <path d="M10.4 9.4l4.8 2.6-4.8 2.6z" />
+    </svg>
+  ),
+};
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -89,6 +125,21 @@ export default function Footer() {
             {site.mission} A Lesotho-based umbrella studio founded in {site.founded}
             &nbsp;— industrializing authentic Basotho culture and heritage.
           </p>
+          <div className="mt-6 flex items-center gap-2.5">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                title={s.label}
+                className="grid h-9 w-9 place-items-center rounded-md border border-white/15 text-silver transition-colors hover:border-ember hover:text-ember"
+              >
+                {SOCIAL_ICONS[s.label]}
+              </a>
+            ))}
+          </div>
         </div>
 
         <div>

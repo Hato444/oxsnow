@@ -10,6 +10,14 @@ export const site = {
   logo: "/brand/oxsnow-logo.png",
 };
 
+// Official Oxsnow Studio profiles — swap the hrefs if the handles change.
+export const socials = [
+  { label: "TikTok", href: "https://www.tiktok.com/@oxsnowstudio" },
+  { label: "Instagram", href: "https://www.instagram.com/oxsnowstudio" },
+  { label: "Facebook", href: "https://www.facebook.com/oxsnowstudio" },
+  { label: "YouTube", href: "https://www.youtube.com/@oxsnowstudio" },
+];
+
 const demoTrailer =
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 
