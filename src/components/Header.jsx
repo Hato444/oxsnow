@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { nav, navContact, navPrimary, navSecondary, site } from "@/lib/site";
+import { navContact, navPrimary, navSecondary, site } from "@/lib/site";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
 import { LANGS } from "@/lib/i18n";
 import { useLang } from "@/components/lang/LangProvider";
@@ -65,6 +65,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
   const [utilOpen, setUtilOpen] = useState(false);
+  const [mobileStudio, setMobileStudio] = useState(false);
   const [light, setLight] = useState(false);
   const pathname = usePathname();
   const { count } = useWatchlist();
@@ -94,9 +95,20 @@ export default function Header() {
       setOpen(false);
       setStudioOpen(false);
       setUtilOpen(false);
+      setMobileStudio(false);
     }, 0);
     return () => clearTimeout(timer);
   }, [pathname]);
+
+  // tap outside closes the utility menu (hover alone never fires on phones)
+  useEffect(() => {
+    if (!utilOpen) return;
+    const onPointer = (e) => {
+      if (utilRef.current && !utilRef.current.contains(e.target)) setUtilOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointer);
+    return () => document.removeEventListener("pointerdown", onPointer);
+  }, [utilOpen]);
 
   // Escape closes any open dropdown from anywhere
   useEffect(() => {
@@ -304,10 +316,10 @@ export default function Header() {
             {t("Watch Now")}
           </Link>
 
-          {/* Utility menu — one control for community/gallery/watchlist/account/theme */}
+          {/* Utility menu — community/gallery/watchlist/account/theme, on phone too */}
           <div
             ref={utilRef}
-            className="relative hidden sm:block"
+            className="relative"
             onMouseEnter={() => setUtilOpen(true)}
             onMouseLeave={() => setUtilOpen(false)}
           >
@@ -463,7 +475,7 @@ export default function Header() {
         }`}
       >
         <div className="flex flex-col px-5 py-4">
-          {nav.map((item) => (
+          {[...navPrimary, navContact].map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -474,43 +486,49 @@ export default function Header() {
               {t(item.label)}
             </Link>
           ))}
-          <Link
-            href="/community"
-            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
-              pathname === "/community" ? "text-ember" : "text-silver-2"
-            }`}
-          >
-            {t("Community")}
-          </Link>
-          <Link
-            href="/gallery"
-            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
-              pathname === "/gallery" ? "text-ember" : "text-silver-2"
-            }`}
-          >
-            {t("Gallery")}
-          </Link>
-          <Link
-            href="/watchlist"
+
+          {/* Studio — nested so the phone list stays short */}
+          <button
+            type="button"
+            aria-expanded={mobileStudio}
+            onClick={() => setMobileStudio((v) => !v)}
             className={`flex items-center justify-between border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
-              pathname === "/watchlist" ? "text-ember" : "text-silver-2"
+              navSecondary.some((i) => pathname === i.href) || mobileStudio
+                ? "text-ember"
+                : "text-silver-2"
             }`}
           >
-            {t("Watchlist")}
-            {count > 0 && (
-              <span className="grid min-w-[22px] place-items-center rounded-full bg-ember px-1.5 text-[0.65rem] font-black leading-[22px] text-ink">
-                {count}
-              </span>
-            )}
-          </Link>
-          <Link
-            href="/account"
-            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
-              pathname === "/account" ? "text-ember" : "text-silver-2"
-            }`}
-          >
-            {t("My Account")}
-          </Link>
+            {t("Studio")}
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden
+              className={`h-4 w-4 transition-transform duration-300 ${
+                mobileStudio ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          {mobileStudio &&
+            navSecondary.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-2 border-b border-white/5 py-2.5 pl-4 text-[0.8rem] font-semibold uppercase tracking-[0.18em] ${
+                  pathname === item.href ? "text-ember" : "text-silver-2"
+                }`}
+              >
+                <span aria-hidden className="text-ember/70">
+                  —
+                </span>
+                {t(item.label)}
+              </Link>
+            ))}
           <div
             role="group"
             aria-label="Language / Mokhoa oa polelo"
