@@ -21,14 +21,14 @@ export const nav = [
   { label: "Services", href: "/services" },
   { label: "Academy", href: "/academy" },
   { label: "About", href: "/about" },
+  { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
 
 // Extra destinations surfaced in the footer + mobile menu only — the top bar
-// keeps community/gallery as icon shortcuts so the nav never overflows.
+// keeps community/watchlist as icon shortcuts so the nav never overflows.
 export const navExtra = [
   { label: "Community", href: "/community" },
-  { label: "Gallery", href: "/gallery" },
   { label: "Watchlist", href: "/watchlist" },
   { label: "My Account", href: "/account" },
 ];

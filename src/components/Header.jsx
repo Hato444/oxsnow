@@ -348,7 +348,7 @@ export default function Header() {
               onClick={() => setUtilOpen((v) => !v)}
               className={`relative grid h-10 w-10 place-items-center rounded-md border transition-colors ${
                 utilOpen ||
-                ["/community", "/gallery", "/watchlist", "/account"].includes(pathname)
+                ["/community", "/watchlist", "/account"].includes(pathname)
                   ? "border-ember text-ember"
                   : "border-white/15 text-silver hover:border-ember hover:text-ember"
               }`}
@@ -386,7 +386,6 @@ export default function Header() {
                   </p>
                   {[
                     { label: t("Community"), href: "/community", icon: MENU_ICONS.community, phoneOnly: true },
-                    { label: t("Gallery"), href: "/gallery", icon: MENU_ICONS.gallery },
                     { label: t("Watchlist"), href: "/watchlist", icon: MENU_ICONS.watchlist, badge: count, phoneOnly: true },
                     { label: t("My Account"), href: "/account", icon: MENU_ICONS.account },
                   ].map((entry) => (
