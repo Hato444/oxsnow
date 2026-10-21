@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { nav, site } from "@/lib/site";
+import { useEffect, useRef, useState } from "react";
+import { nav, navPrimary, navSecondary, site } from "@/lib/site";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
 import { LANGS } from "@/lib/i18n";
 import { useLang } from "@/components/lang/LangProvider";
@@ -12,9 +12,11 @@ import { useLang } from "@/components/lang/LangProvider";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [studioOpen, setStudioOpen] = useState(false);
   const pathname = usePathname();
   const { count } = useWatchlist();
   const { lang, setLang, t } = useLang();
+  const studioRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -23,10 +25,24 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // close every menu on navigation (deferred — no setState in the effect body)
   useEffect(() => {
-    const t = setTimeout(() => setOpen(false), 0);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => {
+      setOpen(false);
+      setStudioOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pathname]);
+
+  // Escape closes the Studio dropdown from anywhere
+  useEffect(() => {
+    if (!studioOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setStudioOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [studioOpen]);
 
   const toggleTheme = () => {
     const el = document.documentElement;
@@ -61,8 +77,11 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
-          {nav.map((item) => {
+        <nav
+          aria-label="Primary"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
+        >
+          {navPrimary.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
@@ -81,6 +100,97 @@ export default function Header() {
               </Link>
             );
           })}
+
+          {/* Studio — overflow group so the bar never crowds at lg widths */}
+          <div
+            ref={studioRef}
+            className="relative"
+            onMouseEnter={() => setStudioOpen(true)}
+            onMouseLeave={() => setStudioOpen(false)}
+            onFocusCapture={() => setStudioOpen(true)}
+            onBlurCapture={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) setStudioOpen(false);
+            }}
+          >
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={studioOpen}
+              onClick={() => setStudioOpen((v) => !v)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setStudioOpen(false);
+              }}
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
+                studioOpen || navSecondary.some((i) => pathname === i.href)
+                  ? "text-white"
+                  : "text-silver-2 hover:text-white"
+              }`}
+            >
+              {t("Studio")}
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden
+                className={`h-3 w-3 transition-transform duration-300 ${
+                  studioOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+              <span
+                className={`absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-ember to-transparent transition-opacity ${
+                  navSecondary.some((i) => pathname === i.href) || studioOpen
+                    ? "opacity-100"
+                    : "opacity-0"
+                }`}
+              />
+            </button>
+
+            {studioOpen && (
+              <div
+                role="menu"
+                className="absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 pt-2"
+              >
+                <div className="rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
+                  <p className="px-3.5 pb-1.5 pt-2 text-[0.55rem] font-bold uppercase tracking-[0.3em] text-ember">
+                    {t("Studio")}
+                  </p>
+                  {navSecondary.map((item) => {
+                    const active = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        onClick={() => setStudioOpen(false)}
+                        className={`group flex items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
+                          active
+                            ? "bg-white/6 text-white"
+                            : "text-silver-2 hover:bg-white/6 hover:text-ember"
+                        }`}
+                      >
+                        {t(item.label)}
+                        <span
+                          aria-hidden
+                          className={`text-ember transition-all duration-200 ${
+                            active
+                              ? "translate-x-0 opacity-100"
+                              : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                          }`}
+                        >
+                          →
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="flex items-center gap-3">
