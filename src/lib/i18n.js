@@ -40,6 +40,7 @@ const SST = {
   Studio: "Satjeng",
   "My watchlist": "Difilme tsa Ka",
   Theme: "Boemo",
+  Language: "Polelo",
   "Toggle light or dark theme": "Fetola tlanye / e lebeng",
   "Toggle menu": "Fetola lenaneo",
 

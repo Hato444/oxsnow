@@ -289,29 +289,46 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
-          <div
-            role="group"
-            aria-label="Language / Mokhoa oa polelo"
-            className="hidden items-center rounded-full border border-white/15 p-0.5 sm:flex"
+          {/* Community + Watchlist as bare icon shortcuts (same icons as the menu rows) — hover tells you which is which */}
+          <Link
+            href="/community"
+            title={t("Community")}
+            className={`group relative hidden h-10 w-10 place-items-center rounded-md border transition-colors sm:grid ${
+              pathname === "/community"
+                ? "border-ember text-ember"
+                : "border-white/15 text-silver hover:border-ember hover:text-ember"
+            }`}
           >
-            {LANGS.map((l) => (
-              <button
-                key={l.id}
-                type="button"
-                lang={l.id === "st" ? "st" : "en"}
-                aria-pressed={lang === l.id}
-                onClick={() => setLang(l.id)}
-                title={l.name}
-                className={`cursor-pointer rounded-full px-2.5 py-1 text-[0.6rem] font-black tracking-[0.14em] transition-colors ${
-                  lang === l.id
-                    ? "bg-ember text-ink shadow-[0_0_12px_-3px_rgba(255,69,0,0.9)]"
-                    : "text-ash hover:text-silver"
-                }`}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
+            {MENU_ICONS.community}
+            <span
+              aria-hidden
+              className="menu-panel pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded border border-white/10 bg-[#0c0c0c] px-2 py-1 text-[0.55rem] font-bold uppercase tracking-[0.18em] text-silver-2 opacity-0 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.9)] transition-opacity duration-200 group-hover:opacity-100"
+            >
+              {t("Community")}
+            </span>
+          </Link>
+          <Link
+            href="/watchlist"
+            title={t("Watchlist")}
+            className={`group relative hidden h-10 w-10 place-items-center rounded-md border transition-colors sm:grid ${
+              pathname === "/watchlist"
+                ? "border-ember text-ember"
+                : "border-white/15 text-silver hover:border-ember hover:text-ember"
+            }`}
+          >
+            {MENU_ICONS.watchlist}
+            {count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-ember px-1 text-[0.6rem] font-black leading-[18px] text-ink shadow-[0_0_12px_-2px_rgba(255,69,0,0.9)]">
+                {count > 9 ? "9+" : count}
+              </span>
+            )}
+            <span
+              aria-hidden
+              className="menu-panel pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded border border-white/10 bg-[#0c0c0c] px-2 py-1 text-[0.55rem] font-bold uppercase tracking-[0.18em] text-silver-2 opacity-0 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.9)] transition-opacity duration-200 group-hover:opacity-100"
+            >
+              {t("Watchlist")}
+            </span>
+          </Link>
           <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] xl:inline-flex">
             {t("Watch Now")}
           </Link>
@@ -368,9 +385,9 @@ export default function Header() {
                     Browse
                   </p>
                   {[
-                    { label: t("Community"), href: "/community", icon: MENU_ICONS.community },
+                    { label: t("Community"), href: "/community", icon: MENU_ICONS.community, phoneOnly: true },
                     { label: t("Gallery"), href: "/gallery", icon: MENU_ICONS.gallery },
-                    { label: t("Watchlist"), href: "/watchlist", icon: MENU_ICONS.watchlist, badge: count },
+                    { label: t("Watchlist"), href: "/watchlist", icon: MENU_ICONS.watchlist, badge: count, phoneOnly: true },
                     { label: t("My Account"), href: "/account", icon: MENU_ICONS.account },
                   ].map((entry) => (
                     <Link
@@ -378,7 +395,7 @@ export default function Header() {
                       href={entry.href}
                       role="menuitem"
                       onClick={() => setUtilOpen(false)}
-                      className={`group flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
+                      className={`group ${entry.phoneOnly ? "flex sm:hidden" : "flex"} items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
                         pathname === entry.href
                           ? "bg-ember/12 text-ember shadow-[inset_0_0_0_1px_rgba(255,69,0,0.3)] hover:bg-ember/18"
                           : "text-silver-2 hover:bg-white/6 hover:text-ember"
@@ -402,6 +419,34 @@ export default function Header() {
                     </Link>
                   ))}
                   <div className="mx-3.5 my-1.5 h-px bg-white/8" />
+                  <div className="flex items-center justify-between px-3.5 py-2.5">
+                    <span className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-silver-2">
+                      {t("Language")}
+                    </span>
+                    <div
+                      role="group"
+                      aria-label="Language / Mokhoa oa polelo"
+                      className="flex items-center rounded-full border border-white/15 p-0.5"
+                    >
+                      {LANGS.map((l) => (
+                        <button
+                          key={l.id}
+                          type="button"
+                          lang={l.id === "st" ? "st" : "en"}
+                          aria-pressed={lang === l.id}
+                          onClick={() => setLang(l.id)}
+                          title={l.name}
+                          className={`cursor-pointer rounded-full px-2.5 py-1 text-[0.6rem] font-black tracking-[0.14em] transition-colors ${
+                            lang === l.id
+                              ? "bg-ember text-ink shadow-[0_0_12px_-3px_rgba(255,69,0,0.9)]"
+                              : "text-ash hover:text-silver"
+                          }`}
+                        >
+                          {l.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="flex items-center justify-between px-3.5 py-2.5">
                     <span className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-silver-2">
                       {light ? MENU_ICONS.sun : MENU_ICONS.moon}
@@ -529,29 +574,6 @@ export default function Header() {
                 {t(item.label)}
               </Link>
             ))}
-          <div
-            role="group"
-            aria-label="Language / Mokhoa oa polelo"
-            className="mt-4 flex gap-2"
-          >
-            {LANGS.map((l) => (
-              <button
-                key={l.id}
-                type="button"
-                lang={l.id === "st" ? "st" : "en"}
-                aria-pressed={lang === l.id}
-                onClick={() => setLang(l.id)}
-                title={l.name}
-                className={`flex-1 cursor-pointer rounded-full border px-4 py-2 text-[0.65rem] font-black tracking-[0.16em] transition-colors ${
-                  lang === l.id
-                    ? "border-ember bg-ember/15 text-ember"
-                    : "border-white/15 text-ash"
-                }`}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
           <Link href="/vod" className="btn btn-primary mt-4 w-full">
             {t("Watch Now")}
           </Link>
