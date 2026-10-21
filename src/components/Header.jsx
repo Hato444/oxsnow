@@ -235,7 +235,7 @@ export default function Header() {
                         onClick={() => setStudioOpen(false)}
                         className={`group flex items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
                           active
-                            ? "bg-white/6 text-white"
+                            ? "bg-ember/12 text-ember shadow-[inset_0_0_0_1px_rgba(255,69,0,0.3)] hover:bg-ember/18"
                             : "text-silver-2 hover:bg-white/6 hover:text-ember"
                         }`}
                       >
@@ -351,7 +351,7 @@ export default function Header() {
                       onClick={() => setUtilOpen(false)}
                       className={`group flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
                         pathname === entry.href
-                          ? "bg-white/6 text-white"
+                          ? "bg-ember/12 text-ember shadow-[inset_0_0_0_1px_rgba(255,69,0,0.3)] hover:bg-ember/18"
                           : "text-silver-2 hover:bg-white/6 hover:text-ember"
                       }`}
                     >
