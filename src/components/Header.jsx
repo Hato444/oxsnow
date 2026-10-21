@@ -6,12 +6,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav, site } from "@/lib/site";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
+import { LANGS } from "@/lib/i18n";
+import { useLang } from "@/components/lang/LangProvider";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { count } = useWatchlist();
+  const { lang, setLang, t } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -20,7 +23,10 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const t = setTimeout(() => setOpen(false), 0);
+    return () => clearTimeout(t);
+  }, [pathname]);
 
   const toggleTheme = () => {
     const el = document.documentElement;
@@ -66,7 +72,7 @@ export default function Header() {
                   active ? "text-white" : "text-silver-2 hover:text-white"
                 }`}
               >
-                {item.label}
+                {t(item.label)}
                 <span
                   className={`absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-ember to-transparent transition-opacity ${
                     active ? "opacity-100" : "opacity-0"
@@ -78,13 +84,36 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <div
+            role="group"
+            aria-label="Language / Mokhoa oa polelo"
+            className="hidden items-center rounded-full border border-white/15 p-0.5 sm:flex"
+          >
+            {LANGS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                lang={l.id === "st" ? "st" : "en"}
+                aria-pressed={lang === l.id}
+                onClick={() => setLang(l.id)}
+                title={l.name}
+                className={`cursor-pointer rounded-full px-2.5 py-1 text-[0.6rem] font-black tracking-[0.14em] transition-colors ${
+                  lang === l.id
+                    ? "bg-ember text-ink shadow-[0_0_12px_-3px_rgba(255,69,0,0.9)]"
+                    : "text-ash hover:text-silver"
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
           <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] xl:inline-flex">
-            Watch Now
+            {t("Watch Now")}
           </Link>
           <Link
             href="/community"
-            aria-label="Community"
-            title="Community"
+            aria-label={t("Community")}
+            title={t("Community")}
             className={`grid h-10 w-10 place-items-center rounded-md border transition-colors ${
               pathname === "/community"
                 ? "border-ember text-ember"
@@ -106,8 +135,8 @@ export default function Header() {
           </Link>
           <Link
             href="/watchlist"
-            aria-label={`My watchlist (${count} saved)`}
-            title="My watchlist"
+            aria-label={`${t("My watchlist")} (${count} saved)`}
+            title={t("My watchlist")}
             className={`relative grid h-10 w-10 place-items-center rounded-md border transition-colors ${
               pathname === "/watchlist"
                 ? "border-ember text-ember"
@@ -132,11 +161,35 @@ export default function Header() {
               </span>
             )}
           </Link>
+          <Link
+            href="/account"
+            aria-label={t("My Account")}
+            title={t("My Account")}
+            className={`grid h-10 w-10 place-items-center rounded-md border transition-colors ${
+              pathname === "/account"
+                ? "border-ember text-ember"
+                : "border-white/15 text-silver hover:border-ember hover:text-ember"
+            }`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" />
+            </svg>
+          </Link>
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label="Toggle light or dark theme"
-            title="Toggle theme"
+            aria-label={t("Toggle light or dark theme")}
+            title={t("Toggle light or dark theme")}
             className="grid h-10 w-10 place-items-center rounded-md border border-white/15 text-silver transition-colors hover:border-ember hover:text-ember"
           >
             <svg viewBox="0 0 24 24" className="theme-icon-sun h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -149,7 +202,7 @@ export default function Header() {
           </button>
           <button
             type="button"
-            aria-label="Toggle menu"
+            aria-label={t("Toggle menu")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="grid h-10 w-10 place-items-center rounded-md border border-white/15 text-silver hover:border-ember hover:text-white lg:hidden"
@@ -178,7 +231,7 @@ export default function Header() {
       {/* Mobile drop panel */}
       <div
         className={`overflow-hidden border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 lg:hidden ${
-          open ? "max-h-96" : "max-h-0"
+          open ? "max-h-[36rem]" : "max-h-0"
         }`}
       >
         <div className="flex flex-col px-5 py-4">
@@ -190,7 +243,7 @@ export default function Header() {
                 pathname === item.href ? "text-ember" : "text-silver-2"
               }`}
             >
-              {item.label}
+              {t(item.label)}
             </Link>
           ))}
           <Link
@@ -199,15 +252,46 @@ export default function Header() {
               pathname === "/watchlist" ? "text-ember" : "text-silver-2"
             }`}
           >
-            Watchlist
+            {t("Watchlist")}
             {count > 0 && (
               <span className="grid min-w-[22px] place-items-center rounded-full bg-ember px-1.5 text-[0.65rem] font-black leading-[22px] text-ink">
                 {count}
               </span>
             )}
           </Link>
+          <Link
+            href="/account"
+            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
+              pathname === "/account" ? "text-ember" : "text-silver-2"
+            }`}
+          >
+            {t("My Account")}
+          </Link>
+          <div
+            role="group"
+            aria-label="Language / Mokhoa oa polelo"
+            className="mt-4 flex gap-2"
+          >
+            {LANGS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                lang={l.id === "st" ? "st" : "en"}
+                aria-pressed={lang === l.id}
+                onClick={() => setLang(l.id)}
+                title={l.name}
+                className={`flex-1 cursor-pointer rounded-full border px-4 py-2 text-[0.65rem] font-black tracking-[0.16em] transition-colors ${
+                  lang === l.id
+                    ? "border-ember bg-ember/15 text-ember"
+                    : "border-white/15 text-ash"
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
           <Link href="/vod" className="btn btn-primary mt-4 w-full">
-            Watch Now
+            {t("Watch Now")}
           </Link>
           <span className="mt-4 text-[0.65rem] tracking-[0.3em] text-ash">
             {site.location.toUpperCase()}

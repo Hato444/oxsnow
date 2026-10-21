@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import EmberBackground from "@/components/EmberBackground";
 import WatchProvider from "@/components/watch/WatchProvider";
 import WatchlistProvider from "@/components/watch/WatchlistProvider";
+import LangProvider from "@/components/lang/LangProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,14 +51,16 @@ export default function RootLayout({ children }) {
         <Script id="theme-init" strategy="beforeInteractive">
           {`try{if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light')}catch(e){}`}
         </Script>
-        <WatchlistProvider>
-          <WatchProvider>
-            <EmberBackground />
-            <Header />
-            <main className="relative z-10 flex-1">{children}</main>
-            <Footer />
-          </WatchProvider>
-        </WatchlistProvider>
+        <LangProvider>
+          <WatchlistProvider>
+            <WatchProvider>
+              <EmberBackground />
+              <Header />
+              <main className="relative z-10 flex-1">{children}</main>
+              <Footer />
+            </WatchProvider>
+          </WatchlistProvider>
+        </LangProvider>
       </body>
     </html>
   );

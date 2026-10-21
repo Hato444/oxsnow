@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { nav, site } from "@/lib/site";
+import { nav, navExtra, site } from "@/lib/site";
+import { useLang } from "@/components/lang/LangProvider";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(""); // "" | "busy" | "joined" | "error"
   const [year, setYear] = useState("");
+  const { t } = useLang();
 
   useEffect(() => {
-    setYear(new Date().getFullYear());
+    const t = setTimeout(() => setYear(new Date().getFullYear()), 0);
+    return () => clearTimeout(t);
   }, []);
 
   async function subscribe(e) {
@@ -38,9 +41,9 @@ export default function Footer() {
       <div className="border-b border-white/10">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="eyebrow">Newsletter</p>
+            <p className="eyebrow">{t("Newsletter")}</p>
             <h3 className="mt-2 text-2xl font-bold tracking-tight text-metal sm:text-3xl">
-              Stay connected to Basotho stories
+              {t("Stay connected to Basotho stories")}
             </h3>
           </div>
           <form
@@ -57,7 +60,13 @@ export default function Footer() {
               className="h-12 w-full rounded-full border border-white/15 bg-ink px-5 text-sm text-silver outline-none transition-colors placeholder:text-ash focus:border-ember"
             />
             <button type="submit" disabled={status === "busy" || status === "joined"} className="btn btn-primary h-12 shrink-0 disabled:opacity-60">
-              {status === "busy" ? "Joining…" : status === "joined" ? "Joined ✓" : status === "error" ? "Retry" : "Join"}
+              {status === "busy"
+                ? t("Joining…")
+                : status === "joined"
+                  ? t("Joined ✓")
+                  : status === "error"
+                    ? "Retry"
+                    : t("Join")}
             </button>
             {status === "error" && (
               <span className="text-xs font-semibold text-red-300 sm:sr-only">Failed — try again</span>
@@ -83,7 +92,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <p className="eyebrow">Explore</p>
+          <p className="eyebrow">{t("Explore")}</p>
           <ul className="mt-4 space-y-2 text-sm">
             {nav.map((item) => (
               <li key={item.href}>
@@ -91,7 +100,17 @@ export default function Footer() {
                   href={item.href}
                   className="text-silver-2 transition-colors hover:text-ember"
                 >
-                  {item.label}
+                  {t(item.label)}
+                </Link>
+              </li>
+            ))}
+            {navExtra.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="text-silver-2 transition-colors hover:text-ember"
+                >
+                  {t(item.label)}
                 </Link>
               </li>
             ))}
@@ -99,7 +118,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <p className="eyebrow">Studio</p>
+          <p className="eyebrow">{t("Studio")}</p>
           <ul className="mt-4 space-y-2 text-sm text-steel">
             <li>{site.location}</li>
             <li>
@@ -125,8 +144,13 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-5 py-6 text-[0.7rem] tracking-wide text-ash sm:flex-row sm:px-8">
-          <span>© {year} Oxsnow Studio. All rights reserved.</span>
-          <span>Proudly Basotho. Built for the world.</span>
+          <span>
+            {t("© {year} Oxsnow Studio. All rights reserved.").replace(
+              "{year}",
+              year
+            )}
+          </span>
+          <span>{t("Proudly Basotho. Built for the world.")}</span>
         </div>
       </div>
     </footer>
