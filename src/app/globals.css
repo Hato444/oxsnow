@@ -342,3 +342,23 @@ html.light .theme-icon-moon {
 html.light .theme-icon-sun {
   display: none;
 }
+
+/* Dark dropdown panels (Studio + utility menus) stay dark in light theme —
+   force their labels/icons light so text reads with or without hover. */
+html.light .menu-panel .text-silver-2,
+html.light .menu-panel .text-silver {
+  color: #e6e6e6;
+}
+html.light .menu-panel .text-ash {
+  color: #c9c9c9;
+}
+html.light .menu-panel .text-white:not(.keep-light),
+html.light .menu-panel .hover\:text-white:hover {
+  color: #ffffff;
+}
+html.light .menu-panel .border-white\/10 {
+  border-color: rgb(255 255 255 / 0.1);
+}
+html.light .menu-panel .border-white\/15 {
+  border-color: rgb(255 255 255 / 0.15);
+}

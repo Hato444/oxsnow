@@ -221,9 +221,9 @@ export default function Header() {
                 role="menu"
                 className="absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 pt-2"
               >
-                <div className="rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
+                <div className="menu-panel rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
                   <p className="px-3.5 pb-1.5 pt-2 text-[0.55rem] font-bold uppercase tracking-[0.3em] text-ember">
-                    {t("Studio")}
+                    Studio
                   </p>
                   {navSecondary.map((item) => {
                     const active = pathname === item.href;
@@ -334,7 +334,7 @@ export default function Header() {
                 role="menu"
                 className="absolute right-0 top-full z-50 w-56 pt-2"
               >
-                <div className="rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
+                <div className="menu-panel rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
                   <p className="px-3.5 pb-1.5 pt-2 text-[0.55rem] font-bold uppercase tracking-[0.3em] text-ember">
                     Browse
                   </p>
