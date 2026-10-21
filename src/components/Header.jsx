@@ -387,7 +387,7 @@ export default function Header() {
                         type="button"
                         aria-label="Dark"
                         aria-pressed={!light}
-                        onClick={() => applyTheme(false)}
+                        onClick={() => applyTheme(!light)}
                         className={`grid h-6 w-6 place-items-center rounded-full transition-colors ${
                           !light ? "bg-ember text-ink" : "text-ash hover:text-silver"
                         }`}
@@ -398,7 +398,7 @@ export default function Header() {
                         type="button"
                         aria-label="Light"
                         aria-pressed={light}
-                        onClick={() => applyTheme(true)}
+                        onClick={() => applyTheme(!light)}
                         className={`grid h-6 w-6 place-items-center rounded-full transition-colors ${
                           light ? "bg-ember text-ink" : "text-ash hover:text-silver"
                         }`}
