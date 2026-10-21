@@ -3,6 +3,7 @@ import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import WatchTrigger from "@/components/watch/WatchTrigger";
 import WatchlistButton from "@/components/watch/WatchlistButton";
+import PassCheckout from "@/components/watch/PassCheckout";
 import HoverVideo from "@/components/HoverVideo";
 import { vodRows } from "@/lib/site";
 
@@ -136,21 +137,22 @@ export default function VodPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/vod"
-                className={`btn mt-8 w-full ${
-                  p.highlight ? "btn-primary" : "btn-ghost"
-                }`}
-              >
-                {p.cta}
-              </Link>
+              {p.highlight ? (
+                <PassCheckout className={`btn mt-8 w-full ${p.highlight ? "btn-primary" : "btn-ghost"}`}>
+                  {p.cta}
+                </PassCheckout>
+              ) : (
+                <a href="#titles" className="btn btn-ghost mt-8 w-full">
+                  {p.cta}
+                </a>
+              )}
             </div>
           </Reveal>
         ))}
       </div>
 
       {/* Featured rows */}
-      <div className="mt-20 space-y-16">
+      <div id="titles" className="mt-20 space-y-16 scroll-mt-24">
         {vodRows.map((group) => (
           <div key={group.row}>
             <Reveal>

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ensureSchema, query } from "@/lib/db";
+import { getCustomerSession } from "@/lib/auth";
 import {
   CURRENCY,
   PRICE_MINOR,
@@ -9,9 +10,11 @@ import {
   queryTransaction,
   isSimRef,
 } from "@/lib/payments/mpesa";
+import { CULTURAL_PASS_ID, streamUrlFor } from "@/lib/payments/catalog";
 import { films } from "@/lib/site";
 
 const ORDER_TTL_MS = 15 * 60 * 1000;
+const PASS_PRICE_MINOR = 9900; // M99.00 Cultural Pass (SVOD, 30 days)
 
 function audit(orderId, event, detail = "") {
   query(
@@ -28,9 +31,13 @@ export async function POST(request) {
     return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
   }
 
-  const movieId = String(body.movieId || "");
-  const userKey = String(body.userKey || "").slice(0, 80);
+  let movieId = String(body.movieId || "");
+  let userKey = String(body.userKey || "").slice(0, 80);
   const phone = String(body.phone || "").replace(/[\s-]/g, "").slice(0, 15);
+
+  // Signed-in customers pay under their account id, not the device key.
+  const customerId = await getCustomerSession();
+  if (customerId) userKey = customerId;
 
   if (!userKey) {
     return NextResponse.json({ ok: false, error: "Device key required." }, { status: 400 });
@@ -45,10 +52,24 @@ export async function POST(request) {
     );
   }
 
-  const movie = films.find((f) => f.title === movieId || f.title.toLowerCase() === movieId.toLowerCase());
-  if (!movie) {
-    return NextResponse.json({ ok: false, error: "Unknown movie." }, { status: 400 });
+  const isPass = movieId === CULTURAL_PASS_ID;
+  let movie;
+  if (isPass) {
+    movie = { title: CULTURAL_PASS_ID, displayName: "Cultural Pass" };
+  } else {
+    const found = films.find(
+      (f) => f.title === movieId || f.title.toLowerCase() === movieId.toLowerCase()
+    );
+    if (!found || !streamUrlFor(found.title)) {
+      return NextResponse.json(
+        { ok: false, error: "This film isn't available for purchase yet." },
+        { status: 400 }
+      );
+    }
+    movie = { ...found, displayName: found.title };
   }
+
+  const amountMinor = isPass ? PASS_PRICE_MINOR : PRICE_MINOR;
 
   try {
     await ensureSchema();
@@ -60,6 +81,18 @@ export async function POST(request) {
     );
     if (owned.rows.length > 0) {
       return NextResponse.json({ ok: true, status: "purchased", alreadyOwned: true });
+    }
+
+    // Cultural Pass active within its window? don't charge again
+    if (isPass) {
+      const active = await query(
+        `SELECT 1 FROM entitlements
+         WHERE user_key = $1 AND movie_id = $2 AND paid_at > $3 LIMIT 1`,
+        [userKey, CULTURAL_PASS_ID, Date.now() - 30 * 24 * 60 * 60 * 1000]
+      );
+      if (active.rows.length > 0) {
+        return NextResponse.json({ ok: true, status: "purchased", alreadyOwned: true });
+      }
     }
 
     // reuse a live pending order for the same movie + user (prevents duplicate orders from double-clicks)
@@ -78,11 +111,11 @@ export async function POST(request) {
       await query(
         `INSERT INTO orders (id, movie_id, user_key, amount_minor, currency, status, phone, provider, created_at, expires_at)
          VALUES ($1,$2,$3,$4,$5,'pending',$6,'mpesa',$7,$8)`,
-        [id, movie.title, userKey, PRICE_MINOR, CURRENCY, normalized, now, now + ORDER_TTL_MS]
+        [id, movie.title, userKey, amountMinor, CURRENCY, normalized, now, now + ORDER_TTL_MS]
       );
       const res = await query("SELECT * FROM orders WHERE id = $1", [id]);
       order = res.rows[0];
-      audit(id, "order_created", `amount=${PRICE_MINOR} ${CURRENCY}`);
+      audit(id, "order_created", `amount=${amountMinor} ${CURRENCY}`);
     }
 
     if (simulateEnabled()) {
@@ -97,7 +130,7 @@ export async function POST(request) {
         orderId: order.id,
         status: "awaiting_authorisation",
         simulated: true,
-        amountMinor: PRICE_MINOR,
+        amountMinor,
         currency: CURRENCY,
       });
     }
@@ -117,7 +150,7 @@ export async function POST(request) {
     }
 
     try {
-      const result = await createPayment({ ...order, movie: movie.title }, normalized);
+      const result = await createPayment({ ...order, movie: movie.displayName }, normalized);
       await query(
         "UPDATE orders SET status = 'awaiting_authorisation', provider_ref = $1 WHERE id = $2",
         [String(result?.reference || ""), order.id]
@@ -127,7 +160,7 @@ export async function POST(request) {
         ok: true,
         orderId: order.id,
         status: "awaiting_authorisation",
-        amountMinor: PRICE_MINOR,
+        amountMinor,
         currency: CURRENCY,
       });
     } catch (err) {
@@ -148,7 +181,11 @@ export async function POST(request) {
 
 export async function GET(request) {
   const orderId = request.nextUrl.searchParams.get("orderId") || "";
-  const userKey = request.nextUrl.searchParams.get("userKey") || "";
+  let userKey = request.nextUrl.searchParams.get("userKey") || "";
+
+  const customerId = await getCustomerSession();
+  if (customerId) userKey = customerId;
+
   if (!orderId || !userKey) {
     return NextResponse.json({ ok: false, error: "Missing parameters." }, { status: 400 });
   }

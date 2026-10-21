@@ -48,7 +48,14 @@ const METHODS = [
   },
 ];
 
-export default function PaymentPanel({ item, onClose, onUnlocked }) {
+export default function PaymentPanel({
+  item,
+  onClose,
+  onUnlocked,
+  movieId = null,
+  priceLabel = "M 25.00 LSL",
+  passMode = false,
+}) {
   const reduced = useReducedMotion();
   const [method, setMethod] = useState("mpesa");
   const [phone, setPhone] = useState("");
@@ -59,6 +66,8 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
   const panelRef = useRef(null);
   const pollRef = useRef(null);
   const returnFocusRef = useRef(null);
+
+  const titleId = movieId || item?.title || "";
 
   const pending = status === "busy" || status === "awaiting_authorisation";
   const submitting = status === "busy";
@@ -125,7 +134,7 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
       const r = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ movieId: item.title, userKey: getBuyerKey(), phone }),
+        body: JSON.stringify({ movieId: titleId, userKey: getBuyerKey(), phone }),
       });
       const data = await r.json();
       if (data.alreadyOwned) {
@@ -198,7 +207,7 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
           <div>
             <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">Pay / Unlock</p>
             <h2 id="pay-title" className="mt-1 text-lg font-bold text-metal">
-              Unlock this film
+              {passMode ? "Unlock the Cultural Pass" : "Unlock this film"}
             </h2>
           </div>
           <button
@@ -216,19 +225,25 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
           {/* Order summary */}
           <div className="flex items-center gap-3.5 rounded-xl border border-white/8 bg-white/[0.025] p-3">
-            {item.poster ? (
+            {item?.poster ? (
               <img
                 src={item.poster}
                 alt=""
                 className="h-16 w-11 shrink-0 rounded-md object-cover"
               />
             ) : (
-              <div className="h-16 w-11 shrink-0 rounded-md bg-gradient-to-b from-ember/30 to-white/5" />
+              <div className="grid h-16 w-11 shrink-0 place-items-center rounded-md bg-gradient-to-b from-ember/30 to-white/5">
+                <span className="h-2.5 w-2.5 rounded-full bg-ember shadow-[0_0_12px_3px_rgba(255,69,0,0.5)]" />
+              </div>
             )}
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-silver-2">{item.title}</p>
+              <p className="truncate text-sm font-semibold text-silver-2">
+                {passMode ? "Cultural Pass" : item?.title}
+              </p>
               <p className="mt-0.5 text-[0.7rem] text-ash">
-                {item.meta ? `${item.meta} · ` : ""}Full film, unlocked to watch
+                {passMode
+                  ? "30 days unlimited streaming — every film, every archive"
+                  : `${item?.meta ? `${item.meta} · ` : ""}Full film, unlocked to watch`}
               </p>
             </div>
           </div>
@@ -329,8 +344,10 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
 
           {/* Total */}
           <div className="mt-5 flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.025] px-4 py-3">
-            <span className="text-xs text-steel">Total — fixed price, no conversion</span>
-            <span className="text-sm font-bold text-metal">M 25.00 LSL</span>
+            <span className="text-xs text-steel">
+              {passMode ? "Total — 30-day pass, cancel anytime" : "Total — fixed price, no conversion"}
+            </span>
+            <span className="text-sm font-bold text-metal">{priceLabel}</span>
           </div>
 
           {error && (
@@ -359,7 +376,9 @@ export default function PaymentPanel({ item, onClose, onUnlocked }) {
                         : "border-red-500/40 bg-red-500/10 text-red-300"
                   }`}
                 >
-                  {STATUS_COPY[status]}
+                  {status === "paid" && passMode
+                    ? "Payment confirmed. The Cultural Pass is active — everything is unlocked."
+                    : STATUS_COPY[status]}
                   {simulated && (
                     <span className="mt-1 block text-[0.65rem] font-bold uppercase tracking-[0.2em] text-amber-400">
                       Test mode — simulated payment, no real money

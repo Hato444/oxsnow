@@ -1,33 +1,94 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
 import PaymentPanel from "./PaymentPanel";
 import { useWatchlist } from "./WatchlistProvider";
 
+const BUYER_KEY = "oxsnow-buyer-uid";
+
+function getBuyerKey() {
+  try {
+    let key = localStorage.getItem(BUYER_KEY);
+    if (!key) {
+      key =
+        (typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID()) ||
+        `b-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem(BUYER_KEY, key);
+    }
+    return key;
+  } catch {
+    return "anonymous";
+  }
+}
+
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
-  const [watchingTeaser, setWatchingTeaser] = useState(false);
+  // view: "info" | "teaser" | "film"
+  const [view, setView] = useState("info");
+  const [streamUrl, setStreamUrl] = useState(null);
+  const [entitled, setEntitled] = useState(false);
   const { has, toggle } = useWatchlist();
-  const locked = !watchingTeaser;
   const infoRef = useRef(null);
   const actionsRef = useRef(null);
   const playerRef = useRef(null);
 
+  // reset per film (deferred so state never changes inside the effect body)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setCheckout(false);
+      setView("info");
+      setStreamUrl(null);
+      setEntitled(false);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [item]);
+
+  // entitlement check — a returning renter gets the film instantly
+  const checkEntitlement = useCallback(async () => {
+    if (!item?.title) return false;
+    try {
+      const r = await fetch(
+        `/api/stream?title=${encodeURIComponent(item.title)}&userKey=${encodeURIComponent(getBuyerKey())}`
+      );
+      const data = await r.json();
+      if (data.ok && data.url) {
+        setStreamUrl(data.url);
+        setEntitled(true);
+        return true;
+      }
+      setEntitled(false);
+      setStreamUrl(null);
+      return false;
+    } catch {
+      return false;
+    }
+  }, [item]);
+
+  useEffect(() => {
+    if (!item?.title) return;
+    // defer so the check never blocks the modal opening
+    const t = setTimeout(() => {
+      checkEntitlement();
+    }, 0);
+    return () => clearTimeout(t);
+  }, [item, checkEntitlement]);
+
   const playTeaser = () => {
-    setWatchingTeaser(true);
+    setView("teaser");
     if (playerRef.current) {
       playerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
-  const stopTeaser = () => setWatchingTeaser(false);
-
-  useEffect(() => {
-    setWatchingTeaser(false);
-    setCheckout(false);
-  }, [item]);
+  const handleUnlocked = useCallback(async () => {
+    const ok = await checkEntitlement();
+    if (ok) {
+      setView("film");
+      playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [checkEntitlement]);
 
   const revealActions = () => {
     const info = infoRef.current;
@@ -38,6 +99,17 @@ export default function WatchModal({ item, onClose }) {
     const delta = actRect.top - infoRect.top;
     info.scrollTo({ top: info.scrollTop + delta - 16, behavior: "smooth" });
   };
+
+  // Full film plays only from the entitlement-released URL; before payment the
+  // public trailer stands in behind the lock.
+  const watchingFilm = view === "film" && entitled && streamUrl;
+  const watchingTeaser = view === "teaser";
+  const playerSrc = watchingTeaser
+    ? item?.teaser || item?.src
+    : watchingFilm
+      ? streamUrl
+      : item?.src || item?.teaser;
+  const locked = !watchingTeaser && !watchingFilm;
 
   return (
     <AnimatePresence onExitComplete={() => setCheckout(false)}>
@@ -74,16 +146,22 @@ export default function WatchModal({ item, onClose }) {
             <div className="card flex max-h-[88svh] flex-col overflow-hidden">
               <div ref={playerRef} className="shrink-0 scroll-mt-2">
                 <VideoPlayer
-                  key={watchingTeaser ? "teaser" : "film"}
-                  src={watchingTeaser ? item.teaser || item.src : item.movie || item.src}
+                  key={view + (entitled ? "-owned" : "")}
+                  src={playerSrc}
                   poster={item.poster}
-                  title={watchingTeaser ? `${item.title} — Official Teaser` : item.title}
+                  title={
+                    watchingTeaser
+                      ? `${item.title} — Official Teaser`
+                      : item.title
+                  }
                   locked={locked}
-                  autoPlay={watchingTeaser}
+                  autoPlay={watchingTeaser || watchingFilm}
                   onLocked={revealActions}
-                  onPlay={watchingTeaser ? undefined : revealActions}
-                  onBack={watchingTeaser ? stopTeaser : undefined}
-                  backLabel="Back to film"
+                  onPlay={!watchingTeaser && !watchingFilm ? revealActions : undefined}
+                  onBack={
+                    watchingTeaser || watchingFilm ? () => setView("info") : undefined
+                  }
+                  backLabel={watchingTeaser ? "Back to details" : "Back to film"}
                   hoverPreview={item.teaser}
                 />
               </div>
@@ -101,6 +179,11 @@ export default function WatchModal({ item, onClose }) {
                       {item.meta}
                     </span>
                   )}
+                  {watchingFilm && (
+                    <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-emerald-300">
+                      Unlocked
+                    </span>
+                  )}
                 </div>
 
                 {item.logline && (
@@ -110,37 +193,54 @@ export default function WatchModal({ item, onClose }) {
                 )}
 
                 <div ref={actionsRef} className="mt-5 scroll-mt-4">
-                    <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
-                      {watchingTeaser ? "You're watching the teaser" : "Rent to watch the full film"}
-                    </p>
-                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
+                    {watchingFilm
+                      ? "You own this film — enjoy the show"
+                      : watchingTeaser
+                        ? "You're watching the teaser"
+                        : entitled
+                          ? "Your film is unlocked"
+                          : "Rent to watch the full film"}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    {!watchingFilm && (
                       <button
                         type="button"
-                        onClick={() => setCheckout(true)}
-                        aria-haspopup="dialog"
+                        onClick={() => {
+                          if (entitled && streamUrl) {
+                            setView("film");
+                            playerRef.current?.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            });
+                          } else {
+                            setCheckout(true);
+                          }
+                        }}
+                        aria-haspopup={entitled ? undefined : "dialog"}
                         className="btn btn-primary"
                       >
-                        Pay / Unlock
+                        {entitled ? "Watch Now" : "Pay / Unlock"}
                       </button>
-                      {(item.teaser || item.src) && (
-                        <button
-                          type="button"
-                          onClick={watchingTeaser ? stopTeaser : playTeaser}
-                          className="btn btn-ghost"
-                        >
-                          {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
-                        </button>
-                      )}
+                    )}
+                    {(item.teaser || item.src) && !watchingFilm && (
                       <button
                         type="button"
-                        onClick={() => toggle(item)}
-                        className={`btn ${has(item.title) ? "btn-ghost !border-ember/60 !text-ember" : "btn-ghost"}`}
+                        onClick={watchingTeaser ? () => setView("info") : playTeaser}
+                        className="btn btn-ghost"
                       >
-                        {has(item.title) ? "✓ On Watchlist" : "Add to Watchlist"}
+                        {watchingTeaser ? "Stop Teaser" : "Watch Teaser"}
                       </button>
-                    </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggle(item)}
+                      className={`btn ${has(item.title) ? "btn-ghost !border-ember/60 !text-ember" : "btn-ghost"}`}
+                    >
+                      {has(item.title) ? "✓ On Watchlist" : "Add to Watchlist"}
+                    </button>
+                  </div>
                 </div>
-
               </div>
             </div>
           </motion.div>
@@ -149,7 +249,12 @@ export default function WatchModal({ item, onClose }) {
 
       <AnimatePresence>
         {checkout && item && (
-          <PaymentPanel key="payment-panel" item={item} onClose={() => setCheckout(false)} />
+          <PaymentPanel
+            key="payment-panel"
+            item={item}
+            onClose={() => setCheckout(false)}
+            onUnlocked={handleUnlocked}
+          />
         )}
       </AnimatePresence>
     </AnimatePresence>
