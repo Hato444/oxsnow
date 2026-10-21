@@ -23,12 +23,15 @@ export default function WatchlistProvider({ children }) {
 
   // hydrate from localStorage after mount (avoids SSR mismatch)
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      if (Array.isArray(parsed)) setItems(parsed);
-    } catch {}
-    setLoaded(true);
+    const t = setTimeout(() => {
+      try {
+        const raw = localStorage.getItem(KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(parsed)) setItems(parsed);
+      } catch {}
+      setLoaded(true);
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   // persist on every change (only after hydration)
