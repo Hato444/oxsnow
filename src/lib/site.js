@@ -12,10 +12,10 @@ export const site = {
 
 // Official Oxsnow Studio profiles — swap the hrefs if the handles change.
 export const socials = [
-  { label: "TikTok", href: "https://www.tiktok.com/@oxsnowstudio" },
+  { label: "TikTok", href: "https://www.tiktok.com/@oxsnowstudio1" },
   { label: "Instagram", href: "https://www.instagram.com/oxsnowstudio" },
-  { label: "Facebook", href: "https://www.facebook.com/oxsnowstudio" },
-  { label: "YouTube", href: "https://www.youtube.com/@oxsnowstudio" },
+  { label: "Facebook", href: "https://www.facebook.com/people/OXSnow-Studio/61559873980561/" },
+  { label: "YouTube", href: "https://www.youtube.com/@oxsnowstudio-cl5" },
 ];
 
 const demoTrailer =
