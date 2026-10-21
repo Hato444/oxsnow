@@ -8,12 +8,14 @@ export async function GET(request) {
     const founder = await verifySession();
     const deviceId = request.nextUrl.searchParams.get("device") || "";
     const showAll = request.nextUrl.searchParams.get("all") === "1" && founder;
+    const target =
+      request.nextUrl.searchParams.get("target") === "events" ? "events" : "community";
 
     const postQuery = showAll
-      ? "SELECT * FROM posts ORDER BY pinned DESC, created_at DESC"
-      : "SELECT * FROM posts WHERE published = true ORDER BY pinned DESC, created_at DESC";
+      ? "SELECT * FROM posts WHERE target = $1 ORDER BY pinned DESC, created_at DESC"
+      : "SELECT * FROM posts WHERE published = true AND target = $1 ORDER BY pinned DESC, created_at DESC";
 
-    const { rows: posts } = await query(postQuery);
+    const { rows: posts } = await query(postQuery, [target]);
 
     if (posts.length === 0) {
       return NextResponse.json({ ok: true, posts: [], founder });
@@ -54,6 +56,7 @@ export async function GET(request) {
       role: p.role,
       pinned: p.pinned,
       published: p.published,
+      target: p.target === "events" ? "events" : "community",
       media: typeof p.media === "string" ? JSON.parse(p.media) : p.media,
       createdAt: Number(p.created_at),
       updatedAt: Number(p.updated_at),
@@ -99,6 +102,7 @@ export async function POST(request) {
       : [];
     const pinned = Boolean(body.pinned);
     const published = body.published !== false;
+    const target = body.target === "events" ? "events" : "community";
     const author = String(body.author || "Oxsnow Studio").trim().slice(0, 40) || "Oxsnow Studio";
     const role = String(body.role || "Official Studio Channel").trim().slice(0, 60) || "Official Studio Channel";
     const id = body.id
@@ -120,18 +124,18 @@ export async function POST(request) {
         return NextResponse.json({ ok: false, error: "Post not found." }, { status: 404 });
       }
       await query(
-        `UPDATE posts SET text=$1, media=$2, pinned=$3, published=$4, author=$5, role=$6, updated_at=$7 WHERE id=$8`,
-        [text, JSON.stringify(media), pinned, published, author, role, now, id]
+        `UPDATE posts SET text=$1, media=$2, pinned=$3, published=$4, author=$5, role=$6, target=$7, updated_at=$8 WHERE id=$9`,
+        [text, JSON.stringify(media), pinned, published, author, role, target, now, id]
       );
     } else {
       await query(
-        `INSERT INTO posts (id, text, author, role, pinned, published, media, created_at, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$8)
+        `INSERT INTO posts (id, text, author, role, pinned, published, target, media, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$9)
          ON CONFLICT (id) DO UPDATE SET
            text=EXCLUDED.text, media=EXCLUDED.media, pinned=EXCLUDED.pinned,
            published=EXCLUDED.published, author=EXCLUDED.author, role=EXCLUDED.role,
-           updated_at=EXCLUDED.updated_at`,
-        [id, text, author, role, pinned, published, JSON.stringify(media), now]
+           target=EXCLUDED.target, updated_at=EXCLUDED.updated_at`,
+        [id, text, author, role, pinned, published, target, JSON.stringify(media), now]
       );
     }
 

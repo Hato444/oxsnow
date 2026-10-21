@@ -13,10 +13,12 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
+  const [utilOpen, setUtilOpen] = useState(false);
   const pathname = usePathname();
   const { count } = useWatchlist();
   const { lang, setLang, t } = useLang();
   const studioRef = useRef(null);
+  const utilRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -30,19 +32,23 @@ export default function Header() {
     const timer = setTimeout(() => {
       setOpen(false);
       setStudioOpen(false);
+      setUtilOpen(false);
     }, 0);
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  // Escape closes the Studio dropdown from anywhere
+  // Escape closes any open dropdown from anywhere
   useEffect(() => {
-    if (!studioOpen) return;
+    if (!studioOpen && !utilOpen) return;
     const onKey = (e) => {
-      if (e.key === "Escape") setStudioOpen(false);
+      if (e.key === "Escape") {
+        setStudioOpen(false);
+        setUtilOpen(false);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [studioOpen]);
+  }, [studioOpen, utilOpen]);
 
   const toggleTheme = () => {
     const el = document.documentElement;
@@ -79,7 +85,7 @@ export default function Header() {
 
         <nav
           aria-label="Primary"
-          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
+          className="ml-3 hidden items-center gap-1 lg:flex xl:ml-9"
         >
           {navPrimary.map((item) => {
             const active = pathname === item.href;
@@ -193,7 +199,7 @@ export default function Header() {
           </div>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-3">
           <div
             role="group"
             aria-label="Language / Mokhoa oa polelo"
@@ -220,96 +226,107 @@ export default function Header() {
           <Link href="/vod" className="btn btn-primary hidden !py-2.5 !text-[0.7rem] xl:inline-flex">
             {t("Watch Now")}
           </Link>
-          <Link
-            href="/community"
-            aria-label={t("Community")}
-            title={t("Community")}
-            className={`grid h-10 w-10 place-items-center rounded-md border transition-colors ${
-              pathname === "/community"
-                ? "border-ember text-ember"
-                : "border-white/15 text-silver hover:border-ember hover:text-ember"
-            }`}
+
+          {/* Utility menu — one control for community/gallery/watchlist/account/theme */}
+          <div
+            ref={utilRef}
+            className="relative hidden sm:block"
+            onMouseEnter={() => setUtilOpen(true)}
+            onMouseLeave={() => setUtilOpen(false)}
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={utilOpen}
+              aria-label="Menu"
+              onClick={() => setUtilOpen((v) => !v)}
+              className={`relative grid h-10 w-10 place-items-center rounded-md border transition-colors ${
+                utilOpen ||
+                ["/community", "/gallery", "/watchlist", "/account"].includes(pathname)
+                  ? "border-ember text-ember"
+                  : "border-white/15 text-silver hover:border-ember hover:text-ember"
+              }`}
             >
-              <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z" />
-            </svg>
-          </Link>
-          <Link
-            href="/watchlist"
-            aria-label={`${t("My watchlist")} (${count} saved)`}
-            title={t("My watchlist")}
-            className={`relative grid h-10 w-10 place-items-center rounded-md border transition-colors ${
-              pathname === "/watchlist"
-                ? "border-ember text-ember"
-                : "border-white/15 text-silver hover:border-ember hover:text-ember"
-            }`}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill={count > 0 ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-            {count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-ember px-1 text-[0.6rem] font-black leading-[18px] text-ink shadow-[0_0_12px_-2px_rgba(255,69,0,0.9)]">
-                {count > 9 ? "9+" : count}
-              </span>
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+              {count > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-ember px-1 text-[0.6rem] font-black leading-[18px] text-ink shadow-[0_0_12px_-2px_rgba(255,69,0,0.9)]">
+                  {count > 9 ? "9+" : count}
+                </span>
+              )}
+            </button>
+
+            {utilOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 top-full z-50 w-56 pt-2"
+              >
+                <div className="rounded-xl border border-white/10 bg-[#0c0c0c] p-1.5 shadow-[0_28px_70px_-18px_rgba(0,0,0,0.95)] backdrop-blur-xl">
+                  <p className="px-3.5 pb-1.5 pt-2 text-[0.55rem] font-bold uppercase tracking-[0.3em] text-ember">
+                    Browse
+                  </p>
+                  {[
+                    { label: t("Community"), href: "/community" },
+                    { label: t("Gallery"), href: "/gallery" },
+                    { label: t("Watchlist"), href: "/watchlist", badge: count },
+                    { label: t("My Account"), href: "/account" },
+                  ].map((entry) => (
+                    <Link
+                      key={entry.href}
+                      href={entry.href}
+                      role="menuitem"
+                      onClick={() => setUtilOpen(false)}
+                      className={`group flex items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
+                        pathname === entry.href
+                          ? "bg-white/6 text-white"
+                          : "text-silver-2 hover:bg-white/6 hover:text-ember"
+                      }`}
+                    >
+                      {entry.label}
+                      <span className="flex items-center gap-2">
+                        {entry.badge > 0 && (
+                          <span className="grid min-w-[20px] place-items-center rounded-full bg-ember px-1.5 text-[0.6rem] font-black leading-[20px] text-ink">
+                            {entry.badge > 9 ? "9+" : entry.badge}
+                          </span>
+                        )}
+                        <span
+                          aria-hidden
+                          className="text-ember opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+                        >
+                          →
+                        </span>
+                      </span>
+                    </Link>
+                  ))}
+                  <div className="mx-3.5 my-1.5 h-px bg-white/8" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={toggleTheme}
+                    className="group flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-silver-2 transition-colors hover:bg-white/6 hover:text-ember"
+                  >
+                    {t("Theme")}
+                    <span aria-hidden className="text-ember opacity-0 transition-all duration-200 group-hover:opacity-100">
+                      →
+                    </span>
+                  </button>
+                </div>
+              </div>
             )}
-          </Link>
-          <Link
-            href="/account"
-            aria-label={t("My Account")}
-            title={t("My Account")}
-            className={`grid h-10 w-10 place-items-center rounded-md border transition-colors ${
-              pathname === "/account"
-                ? "border-ember text-ember"
-                : "border-white/15 text-silver hover:border-ember hover:text-ember"
-            }`}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" />
-            </svg>
-          </Link>
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={t("Toggle light or dark theme")}
-            title={t("Toggle light or dark theme")}
-            className="grid h-10 w-10 place-items-center rounded-md border border-white/15 text-silver transition-colors hover:border-ember hover:text-ember"
-          >
-            <svg viewBox="0 0 24 24" className="theme-icon-sun h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" strokeLinecap="round" />
-            </svg>
-            <svg viewBox="0 0 24 24" className="theme-icon-moon h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
+          </div>
           <button
             type="button"
             aria-label={t("Toggle menu")}
@@ -341,7 +358,7 @@ export default function Header() {
       {/* Mobile drop panel */}
       <div
         className={`overflow-hidden border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 lg:hidden ${
-          open ? "max-h-[36rem]" : "max-h-0"
+          open ? "max-h-[42rem]" : "max-h-0"
         }`}
       >
         <div className="flex flex-col px-5 py-4">
@@ -356,6 +373,22 @@ export default function Header() {
               {t(item.label)}
             </Link>
           ))}
+          <Link
+            href="/community"
+            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
+              pathname === "/community" ? "text-ember" : "text-silver-2"
+            }`}
+          >
+            {t("Community")}
+          </Link>
+          <Link
+            href="/gallery"
+            className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${
+              pathname === "/gallery" ? "text-ember" : "text-silver-2"
+            }`}
+          >
+            {t("Gallery")}
+          </Link>
           <Link
             href="/watchlist"
             className={`flex items-center justify-between border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${

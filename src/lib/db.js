@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS posts (
   role TEXT DEFAULT 'Official Studio Channel',
   pinned BOOLEAN DEFAULT FALSE,
   published BOOLEAN DEFAULT TRUE,
+  target TEXT DEFAULT 'community',
   media JSONB DEFAULT '[]'::jsonb,
   created_at BIGINT NOT NULL,
   updated_at BIGINT NOT NULL
@@ -159,6 +160,11 @@ const SEEDS = [
 
 async function doEnsureSchema() {
   await query(SCHEMA);
+
+  // existing deployments predate the feed-target column — add it idempotently
+  await query(
+    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS target TEXT NOT NULL DEFAULT 'community'"
+  );
 
   const { rows } = await query("SELECT value FROM meta WHERE key = 'seeded'");
   if (rows.length === 0) {

@@ -39,6 +39,7 @@ const SST = {
   Explore: "Batla",
   Studio: "Satjeng",
   "My watchlist": "Difilme tsa Ka",
+  Theme: "Boemo",
   "Toggle light or dark theme": "Fetola tlanye / e lebeng",
   "Toggle menu": "Fetola lenaneo",
 

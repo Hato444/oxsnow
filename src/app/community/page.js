@@ -58,11 +58,14 @@ export default function CommunityPage() {
   const [lightbox, setLightbox] = useState(null);
   const [menuFor, setMenuFor] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [feed, setFeed] = useState("community");
 
   const load = useCallback(async () => {
     try {
       const deviceId = getUid();
-      const data = await api(`/api/community?device=${encodeURIComponent(deviceId)}`);
+      const data = await api(
+        `/api/community?device=${encodeURIComponent(deviceId)}&target=${feed}`
+      );
       setPosts(data.posts);
       setFounder(data.founder);
     } catch (err) {
@@ -70,7 +73,7 @@ export default function CommunityPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [feed]);
 
   useEffect(() => {
     // defer so setState inside load() never runs synchronously in the effect
@@ -212,6 +215,40 @@ export default function CommunityPage() {
         </div>
       </div>
 
+      {/* Founder-only feed switch — community announcements vs event posters */}
+      {founder && (
+        <div className="mt-7 flex flex-wrap gap-2" role="tablist" aria-label="Select feed">
+          {[
+            { id: "community", label: "Community feed", hint: "Normal channel posts" },
+            { id: "events", label: "Events feed", hint: "Shown on /events" },
+          ].map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              role="tab"
+              aria-selected={feed === f.id}
+              onClick={() => setFeed(f.id)}
+              className={`cursor-pointer rounded-full border px-5 py-2.5 text-left transition-colors ${
+                feed === f.id
+                  ? "border-ember bg-ember/10"
+                  : "border-white/12 hover:border-white/30"
+              }`}
+            >
+              <span
+                className={`block text-[0.7rem] font-bold uppercase tracking-[0.16em] ${
+                  feed === f.id ? "text-white" : "text-silver-2"
+                }`}
+              >
+                {f.label}
+              </span>
+              <span className="mt-0.5 block text-[0.6rem] tracking-wide text-ash">
+                {f.hint}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
       {founder && drafts.length > 0 && (
         <div className="card mt-8 p-5">
           <p className="eyebrow !text-ember">Drafts &amp; unpublished</p>
@@ -240,6 +277,7 @@ export default function CommunityPage() {
       {composer && (
         <Composer
           editing={composer.editing}
+          defaultTarget={feed}
           onClose={() => setComposer(null)}
           onSaved={async () => {
             setComposer(null);
@@ -619,9 +657,10 @@ function compressImage(file) {
   });
 }
 
-function Composer({ editing, onClose, onSaved }) {
+function Composer({ editing, defaultTarget = "community", onClose, onSaved }) {
   const [text, setText] = useState(editing?.text || "");
   const [pinned, setPinned] = useState(Boolean(editing?.pinned));
+  const [target, setTarget] = useState(editing?.target || defaultTarget);
   const [author, setAuthor] = useState(editing?.author || "Oxsnow Studio");
   const [role, setRole] = useState(editing?.role || "Official Studio Channel");
   const [existing, setExisting] = useState(editing?.media || []);
@@ -693,6 +732,7 @@ function Composer({ editing, onClose, onSaved }) {
           media,
           pinned,
           published,
+          target,
           author: author.trim() || "Oxsnow Studio",
           role: role.trim() || "Official Studio Channel",
         },
@@ -771,6 +811,31 @@ function Composer({ editing, onClose, onSaved }) {
           Attach Photos / Video
           <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={onFiles} className="sr-only" />
         </label>
+        <div
+          role="radiogroup"
+          aria-label="Post to feed"
+          className="flex items-center rounded-full border border-white/15 p-0.5"
+        >
+          {[
+            { id: "community", label: "Community feed" },
+            { id: "events", label: "Events feed" },
+          ].map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              role="radio"
+              aria-checked={target === f.id}
+              onClick={() => setTarget(f.id)}
+              className={`cursor-pointer rounded-full px-4 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] transition-colors ${
+                target === f.id
+                  ? "bg-ember text-ink shadow-[0_0_14px_-4px_rgba(255,69,0,0.9)]"
+                  : "text-ash hover:text-silver"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
         <label className="flex cursor-pointer items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-steel">
           <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} className="accent-ember" />
           Pin to top

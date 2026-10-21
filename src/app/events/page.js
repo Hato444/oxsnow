@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import EventsFeed from "./EventsFeed";
 import { events, pastEvents } from "@/lib/site";
 
 export const metadata = {
@@ -138,6 +139,9 @@ export default function EventsPage() {
           })}
         </div>
       </div>
+
+      {/* ==================== LIVE EVENTS FEED (admin-posted) ==================== */}
+      <EventsFeed />
 
       {/* ============================ PAST ARCHIVE ============================ */}
       <div className="mt-24">
