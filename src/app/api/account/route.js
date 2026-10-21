@@ -91,7 +91,7 @@ export async function POST(request) {
       const id = `cus_${crypto.randomBytes(8).toString("hex")}`;
       await query(
         "INSERT INTO customers (id, email, name, password_hash, created_at) VALUES ($1,$2,$3,$4,$5)",
-        [id, email, name, hashPassword(password)]
+        [id, email, name, hashPassword(password), Date.now()]
       );
       await adoptDeviceEntitlements(id, deviceKey);
       await createCustomerSession(id);
