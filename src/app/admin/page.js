@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import AdminHire from "@/components/hire/AdminHire";
 
 function timeLabel(ts) {
   try {
@@ -161,6 +162,7 @@ export default function AdminPage() {
     { id: "overview", label: "Overview" },
     { id: "orders", label: `Orders (${orders.length})` },
     { id: "academy", label: `Academy (${data?.academy?.length || 0})` },
+    { id: "hire", label: "Equipment Hire" },
     { id: "newsletter", label: `Newsletter (${data?.newsletter?.length || 0})` },
     { id: "audit", label: "Audit" },
   ];
@@ -381,6 +383,8 @@ export default function AdminPage() {
               </table>
             </div>
           )}
+
+          {tab === "hire" && <AdminHire />}
 
           {tab === "newsletter" && (
             <div className="card p-6">

@@ -26,6 +26,7 @@ export const nav = [
   { label: "Films", href: "/films" },
   { label: "VOD", href: "/vod" },
   { label: "Events", href: "/events" },
+  { label: "Equipment Hire", href: "/hire" },
   { label: "Services", href: "/services" },
   { label: "Academy", href: "/academy" },
   { label: "About", href: "/about" },

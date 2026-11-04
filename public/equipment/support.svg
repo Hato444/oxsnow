@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Demo support placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c1c1c"/><stop offset="1" stop-color="#0a0a0a"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8e8e8"/><stop offset="1" stop-color="#5a5a5a"/></linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.05"><path d="M0 200H1200M0 400H1200M0 600H1200M300 0V800M600 0V800M900 0V800"/></g>
+  <circle cx="600" cy="400" r="230" fill="none" stroke="#ff4500" stroke-opacity="0.25" stroke-width="2"/>
+  <circle cx="600" cy="300" r="70" fill="none" stroke="url(#metal)" stroke-width="16"/>
+  <path d="M600 370v170M520 330l-120 250M680 330l120 250M600 540l-120 170M600 540l120 170" stroke="url(#metal)" stroke-width="16" stroke-linecap="round"/>
+  <text x="600" y="640" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="8" fill="#c0c0c0">SUPPORT</text>
+  <rect x="470" y="680" width="260" height="44" rx="22" fill="#ff4500" fill-opacity="0.16" stroke="#ff4500" stroke-opacity="0.5"/>
+  <text x="600" y="710" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="4" fill="#ff7a33">DEMO LISTING</text>
+</svg>
