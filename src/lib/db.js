@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { CATALOGUE_VERSION, HIRE_EQUIPMENT_SEED, LEGACY_EQUIPMENT_IDS } from "./hire/catalogue.mjs";
 
 let pool;
 let schemaPromise = null;
@@ -310,237 +311,6 @@ const SEEDS = [
   },
 ];
 
-// Clearly-labelled demo inventory. Staff can edit or archive every row; the
-// prices are illustrative only and are never presented as real Oxsnow stock.
-const HIRE_EQUIPMENT_SEED = [
-  {
-    id: "demo-cam-a",
-    slug: "demo-cinema-camera-a",
-    name: "Cinema Camera A",
-    category: "cameras",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Full-frame cinema body suitable for narrative and commercial work.",
-    specs: [
-      { label: "Sensor", value: "Demo specification" },
-      { label: "Mount", value: "Interchangeable" },
-      { label: "Recording", value: "Demo specification" },
-    ],
-    images: ["/equipment/cameras.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo battery kit", "Demo charger", "Demo cage"],
-    daily_rate_minor: 120000,
-    deposit_minor: 200000,
-    quantity_total: 2,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-cam-b",
-    slug: "demo-mirrorless-camera-b",
-    name: "Mirrorless Camera B",
-    category: "cameras",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Compact mirrorless body for documentary and run-and-gun work.",
-    specs: [
-      { label: "Sensor", value: "Demo specification" },
-      { label: "Stabilisation", value: "Demo specification" },
-    ],
-    images: ["/equipment/cameras.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo battery", "Demo strap"],
-    daily_rate_minor: 65000,
-    deposit_minor: 100000,
-    quantity_total: 3,
-    ownership: "partner",
-  },
-  {
-    id: "demo-lens-2470",
-    slug: "demo-24-70mm-zoom",
-    name: "24–70mm Zoom Lens",
-    category: "lenses",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Versatile standard zoom for interviews and coverage.",
-    specs: [
-      { label: "Focal length", value: "24–70mm" },
-      { label: "Aperture", value: "Demo specification" },
-    ],
-    images: ["/equipment/lenses.svg", "/equipment/demo-card.svg"],
-    accessories: ["Front cap", "Rear cap", "Demo hood"],
-    daily_rate_minor: 35000,
-    deposit_minor: 80000,
-    quantity_total: 4,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-lens-50",
-    slug: "demo-50mm-prime",
-    name: "50mm Prime Lens",
-    category: "lenses",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Fast prime for low-light and portrait work.",
-    specs: [
-      { label: "Focal length", value: "50mm" },
-      { label: "Aperture", value: "Demo specification" },
-    ],
-    images: ["/equipment/lenses.svg", "/equipment/demo-card.svg"],
-    accessories: ["Front cap", "Rear cap"],
-    daily_rate_minor: 25000,
-    deposit_minor: 50000,
-    quantity_total: 4,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-light-panel",
-    slug: "demo-led-panel-light",
-    name: "LED Panel Light",
-    category: "lighting",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Bi-colour panel for interviews and small sets.",
-    specs: [
-      { label: "Output", value: "Demo specification" },
-      { label: "Colour", value: "Bi-colour" },
-    ],
-    images: ["/equipment/lighting.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo stand", "Demo diffuser", "Power cable"],
-    daily_rate_minor: 30000,
-    deposit_minor: 60000,
-    quantity_total: 6,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-light-softbox",
-    slug: "demo-softbox-kit",
-    name: "Softbox Kit",
-    category: "lighting",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Softbox and speedlight kit for flattering key light.",
-    specs: [{ label: "Size", value: "Demo specification" }],
-    images: ["/equipment/lighting.svg", "/equipment/demo-card.svg"],
-    accessories: ["Softbox", "Demo speedlight", "Stand"],
-    daily_rate_minor: 22000,
-    deposit_minor: 40000,
-    quantity_total: 4,
-    ownership: "partner",
-  },
-  {
-    id: "demo-sound-mic",
-    slug: "demo-shotgun-microphone",
-    name: "Shotgun Microphone",
-    category: "sound",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Directional microphone for dialogue and field recording.",
-    specs: [
-      { label: "Pattern", value: "Demo specification" },
-      { label: "Connector", value: "XLR" },
-    ],
-    images: ["/equipment/sound.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo shock mount", "Demo windshield", "XLR cable"],
-    daily_rate_minor: 18000,
-    deposit_minor: 30000,
-    quantity_total: 5,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-sound-recorder",
-    slug: "demo-field-recorder",
-    name: "Field Recorder",
-    category: "sound",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Multi-track field recorder with clean preamps.",
-    specs: [
-      { label: "Tracks", value: "Demo specification" },
-      { label: "Media", value: "SD card" },
-    ],
-    images: ["/equipment/sound.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo SD card", "Demo batteries", "Bag"],
-    daily_rate_minor: 28000,
-    deposit_minor: 50000,
-    quantity_total: 3,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-support-tripod",
-    slug: "demo-fluid-head-tripod",
-    name: "Fluid Head Tripod",
-    category: "support",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Heavy-duty tripod with fluid head for smooth movement.",
-    specs: [
-      { label: "Payload", value: "Demo specification" },
-      { label: "Head", value: "Fluid" },
-    ],
-    images: ["/equipment/support.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo plate", "Carry bag"],
-    daily_rate_minor: 20000,
-    deposit_minor: 40000,
-    quantity_total: 5,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-support-gimbal",
-    slug: "demo-gimbal-stabiliser",
-    name: "Gimbal Stabiliser",
-    category: "support",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Three-axis gimbal for handheld movement.",
-    specs: [
-      { label: "Payload", value: "Demo specification" },
-      { label: "Axes", value: "3-axis" },
-    ],
-    images: ["/equipment/support.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo batteries", "Charger", "Case"],
-    daily_rate_minor: 45000,
-    deposit_minor: 90000,
-    quantity_total: 2,
-    ownership: "partner",
-  },
-  {
-    id: "demo-drone-kit",
-    slug: "demo-aerial-drone-kit",
-    name: "Aerial Drone Kit",
-    category: "drones",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Aerial platform with controller and batteries. Operator licence required.",
-    specs: [
-      { label: "Camera", value: "Demo specification" },
-      { label: "Flight time", value: "Demo specification" },
-    ],
-    images: ["/equipment/drones.svg", "/equipment/demo-card.svg"],
-    accessories: ["Controller", "Demo batteries", "Carry case"],
-    daily_rate_minor: 90000,
-    deposit_minor: 250000,
-    quantity_total: 2,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-acc-battery",
-    slug: "demo-battery-charger-kit",
-    name: "Battery & Charger Kit",
-    category: "accessories",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Spare batteries and multi-bay charger for long shoot days.",
-    specs: [{ label: "Compatibility", value: "Demo specification" }],
-    images: ["/equipment/accessories.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo batteries", "Multi-bay charger"],
-    daily_rate_minor: 12000,
-    deposit_minor: 25000,
-    quantity_total: 8,
-    ownership: "oxsnow",
-  },
-  {
-    id: "demo-acc-nd",
-    slug: "demo-nd-filter-set",
-    name: "ND Filter Set",
-    category: "accessories",
-    description:
-      "Demo listing — replace with real Oxsnow inventory. Neutral-density filters for controlling exposure outdoors.",
-    specs: [{ label: "Strengths", value: "Demo specification" }],
-    images: ["/equipment/accessories.svg", "/equipment/demo-card.svg"],
-    accessories: ["Demo filter case", "Cleaning cloth"],
-    daily_rate_minor: 9000,
-    deposit_minor: 15000,
-    quantity_total: 6,
-    ownership: "partner",
-  },
-];
-
 const HIRE_SETTINGS_SEED = {
   payment_instructions: JSON.stringify({
     status: "draft",
@@ -613,6 +383,66 @@ async function seedHireData() {
   );
 }
 
+async function syncHireCatalogue() {
+  const { rows } = await query("SELECT value FROM meta WHERE key = 'hire_catalogue_version'");
+  if (rows[0]?.value === CATALOGUE_VERSION) return;
+
+  const now = Date.now();
+  for (const item of HIRE_EQUIPMENT_SEED) {
+    await query(
+      `INSERT INTO hire_equipment
+        (id, slug, name, category, description, specs, images, accessories,
+         daily_rate_minor, deposit_minor, quantity_total, ownership, is_demo,
+         active, archived, created_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,TRUE,TRUE,FALSE,$13,$13)
+       ON CONFLICT (id) DO UPDATE SET
+         slug = EXCLUDED.slug,
+         name = EXCLUDED.name,
+         category = EXCLUDED.category,
+         description = EXCLUDED.description,
+         specs = EXCLUDED.specs,
+         images = EXCLUDED.images,
+         accessories = EXCLUDED.accessories,
+         daily_rate_minor = EXCLUDED.daily_rate_minor,
+         deposit_minor = EXCLUDED.deposit_minor,
+         quantity_total = EXCLUDED.quantity_total,
+         ownership = EXCLUDED.ownership,
+         is_demo = TRUE,
+         active = TRUE,
+         archived = FALSE,
+         updated_at = EXCLUDED.updated_at`,
+      [
+        item.id,
+        item.slug,
+        item.name,
+        item.category,
+        item.description,
+        JSON.stringify(item.specs),
+        JSON.stringify(item.images),
+        JSON.stringify(item.accessories),
+        item.daily_rate_minor,
+        item.deposit_minor,
+        item.quantity_total,
+        item.ownership,
+        now,
+      ]
+    );
+  }
+
+  if (LEGACY_EQUIPMENT_IDS.length > 0) {
+    await query(
+      "UPDATE hire_equipment SET archived = TRUE, active = FALSE, updated_at = $1 WHERE id = ANY($2::text[])",
+      [now, LEGACY_EQUIPMENT_IDS]
+    );
+  }
+
+  await query(
+    `INSERT INTO meta (key, value) VALUES ('hire_catalogue_version', $1)
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+    [CATALOGUE_VERSION]
+  );
+}
+
 async function doEnsureSchema() {
   await query(SCHEMA);
 
@@ -639,6 +469,7 @@ async function doEnsureSchema() {
   }
 
   await seedHireData();
+  await syncHireCatalogue();
 }
 
 export function ensureSchema() {

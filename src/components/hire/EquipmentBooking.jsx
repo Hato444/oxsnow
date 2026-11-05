@@ -70,6 +70,32 @@ export default function EquipmentBooking({ equipment, today }) {
     setMessage("Added to your booking list.");
   }
 
+  if (equipment.quantityTotal === 0) {
+    return (
+      <div className="card p-6">
+        <p className="eyebrow">Enquiry only</p>
+        <h2 className="mt-3 text-xl font-bold text-metal">Model to confirm</h2>
+        <p className="mt-3 text-sm leading-relaxed text-steel">
+          This item appears in the handwritten inventory, but the exact model has not been
+          confirmed. Studio staff need to verify the model before a price, deposit or availability
+          can be shown.
+        </p>
+        <div className="mt-5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-4 py-3 text-[0.72rem] leading-relaxed text-amber-100">
+          No booking can be placed for this item yet. Ask the studio and we will confirm the exact
+          kit before quoting.
+        </div>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href="/hire/quote" className="btn btn-primary flex-1">
+            Ask the studio
+          </Link>
+          <Link href="/hire" className="btn btn-ghost">
+            Back to catalogue
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const line = check?.items?.[0];
   const canAdd = Boolean(check?.ok && line?.exists && line.available >= quantity);
 

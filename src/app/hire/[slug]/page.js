@@ -2,6 +2,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import EquipmentBooking from "@/components/hire/EquipmentBooking";
+import EquipmentGallery from "@/components/hire/EquipmentGallery";
 import HireCartLink from "@/components/hire/HireCartLink";
 import { getEquipmentBySlug, getRelatedEquipment } from "@/lib/hire/data";
 import { RENTAL_DAY_RULE, todayISO } from "@/lib/hire/rules.mjs";
@@ -26,7 +27,7 @@ export default async function EquipmentPage({ params }) {
   if (!item) notFound();
   const related = await getRelatedEquipment(item.category, item.id);
   const today = todayISO();
-  const image = item.images?.[0] || "/equipment/demo-card.svg";
+  const unresolved = item.images.length === 0;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-5 pb-24 pt-36 sm:px-8">
@@ -42,21 +43,7 @@ export default async function EquipmentPage({ params }) {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1.25fr_1fr]">
         <div>
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-ink-2">
-            <img src={image} alt={item.name} className="aspect-[3/2] w-full object-cover" />
-          </div>
-          {item.images.length > 1 && (
-            <div className="mt-3 grid grid-cols-4 gap-3">
-              {item.images.slice(1, 5).map((src) => (
-                <img
-                  key={src}
-                  src={src}
-                  alt=""
-                  className="aspect-[3/2] w-full rounded-lg border border-white/10 object-cover"
-                />
-              ))}
-            </div>
-          )}
+          <EquipmentGallery name={item.name} images={item.images} variant="detail" />
 
           <div className="mt-8">
             <p className="eyebrow">{item.categoryLabel}</p>
@@ -70,9 +57,15 @@ export default async function EquipmentPage({ params }) {
               <span className="rounded-full border border-ember/30 bg-ember/5 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-ember">
                 Demo listing
               </span>
-              <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">
-                {item.quantityTotal} unit{item.quantityTotal === 1 ? "" : "s"} in demo stock
-              </span>
+              {unresolved ? (
+                <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-amber-200">
+                  Model to confirm · Enquiry only
+                </span>
+              ) : (
+                <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">
+                  {item.quantityTotal} unit{item.quantityTotal === 1 ? "" : "s"} in demo stock
+                </span>
+              )}
               <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">
                 {item.ownership === "partner" ? "Partner-owned" : "Oxsnow-owned"}
               </span>
@@ -114,18 +107,29 @@ export default async function EquipmentPage({ params }) {
 
           <div className="mt-10 rounded-xl border border-white/10 bg-ink-2 p-5">
             <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-metal">Pricing</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div>
-                <p className="text-2xl font-black text-fire">{money(item.dailyRateMinor)}</p>
-                <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">per rental day</p>
+            {item.dailyRateMinor > 0 ? (
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-2xl font-black text-fire">{money(item.dailyRateMinor)}</p>
+                  <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">
+                    per rental day
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-black text-metal">{money(item.depositMinor)}</p>
+                  <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">
+                    refundable deposit
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-black text-metal">{money(item.depositMinor)}</p>
+            ) : (
+              <div className="mt-4">
+                <p className="text-2xl font-black text-amber-200">Price on request</p>
                 <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">
-                  refundable deposit
+                  Hire details to be confirmed
                 </p>
               </div>
-            </div>
+            )}
             <p className="mt-4 text-[0.72rem] leading-relaxed text-ash">{RENTAL_DAY_RULE}</p>
           </div>
         </div>
@@ -151,17 +155,25 @@ export default async function EquipmentPage({ params }) {
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((r) => (
               <Link key={r.id} href={`/hire/${r.slug}`} className="card overflow-hidden">
-                <img
-                  src={r.images?.[0] || "/equipment/demo-card.svg"}
-                  alt={r.name}
-                  className="h-36 w-full object-cover"
-                />
+                {r.images?.[0] ? (
+                  <img
+                    src={r.images[0]}
+                    alt={r.name}
+                    className="h-36 w-full bg-ink-3 object-contain p-3"
+                  />
+                ) : (
+                  <div className="grid h-36 place-items-center bg-ink-3 px-4 text-center text-[0.6rem] font-bold uppercase tracking-[0.16em] text-amber-200">
+                    Photo pending
+                  </div>
+                )}
                 <div className="p-4">
                   <p className="text-[0.58rem] uppercase tracking-[0.18em] text-ash">
                     {r.categoryLabel}
                   </p>
                   <h3 className="mt-1.5 font-bold text-metal">{r.name}</h3>
-                  <p className="mt-1 text-sm text-fire">{money(r.dailyRateMinor)}/day</p>
+                  <p className={`mt-1 text-sm ${r.dailyRateMinor > 0 ? "text-fire" : "text-amber-200"}`}>
+                    {r.dailyRateMinor > 0 ? `${money(r.dailyRateMinor)}/day` : "Price on request"}
+                  </p>
                 </div>
               </Link>
             ))}

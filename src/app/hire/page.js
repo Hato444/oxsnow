@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import Reveal from "@/components/Reveal";
+import EquipmentCard from "@/components/hire/EquipmentCard";
 import HireCartLink from "@/components/hire/HireCartLink";
 import { availabilityMap, listEquipment } from "@/lib/hire/data";
 import { HIRE_CATEGORIES, RENTAL_DAY_RULE, todayISO } from "@/lib/hire/rules.mjs";
-import { money } from "@/lib/hire/ui";
 
 
 export const instant = false;
@@ -12,7 +12,7 @@ export const instant = false;
 export const metadata = {
   title: "Equipment Hire",
   description:
-    "Camera, lens, lighting, sound, support, drone and production equipment hire from Oxsnow Studio in Maseru, Lesotho. Demo catalogue — request availability and a quote.",
+    "Camera, sound, support and production equipment hire from Oxsnow Studio in Maseru, Lesotho. Demo catalogue — request availability and a quote.",
 };
 
 export default async function HirePage({ searchParams }) {
@@ -37,8 +37,8 @@ export default async function HirePage({ searchParams }) {
             The gear behind the story.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-steel">
-            Production-ready camera, lens, lighting, sound, support and drone packages from Oxsnow
-            Studio in Maseru. Build a request, check dates, and let the studio confirm availability.
+            Camera, sound, support and production equipment from Oxsnow Studio in Maseru. Build a
+            request, check dates, and let the studio confirm availability.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#catalogue" className="btn btn-primary">
@@ -84,12 +84,12 @@ export default async function HirePage({ searchParams }) {
           <div>
             <p className="eyebrow">Catalogue</p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-metal sm:text-4xl">
-              Choose your package.
+              Choose your equipment.
             </h2>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-steel">
-            Prices are shown in Lesotho loti (LSL) per rental day. A refundable deposit applies per
-            item and is returned after inspection.
+            Prices where shown are in Lesotho loti (LSL) per rental day. A refundable deposit
+            applies per item and is returned after inspection.
           </p>
         </div>
 
@@ -128,64 +128,11 @@ export default async function HirePage({ searchParams }) {
           </div>
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item, i) => {
-              const free = available[item.id] || 0;
-              return (
-                <Reveal key={item.id} delay={Math.min(i * 0.04, 0.3)}>
-                  <article className="card group flex h-full flex-col overflow-hidden">
-                    <Link href={`/hire/${item.slug}`} className="relative block overflow-hidden">
-                      <img
-                        src={item.images?.[0] || "/equipment/demo-card.svg"}
-                        alt={item.name}
-                        className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                      />
-                      <div className="absolute left-3 top-3 flex gap-2">
-                        <span className="rounded-full bg-ink/85 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.14em] text-silver backdrop-blur">
-                          Demo
-                        </span>
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.14em] backdrop-blur ${
-                            free > 0
-                              ? "bg-emerald-500/20 text-emerald-200"
-                              : "bg-red-500/20 text-red-200"
-                          }`}
-                        >
-                          {free > 0 ? `${free} free today` : "Booked today"}
-                        </span>
-                      </div>
-                    </Link>
-                    <div className="flex flex-1 flex-col p-5">
-                      <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ash">
-                        {item.categoryLabel}
-                      </p>
-                      <h3 className="mt-2 text-lg font-bold text-metal">{item.name}</h3>
-                      <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-steel">
-                        {item.description}
-                      </p>
-                      <div className="mt-5 flex items-end justify-between gap-3 border-t border-white/8 pt-4">
-                        <div>
-                          <p className="text-lg font-black text-fire">
-                            {money(item.dailyRateMinor)}
-                            <span className="ml-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ash">
-                              / day
-                            </span>
-                          </p>
-                          <p className="text-[0.65rem] text-ash">
-                            {money(item.depositMinor)} refundable deposit
-                          </p>
-                        </div>
-                        <Link
-                          href={`/hire/${item.slug}`}
-                          className="rounded-full border border-white/15 px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-silver transition-colors group-hover:border-ember group-hover:text-ember"
-                        >
-                          View & book
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
+            {items.map((item, i) => (
+              <Reveal key={item.id} delay={Math.min(i * 0.04, 0.3)}>
+                <EquipmentCard item={item} free={available[item.id] || 0} />
+              </Reveal>
+            ))}
           </div>
         )}
       </section>
