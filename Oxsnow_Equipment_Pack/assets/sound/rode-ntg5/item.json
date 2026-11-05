@@ -1,0 +1,17 @@
+{
+  "id": "rode-ntg5",
+  "name": "RØDE NTG5",
+  "category": "sound",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://rode.com/en/products/ntg5",
+  "images": [
+    {
+      "src": "assets/sound/rode-ntg5/manufacturer-microphone.jpg",
+      "role": "standalone",
+      "source": "https://edge.rode.com/images/page/1857/modules/4410/rode-ntg5-tube-line-wide-1080x1080-rgb.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

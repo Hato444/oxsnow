@@ -1,0 +1,15 @@
+{
+  "id": "sony-fx5",
+  "name": "Sony FX5",
+  "category": "cameras",
+  "status": "supplied",
+  "note": "Supplied promotional image is labelled FX5.",
+  "source": "https://electronics.sony.com/imaging/cinema-line-cameras/all-cinema-line-cameras/p/ilmefx5b",
+  "images": [
+    {
+      "src": "assets/cameras/sony-fx5/top-promotional.jpg",
+      "role": "promotional",
+      "original": "01-1000548090.jpg"
+    }
+  ]
+}

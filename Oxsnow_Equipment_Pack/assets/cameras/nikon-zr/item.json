@@ -1,0 +1,31 @@
+{
+  "id": "nikon-zr",
+  "name": "Nikon ZR",
+  "category": "cameras",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://www.nikonusa.com/p/zr/2006/overview",
+  "images": [
+    {
+      "src": "assets/cameras/nikon-zr/manufacturer-angle-1.jpg",
+      "role": "standalone",
+      "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_01.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/cameras/nikon-zr/manufacturer-angle-2.jpg",
+      "role": "standalone",
+      "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_02.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/cameras/nikon-zr/manufacturer-angle-3.jpg",
+      "role": "standalone",
+      "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_03.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

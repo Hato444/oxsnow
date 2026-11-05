@@ -1,0 +1,17 @@
+{
+  "id": "sound-devices-mixpre-3-ii",
+  "name": "Sound Devices MixPre-3 II",
+  "category": "sound",
+  "status": "needs-model",
+  "note": "Likely reading of handwriting; inventory model needs confirmation.",
+  "source": "https://www.sounddevices.com/product/mixpre-3-ii/",
+  "images": [
+    {
+      "src": "assets/sound/sound-devices-mixpre-3-ii/manufacturer-recorder-reference.jpg",
+      "role": "model-review",
+      "source": "https://cdn.sounddevices.com/wp-content/uploads/2019/08/mixpre3_ii_flatlay_16x9-1024x576.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

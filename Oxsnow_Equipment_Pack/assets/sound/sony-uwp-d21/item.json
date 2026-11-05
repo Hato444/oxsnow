@@ -1,0 +1,17 @@
+{
+  "id": "sony-uwp-d21",
+  "name": "Sony UWP-D21",
+  "category": "sound",
+  "status": "manufacturer-photo",
+  "note": "Confirm frequency-band/regional suffix from inventory.",
+  "source": "https://www.sony.co.uk/electronics/interchangeable-lens-cameras-microphones/uwp-d21",
+  "images": [
+    {
+      "src": "assets/sound/sony-uwp-d21/manufacturer-wireless-kit.jpg",
+      "role": "standalone",
+      "source": "https://www.sony.co.uk/image/32b5e55783506f2e0e9f888ed94e6a29?fmt=pjpeg&bgcolor=FFFFFF&bgc=FFFFFF&wid=2515&hei=1320",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

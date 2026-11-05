@@ -1,0 +1,20 @@
+{
+  "id": "sony-compact-reference",
+  "name": "Sony compact camera — verify model",
+  "category": "review",
+  "status": "review",
+  "note": "ZV-E10-family appearance. Do not assume these are one exact generation, or label as FX3/FX5. Excluded pending verification.",
+  "source": "",
+  "images": [
+    {
+      "src": "assets/review/sony-compact-reference/front-screen-open.jpg",
+      "role": "model-review",
+      "original": "06-1000548040.jpg"
+    },
+    {
+      "src": "assets/review/sony-compact-reference/three-quarter.jpg",
+      "role": "model-review",
+      "original": "07-1000548058.jpg"
+    }
+  ]
+}

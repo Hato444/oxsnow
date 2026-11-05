@@ -1,0 +1,15 @@
+{
+  "id": "sony-fx6-reference",
+  "name": "Sony FX6 — reference only",
+  "category": "review",
+  "status": "review",
+  "note": "Appears labelled FX6; not on requested handwritten list. Excluded from catalogue.",
+  "source": "",
+  "images": [
+    {
+      "src": "assets/review/sony-fx6-reference/side.jpg",
+      "role": "model-review",
+      "original": "02-1000548034.jpg"
+    }
+  ]
+}

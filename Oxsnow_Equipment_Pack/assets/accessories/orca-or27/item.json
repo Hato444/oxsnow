@@ -1,0 +1,31 @@
+{
+  "id": "orca-or27",
+  "name": "ORCA OR-27",
+  "category": "accessories",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://www.orcabags.com/product/or-27-small-sound-bag-for/",
+  "images": [
+    {
+      "src": "assets/accessories/orca-or27/manufacturer-bag.jpg",
+      "role": "rig-reference",
+      "source": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9295.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/accessories/orca-or27/manufacturer-bag-empty.jpg",
+      "role": "standalone",
+      "source": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9355.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/accessories/orca-or27/manufacturer-bag-open.jpg",
+      "role": "standalone",
+      "source": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9357.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

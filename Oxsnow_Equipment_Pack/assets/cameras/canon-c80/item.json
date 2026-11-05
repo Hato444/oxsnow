@@ -1,0 +1,24 @@
+{
+  "id": "canon-c80",
+  "name": "Canon EOS C80",
+  "category": "cameras",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://www.canon.com.au/cameras/EOS-C80",
+  "images": [
+    {
+      "src": "assets/cameras/canon-c80/manufacturer-angle-1.jpg",
+      "role": "standalone",
+      "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-1-eosc80-1400x960.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/cameras/canon-c80/manufacturer-angle-2.jpg",
+      "role": "standalone",
+      "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-2-eosc80-1400x960.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

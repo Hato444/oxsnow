@@ -1,0 +1,25 @@
+{
+  "id": "sony-fx9",
+  "name": "Sony FX9",
+  "category": "cameras",
+  "status": "supplied",
+  "note": "Clean side photo is the catalogue image. Other two are assembly references, not separate stabiliser products.",
+  "source": "",
+  "images": [
+    {
+      "src": "assets/cameras/sony-fx9/side-clean.jpg",
+      "role": "standalone",
+      "original": "10-1000548036.jpg"
+    },
+    {
+      "src": "assets/cameras/sony-fx9/side-rig-microphone-rails.jpg",
+      "role": "rig-reference",
+      "original": "04-1000548131.jpg"
+    },
+    {
+      "src": "assets/cameras/sony-fx9/three-quarter-tripod-rig.jpg",
+      "role": "rig-reference",
+      "original": "08-1000548068.jpg"
+    }
+  ]
+}

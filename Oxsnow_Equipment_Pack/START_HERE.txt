@@ -1,0 +1,9 @@
+1. Extract this ZIP.
+2. Open index.html in your browser to inspect the equipment gallery.
+3. Sliders are visible where multiple approved angles exist (Canon C80, Nikon ZR, Zoom H4n Pro, ORCA bag).
+4. Enable Show review references to inspect camera rigs and uncertain images.
+5. Give this whole extracted folder to OpenCode, together with your existing website project.
+
+OpenCode: integrate these model folders and independent card slideshows into the existing Oxsnow equipment page. Read README.md and missing-equipment.csv. Keep existing booking IDs, prices, availability and quote functionality. Do not deploy this preview as the full website. Do not use review/rig photos as standalone equipment listings. Resolve unconfirmed models before publication.
+
+The live website has not been modified. Combined equipment has been excluded from the default preview rather than digitally erased. No standalone stabiliser image/model was supplied.

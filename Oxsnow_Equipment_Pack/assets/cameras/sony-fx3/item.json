@@ -1,0 +1,20 @@
+{
+  "id": "sony-fx3",
+  "name": "Sony FX3",
+  "category": "cameras",
+  "status": "supplied",
+  "note": "Top/rear photo visibly reads FX3. XLR-handle view is provisional: check body model before using it as another angle.",
+  "source": "",
+  "images": [
+    {
+      "src": "assets/cameras/sony-fx3/top-rear.jpg",
+      "role": "standalone",
+      "original": "03-1000548030.jpg"
+    },
+    {
+      "src": "assets/cameras/sony-fx3/three-quarter-xlr-microphone.jpg",
+      "role": "rig-reference",
+      "original": "09-1000548124.jpg"
+    }
+  ]
+}

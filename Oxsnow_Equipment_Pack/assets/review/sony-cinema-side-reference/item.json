@@ -1,0 +1,15 @@
+{
+  "id": "sony-cinema-side-reference",
+  "name": "Sony compact cinema camera — verify model",
+  "category": "review",
+  "status": "review",
+  "note": "Body model is not readable in this side view. Includes XLR handle and shotgun microphone. Do not assign to FX3 or FX5 without confirmation.",
+  "source": "",
+  "images": [
+    {
+      "src": "assets/review/sony-cinema-side-reference/side-xlr-microphone.jpg",
+      "role": "model-review",
+      "original": "05-1000548132.jpg"
+    }
+  ]
+}

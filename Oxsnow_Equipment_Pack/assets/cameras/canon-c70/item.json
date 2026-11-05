@@ -1,0 +1,17 @@
+{
+  "id": "canon-c70",
+  "name": "Canon EOS C70",
+  "category": "cameras",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://www.usa.canon.com/shop/p/eos-c70",
+  "images": [
+    {
+      "src": "assets/cameras/canon-c70/manufacturer-three-quarter.jpg",
+      "role": "standalone",
+      "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c70/alt-eos-c70-1400x960.jpg?hash=768278EAE564B73097158FF029DDBEFA&mw=1400",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}

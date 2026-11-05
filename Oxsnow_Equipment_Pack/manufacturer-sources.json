@@ -1,0 +1,155 @@
+[
+  {
+    "id": "canon-c70",
+    "url": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c70/alt-eos-c70-1400x960.jpg?hash=768278EAE564B73097158FF029DDBEFA&mw=1400",
+    "src": "assets/cameras/canon-c70/manufacturer-three-quarter.jpg",
+    "role": "standalone",
+    "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c70/alt-eos-c70-1400x960.jpg?hash=768278EAE564B73097158FF029DDBEFA&mw=1400",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "canon-c80",
+    "url": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-1-eosc80-1400x960.jpg",
+    "src": "assets/cameras/canon-c80/manufacturer-angle-1.jpg",
+    "role": "standalone",
+    "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-1-eosc80-1400x960.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "canon-c80",
+    "url": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-2-eosc80-1400x960.jpg",
+    "src": "assets/cameras/canon-c80/manufacturer-angle-2.jpg",
+    "role": "standalone",
+    "source": "https://www.canon.com.au/-/media/images/canon/products/cinema-cameras/eos-c80/carousel-2-eosc80-1400x960.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "nikon-zr",
+    "url": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_01.jpg",
+    "src": "assets/cameras/nikon-zr/manufacturer-angle-1.jpg",
+    "role": "standalone",
+    "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_01.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "nikon-zr",
+    "url": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_02.jpg",
+    "src": "assets/cameras/nikon-zr/manufacturer-angle-2.jpg",
+    "role": "standalone",
+    "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_02.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "nikon-zr",
+    "url": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_03.jpg",
+    "src": "assets/cameras/nikon-zr/manufacturer-angle-3.jpg",
+    "role": "standalone",
+    "source": "https://imaging.nikon.com/imaging/lineup/z_cinema/z_r/img/product_01_03.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "rode-ntg5",
+    "url": "https://edge.rode.com/images/page/1857/modules/4410/rode-ntg5-tube-line-wide-1080x1080-rgb.jpg",
+    "src": "assets/sound/rode-ntg5/manufacturer-microphone.jpg",
+    "role": "standalone",
+    "source": "https://edge.rode.com/images/page/1857/modules/4410/rode-ntg5-tube-line-wide-1080x1080-rgb.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "sound-devices-mixpre-3-ii",
+    "url": "https://cdn.sounddevices.com/wp-content/uploads/2019/08/mixpre3_ii_flatlay_16x9-1024x576.jpg",
+    "src": "assets/sound/sound-devices-mixpre-3-ii/manufacturer-recorder-reference.jpg",
+    "role": "model-review",
+    "source": "https://cdn.sounddevices.com/wp-content/uploads/2019/08/mixpre3_ii_flatlay_16x9-1024x576.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "orca-or27",
+    "url": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9355.jpg",
+    "src": "assets/accessories/orca-or27/manufacturer-bag-empty.jpg",
+    "role": "standalone",
+    "source": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9355.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "orca-or27",
+    "url": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9357.jpg",
+    "src": "assets/accessories/orca-or27/manufacturer-bag-open.jpg",
+    "role": "standalone",
+    "source": "https://www.orcabags.com/wp-content/uploads/2016/12/DSC_9357.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "sony-smad-p5",
+    "url": "https://d1ncau8tqf99kp.cloudfront.net/converted/104572_original_local_1200x1050_v3_converted.webp",
+    "src": "assets/sound/sony-smad-p5/manufacturer-adapter.webp",
+    "role": "standalone",
+    "source": "https://d1ncau8tqf99kp.cloudfront.net/converted/104572_original_local_1200x1050_v3_converted.webp",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "sony-uwp-d21",
+    "url": "https://www.sony.co.uk/image/32b5e55783506f2e0e9f888ed94e6a29?fmt=pjpeg&bgcolor=FFFFFF&bgc=FFFFFF&wid=2515&hei=1320",
+    "src": "assets/sound/sony-uwp-d21/manufacturer-wireless-kit.jpg",
+    "role": "standalone",
+    "source": "https://www.sony.co.uk/image/32b5e55783506f2e0e9f888ed94e6a29?fmt=pjpeg&bgcolor=FFFFFF&bgc=FFFFFF&wid=2515&hei=1320",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "zoom-h4n-pro",
+    "url": "https://zoomcorp.com/media/original_images/H4nPro_black_front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1003%2C908%2C1837%2C1463_size_canvas.jpg",
+    "src": "assets/sound/zoom-h4n-pro/manufacturer-front.jpg",
+    "role": "standalone",
+    "source": "https://zoomcorp.com/media/original_images/H4nPro_black_front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1003%2C908%2C1837%2C1463_size_canvas.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "zoom-h4n-pro",
+    "url": "https://zoomcorp.com/media/original_images/H4nPro_black_rear_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C935%2C2015%2C1453_size_canvas.jpg",
+    "src": "assets/sound/zoom-h4n-pro/manufacturer-rear.jpg",
+    "role": "standalone",
+    "source": "https://zoomcorp.com/media/original_images/H4nPro_black_rear_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C935%2C2015%2C1453_size_canvas.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "zoom-h4n-pro",
+    "url": "https://zoomcorp.com/media/original_images/H4nPro_black__Right_side.jpg.0x800_q80_crop-%2Cscale_focal_area-606%2C676%2C1148%2C1028_size_canvas.jpg",
+    "src": "assets/sound/zoom-h4n-pro/manufacturer-right.jpg",
+    "role": "standalone",
+    "source": "https://zoomcorp.com/media/original_images/H4nPro_black__Right_side.jpg.0x800_q80_crop-%2Cscale_focal_area-606%2C676%2C1148%2C1028_size_canvas.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "zoom-h4n-pro",
+    "url": "https://zoomcorp.com/media/original_images/H4nPro_black_Left_side.jpg.0x800_q80_crop-%2Cscale_focal_area-625%2C661%2C1185%2C1064_size_canvas.jpg",
+    "src": "assets/sound/zoom-h4n-pro/manufacturer-left.jpg",
+    "role": "standalone",
+    "source": "https://zoomcorp.com/media/original_images/H4nPro_black_Left_side.jpg.0x800_q80_crop-%2Cscale_focal_area-625%2C661%2C1185%2C1064_size_canvas.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  },
+  {
+    "id": "zoom-h4n-pro",
+    "url": "https://zoomcorp.com/media/original_images/H4nPro_black_Slant_Front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C937%2C1923%2C1519_size_canvas.jpg",
+    "src": "assets/sound/zoom-h4n-pro/manufacturer-three-quarter.jpg",
+    "role": "standalone",
+    "source": "https://zoomcorp.com/media/original_images/H4nPro_black_Slant_Front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C937%2C1923%2C1519_size_canvas.jpg",
+    "origin": "manufacturer",
+    "rights": "Manufacturer reference image; publication licence not established."
+  }
+]

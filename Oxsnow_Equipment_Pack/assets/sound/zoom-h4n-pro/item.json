@@ -1,0 +1,45 @@
+{
+  "id": "zoom-h4n-pro",
+  "name": "Zoom H4n Pro",
+  "category": "sound",
+  "status": "manufacturer-photo",
+  "note": "",
+  "source": "https://zoomcorp.com/en/us/handheld-recorders/handheld-recorders/h4n-pro/",
+  "images": [
+    {
+      "src": "assets/sound/zoom-h4n-pro/manufacturer-front.jpg",
+      "role": "standalone",
+      "source": "https://zoomcorp.com/media/original_images/H4nPro_black_front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1003%2C908%2C1837%2C1463_size_canvas.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/sound/zoom-h4n-pro/manufacturer-rear.jpg",
+      "role": "standalone",
+      "source": "https://zoomcorp.com/media/original_images/H4nPro_black_rear_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C935%2C2015%2C1453_size_canvas.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/sound/zoom-h4n-pro/manufacturer-right.jpg",
+      "role": "standalone",
+      "source": "https://zoomcorp.com/media/original_images/H4nPro_black__Right_side.jpg.0x800_q80_crop-%2Cscale_focal_area-606%2C676%2C1148%2C1028_size_canvas.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/sound/zoom-h4n-pro/manufacturer-left.jpg",
+      "role": "standalone",
+      "source": "https://zoomcorp.com/media/original_images/H4nPro_black_Left_side.jpg.0x800_q80_crop-%2Cscale_focal_area-625%2C661%2C1185%2C1064_size_canvas.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    },
+    {
+      "src": "assets/sound/zoom-h4n-pro/manufacturer-three-quarter.jpg",
+      "role": "standalone",
+      "source": "https://zoomcorp.com/media/original_images/H4nPro_black_Slant_Front_2.jpg.0x800_q80_crop-%2Cscale_focal_area-1007%2C937%2C1923%2C1519_size_canvas.jpg",
+      "origin": "manufacturer",
+      "rights": "Manufacturer reference image; publication licence not established."
+    }
+  ]
+}
