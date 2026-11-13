@@ -8,6 +8,7 @@ import { navContact, navPrimary, navSecondary, site } from "@/lib/site";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
 import { LANGS } from "@/lib/i18n";
 import { useLang } from "@/components/lang/LangProvider";
+import HomeMenu from "@/components/HomeMenu";
 
 // 16px inline icons for the utility menu — drawn to sit on the text baseline
 const svgBase = {
@@ -157,15 +158,16 @@ export default function Header() {
 
         <nav
           aria-label="Primary"
-          className="ml-3 hidden items-center gap-1 lg:flex xl:ml-9"
+          className="ml-1 hidden items-center gap-0 lg:flex xl:ml-3 xl:gap-1"
         >
           {navPrimary.map((item) => {
+            if (item.href === "/") return <HomeMenu key={item.href} />;
             const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
+                className={`relative px-2 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors xl:px-3 xl:tracking-[0.18em] ${
                   active ? "text-white" : "text-silver-2 hover:text-white"
                 }`}
               >
@@ -178,6 +180,11 @@ export default function Header() {
               </Link>
             );
           })}
+
+          <Link href="/community" className={`relative px-2 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors xl:px-3 xl:tracking-[0.18em] ${pathname === "/community" ? "text-white" : "text-silver-2 hover:text-white"}`}>
+            {t("Community")}
+            <span className={`absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-ember to-transparent transition-opacity ${pathname === "/community" ? "opacity-100" : "opacity-0"}`} />
+          </Link>
 
           {/* Studio — overflow group so the bar never crowds at lg widths */}
           <div
@@ -293,7 +300,7 @@ export default function Header() {
           <Link
             href="/community"
             title={t("Community")}
-            className={`group relative hidden h-10 w-10 place-items-center rounded-md border transition-colors sm:grid ${
+            className={`group relative hidden h-10 w-10 place-items-center rounded-md border transition-colors sm:grid lg:hidden ${
               pathname === "/community"
                 ? "border-ember text-ember"
                 : "border-white/15 text-silver hover:border-ember hover:text-ember"
@@ -514,12 +521,16 @@ export default function Header() {
 
       {/* Mobile drop panel */}
       <div
-        className={`overflow-hidden border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 lg:hidden ${
-          open ? "max-h-[42rem]" : "max-h-0"
+        className={`overflow-y-auto border-t border-white/10 bg-ink/95 backdrop-blur-xl transition-[max-height] duration-500 lg:hidden ${
+          open ? "max-h-[calc(100svh-4rem)]" : "max-h-0"
         }`}
       >
         <div className="flex flex-col px-5 py-4">
-          {[...navPrimary, navContact].map((item) => (
+          <HomeMenu mobile onNavigate={() => setOpen(false)} />
+          <Link href="/community" onClick={() => setOpen(false)} className={`border-b border-white/5 py-3 text-sm font-semibold uppercase tracking-[0.2em] ${pathname === "/community" ? "text-ember" : "text-silver-2"}`}>
+            {t("Community")}
+          </Link>
+          {[...navPrimary.filter((item) => item.href !== "/"), navContact].map((item) => (
             <Link
               key={item.href}
               href={item.href}

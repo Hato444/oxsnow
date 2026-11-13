@@ -155,6 +155,7 @@ export default function WatchModal({ item, onClose }) {
                       : item.title
                   }
                   locked={locked}
+                  protectedPlayback={Boolean(watchingFilm)}
                   autoPlay={watchingTeaser || watchingFilm}
                   onLocked={revealActions}
                   onPlay={!watchingTeaser && !watchingFilm ? revealActions : undefined}

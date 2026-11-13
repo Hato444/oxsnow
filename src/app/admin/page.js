@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import AdminHire from "@/components/hire/AdminHire";
+import AdminFilms from "@/components/AdminFilms";
 
 function timeLabel(ts) {
   try {
@@ -163,6 +164,7 @@ export default function AdminPage() {
     { id: "orders", label: `Orders (${orders.length})` },
     { id: "academy", label: `Academy (${data?.academy?.length || 0})` },
     { id: "hire", label: "Equipment Hire" },
+    { id: "films", label: "Film Drafts" },
     { id: "newsletter", label: `Newsletter (${data?.newsletter?.length || 0})` },
     { id: "audit", label: "Audit" },
   ];
@@ -385,6 +387,7 @@ export default function AdminPage() {
           )}
 
           {tab === "hire" && <AdminHire />}
+          {tab === "films" && <AdminFilms />}
 
           {tab === "newsletter" && (
             <div className="card p-6">

@@ -49,7 +49,7 @@ const PRIMARY_HREFS = ["/", "/films", "/vod", "/events"];
 export const navPrimary = nav.filter((i) => PRIMARY_HREFS.includes(i.href));
 export const navContact = nav.find((i) => i.href === "/contact");
 export const navSecondary = nav.filter(
-  (i) => !PRIMARY_HREFS.includes(i.href) && i.href !== "/contact"
+  (i) => !PRIMARY_HREFS.includes(i.href) && i.href !== "/contact" && i.href !== "/about"
 );
 
 export const vision =

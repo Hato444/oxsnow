@@ -69,6 +69,7 @@ export default function VideoPlayer({
   onBack,
   backLabel = "Back",
   hoverPreview = null,
+  protectedPlayback = false,
 }) {
   const wrapRef = useRef(null);
   const videoRef = useRef(null);
@@ -153,6 +154,7 @@ export default function VideoPlayer({
       ref={wrapRef}
       onMouseMove={bump}
       onMouseLeave={() => setShowControls(false)}
+      onContextMenu={protectedPlayback ? (e) => e.preventDefault() : undefined}
       className="group relative aspect-video w-full overflow-hidden bg-black"
     >
       {onBack && (
@@ -170,6 +172,7 @@ export default function VideoPlayer({
           src={src}
           poster={poster || undefined}
           playsInline
+          controlsList={protectedPlayback ? "nodownload" : undefined}
           preload="metadata"
           autoPlay={autoPlay}
           muted={muted}

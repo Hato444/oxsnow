@@ -12,6 +12,7 @@ export const metadata = {
   description:
     "Rent current releases (TVOD) or unlock the Cultural Pass (SVOD) — Basotho history, diaspora favorites and behind-the-camera access.",
 };
+export const instant = false;
 
 const plans = [
   {
@@ -37,7 +38,10 @@ const plans = [
   },
 ];
 
-export default function VodPage() {
+export default async function VodPage({ searchParams }) {
+  const { collection } = await searchParams;
+  const selected = vodRows.find((group) => group.row === collection);
+  const rows = selected ? [selected] : vodRows;
   return (
     <section className="mx-auto w-full max-w-7xl px-5 pb-24 pt-36 sm:px-8">
       <Reveal>
@@ -153,19 +157,26 @@ export default function VodPage() {
 
       {/* Featured rows */}
       <div id="titles" className="mt-20 space-y-16 scroll-mt-24">
-        {vodRows.map((group) => (
+        {selected && (
+          <Link href="/vod#titles" className="text-xs font-semibold uppercase tracking-[0.2em] text-silver-2 hover:text-ember">
+            ← All collections
+          </Link>
+        )}
+        {rows.map((group) => (
           <div key={group.row}>
             <Reveal>
               <div className="flex items-end justify-between gap-4">
                 <h2 className="text-2xl font-bold tracking-tight text-metal">
                   {group.row}
                 </h2>
-                <span className="select-none text-[0.65rem] uppercase tracking-[0.24em] text-ash">
-                  See all
-                </span>
+                {!selected && (
+                  <Link href={`/vod?collection=${encodeURIComponent(group.row)}#titles`} className="text-[0.65rem] uppercase tracking-[0.24em] text-ash hover:text-ember" aria-label={`See all ${group.row}`}>
+                    See all →
+                  </Link>
+                )}
               </div>
             </Reveal>
-            <div className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
+            <div className={selected ? "mt-6 flex flex-wrap gap-5 pb-4" : "mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4"}>
               {group.items.map((item, i) => (
                 <Reveal key={item.title} delay={i * 0.05} className="snap-start">
                     <WatchTrigger
@@ -176,7 +187,8 @@ export default function VodPage() {
                         src: item.src,
                         teaser: item.teaser,
                         movie: item.movie,
-                        preview: item.preview,
+                         preview: item.preview,
+                         logline: item.logline,
                       }}
                       className="card group relative w-[220px] shrink-0 overflow-hidden text-left"
                     >
