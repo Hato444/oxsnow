@@ -3,6 +3,8 @@ import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import FeaturedRail from "@/components/FeaturedRail";
 import SupportPanel from "@/components/SupportPanel";
+import ValueIcon from "@/components/ValueIcon";
+import CulturalPass from "@/components/CulturalPass";
 import { films, pillars, site, stats, values } from "@/lib/site";
 
 export default function Home() {
@@ -203,9 +205,9 @@ export default function Home() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {values.map((v, i) => (
               <Reveal key={v.title} delay={i * 0.08}>
-                <div className="h-full">
+                <div className="group/value h-full">
                   <div className="mb-4 grid h-11 w-11 place-items-center rounded-lg border border-white/12 bg-gradient-to-b from-white/8 to-transparent">
-                    <span className="h-2 w-2 rounded-full bg-ember shadow-[0_0_12px_3px_rgba(255,69,0,0.5)]" />
+                    <ValueIcon value={v.title} />
                   </div>
                   <h3 className="text-lg font-bold text-white">{v.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-steel">
@@ -247,33 +249,7 @@ export default function Home() {
       {/* ============================ FINAL CTA ============================ */}
       <section className="mx-auto w-full max-w-7xl px-5 py-24 sm:px-8">
         <Reveal>
-          <div className="card relative overflow-hidden px-8 py-16 text-center sm:px-16">
-            <div
-              className="absolute inset-0 opacity-70"
-              style={{
-                background:
-                  "radial-gradient(70% 120% at 50% 130%, rgba(255,69,0,0.28), transparent 60%)",
-              }}
-            />
-            <div className="relative">
-              <p className="eyebrow">The Cultural Pass</p>
-              <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-black tracking-tight text-metal sm:text-5xl">
-                Stream the stories that built a nation.
-              </h2>
-              <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-steel">
-                Rent new releases or unlock the full Basotho history archive on
-                the Oxsnow VOD storefront.
-              </p>
-              <div className="mt-9 flex flex-wrap justify-center gap-4">
-                <Link href="/vod" className="btn btn-primary">
-                  Enter VOD
-                </Link>
-                <Link href="/contact" className="btn btn-ghost">
-                  Partner With Us
-                </Link>
-              </div>
-            </div>
-          </div>
+          <CulturalPass films={films.filter((film) => film.status === "Available" && film.cover).slice(0, 5)} />
         </Reveal>
       </section>
     </>

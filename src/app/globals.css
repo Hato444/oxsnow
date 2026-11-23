@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+.cultural-pass-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.cultural-pass-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+  transform: translateX(-150%);
+  transition: transform 600ms ease;
+  pointer-events: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cultural-pass-sweep:hover::after { transform: translateX(150%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cultural-pass-sweep::after { transition: none; }
+}
+
 /* ==========================================================================
    OXSNOW STUDIO — Design tokens
    Deep matte black steel + brushed metallic silver + controlled fire

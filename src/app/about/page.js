@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import ValueIcon from "@/components/ValueIcon";
 import { about, founders, values, vision } from "@/lib/site";
 
 export const metadata = {
@@ -252,9 +253,9 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {values.map((v, i) => (
             <Reveal key={v.title} delay={i * 0.08}>
-              <div className="h-full">
+              <div className="group/value h-full">
                 <div className="mb-4 grid h-11 w-11 place-items-center rounded-lg border border-white/12 bg-gradient-to-b from-white/8 to-transparent">
-                  <span className="h-2 w-2 rounded-full bg-ember shadow-[0_0_12px_3px_rgba(255,69,0,0.5)]" />
+                  <ValueIcon value={v.title} />
                 </div>
                 <h3 className="text-lg font-bold text-white">{v.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-steel">{v.copy}</p>

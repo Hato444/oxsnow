@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { nav, navExtra, site, socials } from "@/lib/site";
 import { useLang } from "@/components/lang/LangProvider";
@@ -44,6 +45,7 @@ const SOCIAL_ICONS = {
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(""); // "" | "busy" | "joined" | "error"
+  const [message, setMessage] = useState("");
   const [year, setYear] = useState("");
   const { t } = useLang();
 
@@ -64,146 +66,62 @@ export default function Footer() {
       });
       const data = await res.json().catch(() => ({ ok: false }));
       if (!res.ok || !data.ok) throw new Error(data.error || "Failed");
+      setMessage(data.alreadySubscribed ? "This email is already subscribed." : "You're on the list. Thank you for joining.");
       setStatus("joined");
       setEmail("");
-    } catch {
+    } catch (err) {
+      setMessage(err.message === "Failed to fetch" ? "Could not connect. Please try again." : err.message);
       setStatus("error");
     }
   }
 
   return (
     <footer className="relative z-10 mt-24 border-t border-white/10 bg-ink-2/60">
-      {/* Newsletter — fire-accent CTA */}
-      <div className="border-b border-white/10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="eyebrow">{t("Newsletter")}</p>
-            <h3 className="mt-2 text-2xl font-bold tracking-tight text-metal sm:text-3xl">
-              {t("Stay connected to Basotho stories")}
-            </h3>
+      <div className="mx-auto w-full max-w-7xl px-5 pt-12 sm:px-8">
+        <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-ink-3 p-6 sm:p-9 lg:p-10">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgba(255,69,0,0.14),transparent_55%)]" />
+          <div className="relative grid gap-7 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="eyebrow">The Oxsnow Dispatch</p>
+              <h3 className="mt-3 text-2xl font-bold tracking-tight text-metal sm:text-3xl">The next story starts here.</h3>
+              <p className="mt-3 max-w-lg text-sm leading-relaxed text-silver-2">Film premieres, behind-the-scenes stories and studio updates. Straight to your inbox.</p>
+            </div>
+            <form onSubmit={subscribe} className="w-full">
+              <label htmlFor="footer-email" className="sr-only">Email address</label>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <input id="footer-email" type="email" autoComplete="email" maxLength={254} required value={email} onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus(""); }} placeholder="you@example.com" disabled={status === "joined"} className="h-12 min-w-0 w-full rounded-full border border-white/15 bg-ink px-5 text-sm text-silver outline-none transition-colors placeholder:text-ash focus:border-ember" />
+                <button type="submit" disabled={status === "busy" || status === "joined"} className="btn btn-primary h-12 shrink-0 disabled:opacity-60">{status === "busy" ? t("Joining…") : status === "joined" ? t("Joined ✓") : status === "error" ? "Retry" : t("Join")}</button>
+              </div>
+              <p role="status" aria-live="polite" className={`mt-3 text-xs ${status === "error" ? "text-red-300" : "text-silver-2"}`}>{message}</p>
+              <p className="mt-2 text-xs leading-relaxed text-ash">To unsubscribe, <a className="underline hover:text-ember" href={`mailto:${site.email}?subject=Unsubscribe%20from%20Oxsnow%20Dispatch`}>email the studio</a>.</p>
+            </form>
           </div>
-          <form
-            onSubmit={subscribe}
-            className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-center"
-          >
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              disabled={status === "joined"}
-              className="h-12 w-full rounded-full border border-white/15 bg-ink px-5 text-sm text-silver outline-none transition-colors placeholder:text-ash focus:border-ember"
-            />
-            <button type="submit" disabled={status === "busy" || status === "joined"} className="btn btn-primary h-12 shrink-0 disabled:opacity-60">
-              {status === "busy"
-                ? t("Joining…")
-                : status === "joined"
-                  ? t("Joined ✓")
-                  : status === "error"
-                    ? "Retry"
-                    : t("Join")}
-            </button>
-            {status === "error" && (
-              <span className="text-xs font-semibold text-red-300 sm:sr-only">Failed — try again</span>
-            )}
-          </form>
         </div>
       </div>
 
-      <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <span className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-md border border-white/15">
-              <span className="h-2.5 w-2.5 rounded-full bg-ember shadow-[0_0_14px_4px_rgba(255,69,0,0.55)]" />
-            </span>
-            <span className="text-sm font-bold tracking-[0.28em] text-metal">
-              OXSNOW STUDIO
-            </span>
-          </span>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-steel">
-            {site.mission} A Lesotho-based umbrella studio founded in {site.founded}
-            &nbsp;— industrializing authentic Basotho culture and heritage.
-          </p>
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+        <div>
+          <Link href="/" aria-label="Oxsnow Studio home"><Image src={site.logo} alt="Oxsnow Studio" width={1855} height={496} className="h-auto w-44" /></Link>
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-steel">{site.mission} A Lesotho-based umbrella studio founded in {site.founded} — industrializing authentic Basotho culture and heritage.</p>
           <div className="mt-6 flex items-center gap-2.5">
-            {socials.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                title={s.label}
-                className="grid h-9 w-9 place-items-center rounded-md border border-white/15 text-silver transition-colors hover:border-ember hover:text-ember"
-              >
-                {SOCIAL_ICONS[s.label]}
-              </a>
-            ))}
+            {socials.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} title={s.label} className="grid h-9 w-9 place-items-center rounded-md border border-white/15 text-silver transition-colors duration-200 hover:border-ember hover:text-ember motion-reduce:transition-none">{SOCIAL_ICONS[s.label]}</a>)}
           </div>
         </div>
-
-        <div>
-          <p className="eyebrow">{t("Explore")}</p>
-          <ul className="mt-4 space-y-2 text-sm">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-silver-2 transition-colors hover:text-ember"
-                >
-                  {t(item.label)}
-                </Link>
-              </li>
-            ))}
-            {navExtra.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-silver-2 transition-colors hover:text-ember"
-                >
-                  {t(item.label)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p className="eyebrow">{t("Studio")}</p>
-          <ul className="mt-4 space-y-2 text-sm text-steel">
-            <li>{site.location}</li>
-            <li>
-              <a
-                href={`mailto:${site.email}`}
-                className="transition-colors hover:text-ember"
-              >
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={`tel:${site.phone.replace(/\s+/g, "")}`}
-                className="transition-colors hover:text-ember"
-              >
-                {site.phone}
-              </a>
-            </li>
-            <li>Est. {site.founded}</li>
-          </ul>
-        </div>
+        {[
+          { label: "Explore", paths: ["/", "/films", "/vod", "/events", "/community"] },
+          { label: "Studio", paths: ["/about", "/services", "/hire", "/academy", "/gallery"] },
+          { label: "Connect", paths: ["/contact", "/watchlist", "/account"] },
+        ].map((group) => (
+          <div key={group.label}>
+            <p className="eyebrow">{t(group.label)}</p>
+            <ul className="mt-4 space-y-2 text-sm">
+              {[...nav, ...navExtra].filter((item) => group.paths.includes(item.href)).sort((a, b) => group.paths.indexOf(a.href) - group.paths.indexOf(b.href)).map((item) => <li key={item.href}><Link href={item.href} className="text-silver-2 transition-colors hover:text-ember">{t(item.label)}</Link></li>)}
+            </ul>
+            {group.label === "Connect" && <address className="mt-6 space-y-2 text-sm not-italic text-steel"><p>{site.location}</p><p><a href={`mailto:${site.email}`} className="break-all hover:text-ember">{site.email}</a></p><p><a href={`tel:${site.phone.replace(/\s+/g, "")}`} className="hover:text-ember">{site.phone}</a></p></address>}
+          </div>
+        ))}
       </div>
-
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-5 py-6 text-[0.7rem] tracking-wide text-ash sm:flex-row sm:px-8">
-          <span>
-            {t("© {year} Oxsnow Studio. All rights reserved.").replace(
-              "{year}",
-              year
-            )}
-          </span>
-          <span>{t("Proudly Basotho. Built for the world.")}</span>
-        </div>
-      </div>
+      <div className="border-t border-white/10"><div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-6 text-[0.7rem] tracking-wide text-ash sm:px-8"><span>{t("© {year} Oxsnow Studio. All rights reserved.").replace("{year}", year)}</span><span>Est. {site.founded} · Made in Lesotho</span><button type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" })} className="text-silver-2 transition-colors hover:text-ember">Back to top ↑</button></div></div>
     </footer>
   );
 }

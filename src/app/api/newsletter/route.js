@@ -21,11 +21,11 @@ export async function POST(request) {
 
   try {
     await ensureSchema();
-    await query(
+    const result = await query(
       "INSERT INTO newsletter (email, created_at) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING",
       [email, Date.now()]
     );
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, alreadySubscribed: result.rowCount === 0 });
   } catch (err) {
     console.error("[newsletter] failed:", err);
     return NextResponse.json(
