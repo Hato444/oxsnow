@@ -1,34 +1,32 @@
-# TODO — Tomorrow (20–21 Oct 2026)
+# Oxsnow Studio — project status and next actions
 
-## 1. M-Pesa → real payments (BLOCKED ON YOU, not code)
-- [ ] Call Vodacom Lesotho (call centre / premises) → request the **electronic business application form**
-      Say: **"online website checkout / customer online shopping API"** — NOT a normal merchant till
-- [ ] Submit KYC docs → they issue org account + **shortcode** + bank link
-- [ ] Register at https://openapiportal.m-pesa.com/ → select product → wait for product match approval
-- [ ] Sandbox end-to-end test (payment, query, refund, reconciliation)
-- [ ] Submit Go Live review
-- [ ] Then: paste credentials into Vercel → `MPESA_BASE_URL`, `MPESA_SHORTCODE`, `MPESA_API_KEY`,
-      `MPESA_PUBLIC_KEY`, `MPESA_CALLBACK_URL` (exact names confirmed from portal docs)
-- [ ] Then: OpenCode fills the two `TODO(provider)` blocks in `src/lib/payments/mpesa.js`
-      with the official request schemas — NO other code changes needed
+This is an evidence-based snapshot, not a production-readiness claim. Check the current code and deployed configuration before changing status.
 
-## 2. EcoCash square (already in UI, disabled)
-- [ ] Same onboarding process with Econet → enable second payment square in
-      `src/components/watch/WatchModal.jsx` CheckoutPanel
+## Implemented and verified locally
 
-## 3. Remaining site features (from WEBSITE_PROMPT.txt)
-- [ ] `/events` page
-- [ ] `/services` page
-- [ ] `/academy` page
-- [ ] Admin dashboard (orders view exists in DB; UI not built)
-- [ ] Customer auth (payments currently keyed to device key `oxsnow-buyer-uid`)
-- [ ] Sesotho / i18n
-- [ ] Contact form: set `GMAIL_APP_PASSWORD` in Vercel (Gmail app password, 2FA on)
-- [ ] VOD: add full films from `C:\Users\User\Documents\website\movies`
-      (currently ALL `movie: null` — nothing to unlock after payment yet!)
+- [x] Events, Services and Academy routes exist and render locally; the Events page groups the static records by their dates in Lesotho time.
+- [x] Admin dashboard and customer account pages and API routes exist.
+- [x] Sesotho language controls and translations exist; translation coverage has not been audited.
+- [x] `.agents/skills/` and `skills-lock.json` are ignored and are not tracked in the current Git index.
 
-## 4. Cleanup
-- [ ] Remove `.agents/skills/` + `skills-lock.json` from git (accidentally committed in `796e4ae`),
-      add to `.gitignore`
-- [ ] Lint: 4 pre-existing `react-hooks/set-state-in-effect` errors (Footer.jsx, WatchModal.jsx)
-      — cosmetic, doesn't block builds
+## Implemented, production behavior unverified
+
+- [ ] Test the deployed Academy application flow end to end, including persistence and email delivery.
+- [ ] Verify customer registration, login and account recovery requirements in the deployed environment. The film-payment code still uses a device buyer key.
+- [ ] Verify deployed contact and Academy email delivery and whether the required Gmail configuration is present. Do not put secret values in this file.
+- [ ] Verify deployed newsletter storage and connect an approved email delivery provider if the studio wants to send dispatches.
+- [ ] Review all Sesotho translations and missing coverage with a fluent reviewer.
+
+## Partially implemented / external dependencies
+
+- [ ] **M-PESA:** complete Vodacom Lesotho's online checkout onboarding, obtain the approved API specifications and credentials, implement the provider TODOs in `src/lib/payments/mpesa.js`, and verify sandbox payment, status, callback and reconciliation before seeking go-live approval. Existing simulated payment behavior is not proof of real payment processing.
+- [ ] **EcoCash:** complete provider onboarding and implement and test the actual integration. The checkout can display the option, but it is not available for payment.
+- [ ] **Events:** current event actions lead to the contact form; no event-specific reservations, capacity tracking, ticket payment or booking confirmations were found. Decide on a booking backend and confirm actual event data before offering live availability.
+- [ ] **Films:** the static catalogue has `movie: null` entries. Confirm whether full films exist in an approved external source and verify the entitlement and streaming flow before claiming paid playback works.
+- [ ] **Donations:** the support panel states online donations are coming soon; it does not process payments.
+
+## Verification and maintenance
+
+- [ ] Run the full lint suite and resolve any current errors; older notes about four specific hook errors may be outdated.
+- [ ] Confirm whether event dates, venues, prices and listed capacities are current with the studio. Past entries are retained in the archive; no availability is tracked online.
+- [ ] Confirm deployed email, payment and full-film status with the appropriate service owners; local code and a successful build do not verify production.
