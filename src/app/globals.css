@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+.footer-social { transition: border-color 200ms ease, box-shadow 200ms ease, filter 200ms ease; }
+.footer-social:hover { border-color: var(--social-glow); box-shadow: 0 0 14px color-mix(in srgb, var(--social-glow) 35%, transparent); filter: brightness(1.15); }
+.footer-social:focus-visible { outline: 2px solid var(--social-glow); outline-offset: 3px; }
+.floating-back-top {
+  position: fixed;
+  z-index: 40;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, background 300ms ease, box-shadow 300ms ease, transform 300ms ease;
+}
+.floating-back-top.is-visible { opacity: 1; pointer-events: auto; }
+.floating-back-top:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+body:has([role="dialog"]) .floating-back-top, body:has(dialog[open]) .floating-back-top, body:has([class*="fixed inset-0 z-[95]"]) .floating-back-top, body:has([class*="fixed inset-0 z-[80]"]) .floating-back-top, body:has([class*="fixed inset-0 z-[200]"]) .floating-back-top { visibility: hidden; }
+@media (min-width: 640px) { .floating-back-top { right: 24px; bottom: max(24px, env(safe-area-inset-bottom)); } }
+@media (prefers-reduced-motion: reduce) { .footer-social, .floating-back-top { transition: none; } .floating-back-top:hover { transform: none; } }
+
 .cultural-pass-sweep {
   position: relative;
   overflow: hidden;

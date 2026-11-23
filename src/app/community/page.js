@@ -498,7 +498,7 @@ function LoginModal({ onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur" onClick={onClose}>
-      <div className="card w-full max-w-sm p-6" onClick={(e) => e.stopPropagation()}>
+      <div className="card max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <p className="eyebrow !text-ember">Founder Access</p>
           <button type="button" onClick={onClose} className="text-ash hover:text-white">✕</button>
