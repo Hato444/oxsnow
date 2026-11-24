@@ -1,50 +1,38 @@
 import { NextResponse } from "next/server";
-import { ensureSchema, query } from "@/lib/db";
 import { getCustomerSession } from "@/lib/auth";
-import { CULTURAL_PASS_ID, streamUrlFor } from "@/lib/payments/catalog";
+import { mediaAvailable } from "@/lib/payments/catalog";
+import { getSession, getVodStatus, sessionEvent, startSession } from "@/lib/vod/data";
 
-// GET /api/stream?title=Ho%20Lekane&userKey=<device-or-customer-id>
-//
-// Releases the full-film Blob URL ONLY when the caller holds an entitlement
-// for that title (rental) or the Cultural Pass. The URL never ships in the
-// client bundle; everything else 403s.
 export async function GET(request) {
-  const title = request.nextUrl.searchParams.get("title") || "";
-  let userKey = request.nextUrl.searchParams.get("userKey") || "";
-
-  // A signed-in customer always reads under their customer id; the device
-  // key is only a fallback for anonymous renters.
   const customerId = await getCustomerSession();
-  if (customerId) userKey = customerId;
-
-  if (!title || !userKey) {
-    return NextResponse.json({ ok: false, error: "Missing parameters." }, { status: 400 });
-  }
-
-  const url = streamUrlFor(title);
-  if (!url) {
-    return NextResponse.json(
-      { ok: false, error: "This film isn't available for streaming yet.", available: false },
-      { status: 404 }
-    );
-  }
-
+  if (!customerId) return NextResponse.json({ ok: false, error: "Sign in to watch." }, { status: 401 });
+  const title = request.nextUrl.searchParams.get("title") || "";
   try {
-    await ensureSchema();
-    const owned = await query(
-      `SELECT 1 FROM entitlements
-       WHERE user_key = $1 AND (movie_id = $2 OR movie_id = $3) LIMIT 1`,
-      [userKey, title, CULTURAL_PASS_ID]
-    );
-    if (owned.rows.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: "Payment required to watch this film.", entitled: false },
-        { status: 403 }
-      );
+    const status = await getVodStatus(customerId, title);
+    const credit = status.credits.find((entry) => entry.movie_id === title);
+    return NextResponse.json({ ok: true, available: mediaAvailable(title), ...status, remaining: credit?.remaining || 0 });
+  } catch (error) {
+    console.error("[vod] status failed", error);
+    return NextResponse.json({ ok: false, error: "Could not load viewing access." }, { status: 500 });
+  }
+}
+
+export async function POST(request) {
+  const customerId = await getCustomerSession();
+  if (!customerId) return NextResponse.json({ ok: false, error: "Sign in to watch." }, { status: 401 });
+  try {
+    const body = await request.json();
+    if (body.action === "start") {
+      if (!mediaAvailable(body.title)) return NextResponse.json({ ok: false, error: "This film is not available for streaming." }, { status: 404 });
+      const session = await startSession(customerId, body.title);
+      return NextResponse.json({ ok: true, sessionId: session.id, position: Number(session.position_seconds) || 0, url: `/api/stream/media?session=${encodeURIComponent(session.id)}` });
     }
-    return NextResponse.json({ ok: true, url, entitled: true });
-  } catch (err) {
-    console.error("[stream] entitlement check failed:", err);
-    return NextResponse.json({ ok: false, error: "Stream check failed." }, { status: 500 });
+    if (["playing", "progress", "complete"].includes(body.action)) {
+      await sessionEvent(customerId, body.sessionId, body.action, body.position);
+      return NextResponse.json({ ok: true });
+    }
+    return NextResponse.json({ ok: false, error: "Invalid action." }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json({ ok: false, error: error.message || "Playback request failed." }, { status: 409 });
   }
 }

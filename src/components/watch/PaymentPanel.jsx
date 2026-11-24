@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Film, Ticket } from "lucide-react";
 
 const BUYER_KEY = "oxsnow-buyer-uid";
 
@@ -64,11 +65,29 @@ export default function PaymentPanel({
   const [orderId, setOrderId] = useState("");
   const [error, setError] = useState("");
   const [simulated, setSimulated] = useState(false);
+  const [simulatorEnabled, setSimulatorEnabled] = useState(false);
   const panelRef = useRef(null);
   const pollRef = useRef(null);
   const returnFocusRef = useRef(null);
 
   const titleId = movieId || item?.title || "";
+
+  useEffect(() => {
+    fetch("/api/vod/simulate").then((r) => r.json()).then((data) => setSimulatorEnabled(Boolean(data.enabled))).catch(() => {});
+  }, []);
+
+  async function simulate(outcome) {
+    setError("");
+    setStatus("busy");
+    try {
+      const response = await fetch("/api/vod/simulate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ movieId: titleId, outcome }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Test payment failed.");
+      setOrderId(data.orderId);
+      setSimulated(true);
+      setStatus(data.status);
+    } catch (err) { setStatus(""); setError(err.message); }
+  }
 
   const pending = status === "busy" || status === "awaiting_authorisation";
   const submitting = status === "busy";
@@ -252,7 +271,7 @@ export default function PaymentPanel({
               />
             ) : (
               <div className="grid h-16 w-11 shrink-0 place-items-center rounded-md bg-gradient-to-b from-ember/30 to-white/5">
-                <span className="h-2.5 w-2.5 rounded-full bg-ember shadow-[0_0_12px_3px_rgba(255,69,0,0.5)]" />
+                {passMode ? <Ticket aria-hidden="true" size={22} strokeWidth={1.8} className="text-ember drop-shadow-[0_0_7px_rgba(255,69,0,0.5)]" /> : <Film aria-hidden="true" size={22} strokeWidth={1.8} className="text-ember drop-shadow-[0_0_7px_rgba(255,69,0,0.5)]" />}
               </div>
             )}
             <div className="min-w-0">
@@ -261,8 +280,8 @@ export default function PaymentPanel({
               </p>
               <p className="mt-0.5 text-[0.7rem] text-ash">
                 {passMode
-                  ? "30 days unlimited streaming — every film, every archive"
-                  : `${item?.meta ? `${item.meta} · ` : ""}Full film, unlocked to watch`}
+                  ? "30-day access to published VOD films"
+                  : `${item?.meta ? `${item.meta} · ` : ""}Two viewing credits`}
               </p>
             </div>
           </div>
@@ -364,10 +383,12 @@ export default function PaymentPanel({
           {/* Total */}
           <div className="mt-5 flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.025] px-4 py-3">
             <span className="text-xs text-steel">
-              {passMode ? "Total — 30-day pass, cancel anytime" : "Total — fixed price, no conversion"}
+              {passMode ? "Total — 30-day pass" : "Total — fixed price, no conversion"}
             </span>
             <span className="text-sm font-bold text-metal">{priceLabel}</span>
           </div>
+          <p className="mt-3 text-xs leading-relaxed text-silver-2">Live payments are awaiting provider activation.</p>
+          {simulatorEnabled && <div className="mt-4 rounded-xl border border-amber-400/30 p-4 text-sm text-silver-2"><p className="font-bold text-amber-200">Local test payments · no real money</p><div className="mt-3 flex flex-wrap gap-2"><button type="button" disabled={pending} onClick={() => simulate("success")} className="btn btn-ghost">Simulate success</button><button type="button" disabled={pending} onClick={() => simulate("failed")} className="btn btn-ghost">Simulate failure</button></div></div>}
 
           {error && (
             <p role="alert" className="mt-3 text-sm text-red-400">

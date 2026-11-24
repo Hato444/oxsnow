@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { ensureSchema, query } from "@/lib/db";
+import { getVodStatus } from "@/lib/vod/data";
 import {
   createCustomerSession,
   destroyCustomerSession,
@@ -46,6 +47,7 @@ export async function GET() {
       authed: true,
       customer: customer.rows[0],
       entitlements: ents.rows,
+      vod: await getVodStatus(customerId),
     });
   } catch (err) {
     console.error("[account] me failed:", err);

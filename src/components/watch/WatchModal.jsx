@@ -4,24 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
 import PaymentPanel from "./PaymentPanel";
+import CreditIndicator from "./CreditIndicator";
 import { useWatchlist } from "./WatchlistProvider";
-
-const BUYER_KEY = "oxsnow-buyer-uid";
-
-function getBuyerKey() {
-  try {
-    let key = localStorage.getItem(BUYER_KEY);
-    if (!key) {
-      key =
-        (typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID()) ||
-        `b-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      localStorage.setItem(BUYER_KEY, key);
-    }
-    return key;
-  } catch {
-    return "anonymous";
-  }
-}
 
 export default function WatchModal({ item, onClose }) {
   const [checkout, setCheckout] = useState(false);
@@ -29,6 +13,14 @@ export default function WatchModal({ item, onClose }) {
   const [view, setView] = useState("info");
   const [streamUrl, setStreamUrl] = useState(null);
   const [entitled, setEntitled] = useState(false);
+  const [teaserStatus, setTeaserStatus] = useState("loading");
+  const [access, setAccess] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [initialTime, setInitialTime] = useState(0);
+  const lastProgress = useRef(0);
+  const [streamError, setStreamError] = useState("");
+  const confirming = useRef(false);
+  const confirmed = useRef(false);
   const { has, toggle } = useWatchlist();
   const infoRef = useRef(null);
   const actionsRef = useRef(null);
@@ -41,6 +33,9 @@ export default function WatchModal({ item, onClose }) {
       setView("info");
       setStreamUrl(null);
       setEntitled(false);
+      setAccess(null);
+      setSessionId(null);
+      confirmed.current = false;
     }, 0);
     return () => clearTimeout(t);
   }, [item]);
@@ -50,17 +45,14 @@ export default function WatchModal({ item, onClose }) {
     if (!item?.title) return false;
     try {
       const r = await fetch(
-        `/api/stream?title=${encodeURIComponent(item.title)}&userKey=${encodeURIComponent(getBuyerKey())}`
+        `/api/stream?title=${encodeURIComponent(item.title)}`
       );
       const data = await r.json();
-      if (data.ok && data.url) {
-        setStreamUrl(data.url);
-        setEntitled(true);
-        return true;
-      }
-      setEntitled(false);
-      setStreamUrl(null);
-      return false;
+      if (!data.ok) { setAccess(null); setEntitled(false); return false; }
+      setAccess(data);
+      const canWatch = Boolean(data.available && (data.passExpiresAt || data.legacyFilm || data.remaining > 0 || data.activeSession));
+      setEntitled(canWatch);
+      return canWatch;
     } catch {
       return false;
     }
@@ -76,6 +68,7 @@ export default function WatchModal({ item, onClose }) {
   }, [item, checkEntitlement]);
 
   const playTeaser = () => {
+    setTeaserStatus("loading");
     setView("teaser");
     if (playerRef.current) {
       playerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -83,12 +76,50 @@ export default function WatchModal({ item, onClose }) {
   };
 
   const handleUnlocked = useCallback(async () => {
-    const ok = await checkEntitlement();
-    if (ok) {
-      setView("film");
-      playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    await checkEntitlement();
   }, [checkEntitlement]);
+
+  const startPlayback = async () => {
+    setStreamError("");
+    try {
+      const response = await fetch("/api/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "start", title: item.title }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not start playback.");
+      confirmed.current = false;
+      setSessionId(data.sessionId);
+      setInitialTime(data.position || 0);
+      lastProgress.current = Date.now();
+      setStreamUrl(data.url);
+      setView("film");
+    } catch (error) { setStreamError(error.message); }
+  };
+
+  const playbackStatus = async (status) => {
+    if (status !== "playing" || !sessionId || confirmed.current || confirming.current) return;
+    confirming.current = true;
+    try {
+      const response = await fetch("/api/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "playing", sessionId }) });
+      if (!response.ok) throw new Error("Could not confirm playback. Please try again.");
+      confirmed.current = true;
+      await checkEntitlement();
+    } catch (error) { setStreamError(error.message); }
+    finally { confirming.current = false; }
+  };
+
+  const finishPlayback = async () => {
+    if (!sessionId) return;
+    await fetch("/api/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "complete", sessionId }) });
+    setView("info");
+    setStreamUrl(null);
+    setSessionId(null);
+    await checkEntitlement();
+  };
+
+  const saveProgress = (position) => {
+    if (!sessionId || !confirmed.current || Date.now() - lastProgress.current < 10000) return;
+    lastProgress.current = Date.now();
+    fetch("/api/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "progress", sessionId, position }) }).catch(() => {});
+  };
 
   const revealActions = () => {
     const info = infoRef.current;
@@ -157,6 +188,10 @@ export default function WatchModal({ item, onClose }) {
                   locked={locked}
                   protectedPlayback={Boolean(watchingFilm)}
                   autoPlay={watchingTeaser || watchingFilm}
+                  onPlaybackStatus={watchingTeaser ? setTeaserStatus : watchingFilm ? playbackStatus : undefined}
+                  onEnded={watchingFilm ? finishPlayback : undefined}
+                  initialTime={watchingFilm ? initialTime : 0}
+                  onProgress={watchingFilm ? saveProgress : undefined}
                   onLocked={revealActions}
                   onPlay={!watchingTeaser && !watchingFilm ? revealActions : undefined}
                   onBack={
@@ -194,11 +229,19 @@ export default function WatchModal({ item, onClose }) {
                 )}
 
                 <div ref={actionsRef} className="mt-5 scroll-mt-4">
+                  {access?.passExpiresAt ? <p className="mb-3 text-sm text-silver-2">Cultural Pass Active · Unlimited viewing · Expires {new Date(access.passExpiresAt).toLocaleDateString()}</p> : access && <div className="mb-3"><CreditIndicator remaining={access.remaining} /></div>}
+                  {streamError && <p role="alert" className="mb-3 text-sm text-red-300">{streamError}</p>}
                   <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-ember">
                     {watchingFilm
-                      ? "You own this film — enjoy the show"
+                      ? "Enjoy the show"
                       : watchingTeaser
-                        ? "You're watching the teaser"
+                        ? teaserStatus === "playing"
+                          ? "You're watching the teaser"
+                          : teaserStatus === "error"
+                            ? "Unable to play the teaser"
+                            : teaserStatus === "blocked" || teaserStatus === "paused"
+                              ? "Press play to watch the teaser"
+                              : "Loading teaser…"
                         : entitled
                           ? "Your film is unlocked"
                           : "Rent to watch the full film"}
@@ -208,12 +251,8 @@ export default function WatchModal({ item, onClose }) {
                       <button
                         type="button"
                         onClick={() => {
-                          if (entitled && streamUrl) {
-                            setView("film");
-                            playerRef.current?.scrollIntoView({
-                              behavior: "smooth",
-                              block: "start",
-                            });
+                          if (entitled) {
+                            startPlayback();
                           } else {
                             setCheckout(true);
                           }

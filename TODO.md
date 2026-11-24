@@ -28,6 +28,13 @@ This is an evidence-based snapshot, not a production-readiness claim. Check the 
 
 ## Implemented, production behavior unverified
 
+### 2026-11-24 — VOD credit implementation in progress
+
+- Added separate account-based credit grants, 30-day pass grants, playback-session history, resume positions and a private-Blob media proxy. Legacy records and transaction amounts are retained. Legacy film access is recognized for the owning account; legacy passes are interpreted as valid for 30 days from their original paid timestamp. Device-key migration still needs review.
+- Added a development-only payment simulator restricted to an explicitly configured loopback test database. See `docs/VOD-CREDITS-IMPLEMENTATION.md` for setup and session rules. Real sales remain disabled pending provider integration.
+- `npm test` passes 15 tests, including three VOD tests using an in-memory PostgreSQL emulator: simulated success/failure, two credits, idempotent grant, resume position, repeat viewing, pass precedence/expiry and legacy film access. This does not verify real PostgreSQL locks or actual browser/media playback.
+- `npm run build` passed during this implementation; focused ESLint reported image warnings and no errors. Still required: real isolated PostgreSQL concurrency/migration tests, private Blob delivery and actual full-film playback, desktop/mobile checks, provider verification and reconciliation. Progressive media and client playback events do not provide DRM-grade enforcement.
+
 - [ ] Test the deployed Academy application flow end to end, including persistence and email delivery.
 - [ ] Verify customer registration, login and account recovery requirements in the deployed environment. The film-payment code still uses a device buyer key.
 - [ ] Verify deployed contact and Academy email delivery and whether the required Gmail configuration is present. Do not put secret values in this file.

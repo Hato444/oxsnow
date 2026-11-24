@@ -138,6 +138,33 @@ CREATE TABLE IF NOT EXISTS customers (
   created_at BIGINT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS vod_grants (
+  order_id TEXT PRIMARY KEY REFERENCES orders(id),
+  customer_id TEXT NOT NULL REFERENCES customers(id),
+  movie_id TEXT NOT NULL,
+  provider_reference TEXT NOT NULL,
+  purchased_credits INTEGER NOT NULL DEFAULT 0,
+  remaining_credits INTEGER NOT NULL DEFAULT 0,
+  activated_at BIGINT NOT NULL,
+  expires_at BIGINT,
+  CHECK (remaining_credits >= 0 AND remaining_credits <= purchased_credits)
+);
+
+CREATE TABLE IF NOT EXISTS vod_sessions (
+  id TEXT PRIMARY KEY,
+  customer_id TEXT NOT NULL REFERENCES customers(id),
+  movie_id TEXT NOT NULL,
+  access_type TEXT NOT NULL,
+  grant_order_id TEXT REFERENCES vod_grants(order_id),
+  status TEXT NOT NULL,
+  created_at BIGINT NOT NULL,
+  started_at BIGINT,
+  expires_at BIGINT NOT NULL,
+  completed_at BIGINT
+);
+CREATE UNIQUE INDEX IF NOT EXISTS vod_grants_provider_reference ON vod_grants(provider_reference);
+CREATE INDEX IF NOT EXISTS vod_sessions_customer_movie ON vod_sessions(customer_id, movie_id, status);
+
 /* ---------------------- Equipment hire ---------------------- */
 
 CREATE TABLE IF NOT EXISTS hire_equipment (
@@ -423,6 +450,7 @@ async function syncHireCatalogue() {
 
 async function doEnsureSchema() {
   await query(SCHEMA);
+  await query("ALTER TABLE vod_sessions ADD COLUMN IF NOT EXISTS position_seconds INTEGER NOT NULL DEFAULT 0");
 
   // existing deployments predate the feed-target column — add it idempotently
   await query(

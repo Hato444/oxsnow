@@ -23,7 +23,7 @@ export default function PassCheckout({ className = "", children }) {
             key="pass-checkout"
             item={{ title: "__cultural_pass__", meta: "SVOD · 30 days" }}
             movieId="__cultural_pass__"
-            priceLabel="M 99.00 LSL"
+            priceLabel="M 100.00 LSL"
             passMode
             onClose={() => setOpen(false)}
           />

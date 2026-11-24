@@ -1,4 +1,4 @@
-export const CATALOGUE_VERSION = "2";
+export const CATALOGUE_VERSION = "3";
 
 export const LEGACY_EQUIPMENT_IDS = [
   "demo-cam-a",
@@ -68,7 +68,7 @@ export const HIRE_EQUIPMENT_SEED = [
     category: "cameras",
     description: `Canon EOS C70 cinema camera. Demo listing for the Oxsnow catalogue. ${BODY_ONLY}`,
     specs: [],
-    images: ["/equipment/cameras/canon-c70/manufacturer-three-quarter.jpg"],
+    images: ["/equipment/cameras/canon-c70/manufacturer-three-quarter.webp"],
     accessories: [],
     daily_rate_minor: 85000,
     deposit_minor: 150000,
@@ -83,8 +83,8 @@ export const HIRE_EQUIPMENT_SEED = [
     description: `Canon EOS C80 cinema camera. Demo listing for the Oxsnow catalogue. ${BODY_ONLY}`,
     specs: [],
     images: [
-      "/equipment/cameras/canon-c80/manufacturer-angle-1.jpg",
-      "/equipment/cameras/canon-c80/manufacturer-angle-2.jpg",
+      "/equipment/cameras/canon-c80/manufacturer-angle-1.webp",
+      "/equipment/cameras/canon-c80/manufacturer-angle-2.webp",
     ],
     accessories: [],
     daily_rate_minor: 110000,
@@ -100,9 +100,9 @@ export const HIRE_EQUIPMENT_SEED = [
     description: `Nikon ZR cinema camera. Demo listing for the Oxsnow catalogue. ${BODY_ONLY}`,
     specs: [],
     images: [
-      "/equipment/cameras/nikon-zr/manufacturer-angle-1.jpg",
-      "/equipment/cameras/nikon-zr/manufacturer-angle-2.jpg",
-      "/equipment/cameras/nikon-zr/manufacturer-angle-3.jpg",
+      "/equipment/cameras/nikon-zr/manufacturer-angle-1.webp",
+      "/equipment/cameras/nikon-zr/manufacturer-angle-2.webp",
+      "/equipment/cameras/nikon-zr/manufacturer-angle-3.webp",
     ],
     accessories: [],
     daily_rate_minor: 90000,
@@ -179,11 +179,11 @@ export const HIRE_EQUIPMENT_SEED = [
       "Zoom H4n Pro handheld recorder. Demo listing for the Oxsnow catalogue. Memory card and batteries are not implied unless separately listed.",
     specs: [],
     images: [
-      "/equipment/sound/zoom-h4n-pro/manufacturer-front.jpg",
-      "/equipment/sound/zoom-h4n-pro/manufacturer-three-quarter.jpg",
-      "/equipment/sound/zoom-h4n-pro/manufacturer-right.jpg",
-      "/equipment/sound/zoom-h4n-pro/manufacturer-left.jpg",
-      "/equipment/sound/zoom-h4n-pro/manufacturer-rear.jpg",
+      "/equipment/sound/zoom-h4n-pro/manufacturer-front.webp",
+      "/equipment/sound/zoom-h4n-pro/manufacturer-three-quarter.webp",
+      "/equipment/sound/zoom-h4n-pro/manufacturer-right.webp",
+      "/equipment/sound/zoom-h4n-pro/manufacturer-left.webp",
+      "/equipment/sound/zoom-h4n-pro/manufacturer-rear.webp",
     ],
     accessories: [],
     daily_rate_minor: 28000,
@@ -200,8 +200,8 @@ export const HIRE_EQUIPMENT_SEED = [
       "ORCA OR-27 sound bag. Demo listing for the Oxsnow catalogue. Internal dividers and carried equipment are not implied unless separately listed.",
     specs: [],
     images: [
-      "/equipment/sound/orca-or27/bag-empty.jpg",
-      "/equipment/sound/orca-or27/bag-open.jpg",
+      "/equipment/sound/orca-or27/bag-empty.webp",
+      "/equipment/sound/orca-or27/bag-open.webp",
     ],
     accessories: [],
     daily_rate_minor: 10000,
@@ -247,7 +247,7 @@ export const HIRE_EQUIPMENT_SEED = [
     description:
       "Sony UWP-D21 wireless microphone kit. Demo listing for the Oxsnow catalogue. Confirm the required frequency band and regional suffix with the studio.",
     specs: [],
-    images: ["/equipment/sound/sony-uwp-d21/manufacturer-wireless-kit.jpg"],
+    images: ["/equipment/sound/sony-uwp-d21/manufacturer-wireless-kit.webp"],
     accessories: [],
     daily_rate_minor: 25000,
     deposit_minor: 40000,

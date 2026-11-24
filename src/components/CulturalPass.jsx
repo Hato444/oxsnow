@@ -23,7 +23,7 @@ export default function CulturalPass({ films }) {
       <div className="relative">
         <p className="eyebrow">The Cultural Pass</p>
         <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-black tracking-tight text-metal sm:text-5xl">Stream the stories that built a nation.</h2>
-        <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-silver-2">Rent new releases or unlock the full Basotho history archive on the Oxsnow VOD storefront.</p>
+        <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-silver-2">Two film viewings for M25, or 30 days of unlimited viewing of published VOD films with the M100 Cultural Pass.</p>
         <div className="mt-9 flex flex-wrap justify-center gap-4">
           <Link href="/vod" className="btn btn-primary cultural-pass-sweep hover:transform-none">Enter VOD</Link>
           <Link href="/contact" className="btn btn-ghost transition-colors duration-200 hover:transform-none hover:border-ember hover:text-ember motion-reduce:transition-none">Partner With Us <span aria-hidden="true">→</span></Link>

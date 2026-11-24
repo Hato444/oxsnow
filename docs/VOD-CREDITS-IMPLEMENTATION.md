@@ -1,0 +1,13 @@
+# VOD credits and playback
+
+New account-based grants are separate from historical orders and entitlements. Film grants contain two credits; each verified order is idempotent. A pass is valid for 30 days after activation. Legacy film entitlements remain accessible to the account that holds them; legacy passes are treated as valid for 30 days from their original paid timestamp. Existing device-key records are not automatically converted to credits. Review legacy records and adoption before release.
+
+Only a verified payment adapter should call `grantVerifiedOrder` in the same transaction that marks its matching order paid. Live sales remain disabled until the actual provider integration is implemented and verified. A test simulator creates clearly marked simulated orders, only when `NODE_ENV` is not production, `VOD_SIMULATE=1`, and `POSTGRES_URL` exactly matches `VOD_TEST_DATABASE_URL` pointing to a loopback PostgreSQL database. Never point either at production. Sign into a test account; test success and failure buttons appear in checkout. Optionally set `VOD_TEST_MEDIA_PATH` to an absolute path to a local MP4 fixture. Restart the development server after changing environment variables.
+
+## Sessions
+
+Opening details and creating a pending session do not spend a credit. A pending session expires after 15 minutes. The player reports actual playback before a credit is deducted; duplicate reports are idempotent. Active sessions can be resumed for 24 hours from start, with position saved approximately every 10 seconds. A pass session is capped by pass expiry. Reaching the end completes the session; another play is a new session and uses another credit. A session that expires without completion cannot be resumed. Pauses and temporary connection failures retain the active session until expiry. The account row serializes session and grant operations in PostgreSQL; concurrency behavior still requires an isolated real-PostgreSQL test.
+
+The media endpoint proxies byte ranges only for authenticated sessions and accepts private Vercel Blob URLs; configure the appropriate private store token. Public media URLs are not suitable because anyone with the URL can bypass authorization. A browser playback event is not a cryptographic proof of viewing, and a progressive stream may remain open past a session deadline; stronger enforcement requires short-lived segmented streaming and provider-side authorization. No playback delivery system can guarantee prevention of copying.
+
+Before release, test the provider verification, transaction concurrency, private Blob authorization, session expiration and migration on isolated infrastructure, and exercise desktop/mobile playback using actual approved full-film media.

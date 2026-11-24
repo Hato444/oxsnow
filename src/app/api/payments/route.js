@@ -14,7 +14,9 @@ import { CULTURAL_PASS_ID, streamUrlFor } from "@/lib/payments/catalog";
 import { films } from "@/lib/site";
 
 const ORDER_TTL_MS = 15 * 60 * 1000;
-const PASS_PRICE_MINOR = 9900; // M99.00 Cultural Pass (SVOD, 30 days)
+const PASS_PRICE_MINOR = 10000; // M100.00 Cultural Pass (30 days)
+// Sales remain closed until verified payments and protected credit sessions exist.
+const CREDIT_SALES_READY = false;
 
 function audit(orderId, event, detail = "") {
   query(
@@ -24,6 +26,9 @@ function audit(orderId, event, detail = "") {
 }
 
 export async function POST(request) {
+  if (!CREDIT_SALES_READY) {
+    return NextResponse.json({ ok: false, error: "Film and pass purchases are not available yet. Viewing credits and protected streaming are being prepared." }, { status: 503 });
+  }
   let body;
   try {
     body = await request.json();
@@ -197,6 +202,9 @@ export async function GET(request) {
       return NextResponse.json({ ok: false, error: "Order not found." }, { status: 404 });
     }
     const order = res.rows[0];
+    if (order.user_key !== userKey) {
+      return NextResponse.json({ ok: false, error: "Order not found." }, { status: 404 });
+    }
 
     if (order.expires_at < Date.now() && order.status !== "paid") {
       if (order.status !== "expired") {
@@ -206,7 +214,7 @@ export async function GET(request) {
       return NextResponse.json({ ok: true, status: "expired" });
     }
 
-    if (order.status === "awaiting_authorisation" && isSimRef(order.provider_ref)) {
+    if (CREDIT_SALES_READY && order.status === "awaiting_authorisation" && simulateEnabled() && isSimRef(order.provider_ref)) {
       const simStatus = await queryTransaction(order.provider_ref);
       if (simStatus.status === "successful") {
         await query("UPDATE orders SET status = 'paid' WHERE id = $1", [orderId]);

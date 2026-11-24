@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWatch } from "@/components/watch/WatchProvider";
 import { useWatchlist } from "@/components/watch/WatchlistProvider";
+import CreditIndicator from "@/components/watch/CreditIndicator";
 
 const BUYER_KEY = "oxsnow-buyer-uid";
 
@@ -43,6 +44,7 @@ export default function AccountPage() {
   const [authed, setAuthed] = useState(null); // null = loading
   const [customer, setCustomer] = useState(null);
   const [entitlements, setEntitlements] = useState([]);
+  const [vod, setVod] = useState({ credits: [], passExpiresAt: null });
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -57,6 +59,7 @@ export default function AccountPage() {
         setAuthed(true);
         setCustomer(data.customer);
         setEntitlements(data.entitlements || []);
+        setVod(data.vod || { credits: [], passExpiresAt: null });
       } else {
         setAuthed(false);
       }
@@ -115,8 +118,8 @@ export default function AccountPage() {
     "Konono": { meta: "Action-Drama · 2024", poster: "/posters/konono.jpg" },
   };
 
-  const films = entitlements.filter((e) => e.movie_id !== "__cultural_pass__");
-  const pass = entitlements.find((e) => e.movie_id === "__cultural_pass__");
+  const films = [...vod.credits, ...entitlements.filter((e) => e.movie_id !== "__cultural_pass__" && !vod.credits.some((c) => c.movie_id === e.movie_id))];
+  const pass = vod.passExpiresAt;
 
   return (
     <section className="mx-auto w-full max-w-5xl px-5 pb-24 pt-36 sm:px-8">
@@ -280,6 +283,8 @@ export default function AccountPage() {
             </div>
           </div>
 
+          {pass && <p className="text-sm text-silver-2">Cultural Pass Active · Unlimited viewing · Expires {paidLabel(pass)}</p>}
+
           {/* Owned films */}
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-metal">
@@ -349,9 +354,9 @@ export default function AccountPage() {
                               {meta.meta}
                             </p>
                           )}
-                          <p className="mt-2 text-[0.7rem] text-steel">
-                            Owned since {paidLabel(ent.paid_at)}
-                          </p>
+                          <div className="mt-2 text-[0.7rem] text-steel">
+                            {typeof ent.remaining === "number" ? <CreditIndicator remaining={ent.remaining} /> : `Previous entitlement · ${paidLabel(ent.paid_at)}`}
+                          </div>
                           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-silver-2 transition-colors group-hover:text-ember">
                             Watch now →
                           </p>

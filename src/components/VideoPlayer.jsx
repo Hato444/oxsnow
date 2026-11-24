@@ -70,6 +70,10 @@ export default function VideoPlayer({
   backLabel = "Back",
   hoverPreview = null,
   protectedPlayback = false,
+  onPlaybackStatus,
+  onEnded,
+  initialTime = 0,
+  onProgress,
 }) {
   const wrapRef = useRef(null);
   const videoRef = useRef(null);
@@ -82,6 +86,21 @@ export default function VideoPlayer({
   const [volume, setVolume] = useState(1);
   const [showControls, setShowControls] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
+  const [playbackStatus, setPlaybackStatus] = useState(autoPlay ? "loading" : "idle");
+
+  const reportStatus = useCallback((status) => {
+    setPlaybackStatus(status);
+    onPlaybackStatus?.(status);
+  }, [onPlaybackStatus]);
+
+  const playVideo = useCallback((v) => {
+    reportStatus("loading");
+    v.play().catch((error) => {
+      if (error.name !== "AbortError") {
+        reportStatus(error.name === "NotAllowedError" ? "blocked" : "error");
+      }
+    });
+  }, [reportStatus]);
 
   const bump = useCallback(() => {
     setShowControls(true);
@@ -95,9 +114,9 @@ export default function VideoPlayer({
   const toggle = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) v.play().catch(() => {});
+    if (v.paused) playVideo(v);
     else v.pause();
-  }, []);
+  }, [playVideo]);
 
   const requestPlay = useCallback(() => {
     if (locked) {
@@ -126,8 +145,7 @@ export default function VideoPlayer({
     if (!v || !autoPlay) return;
     v.volume = volume;
     v.muted = false;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+    playVideo(v);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, src]);
 
@@ -183,13 +201,20 @@ export default function VideoPlayer({
             bump();
             if (onPlay) onPlay();
           }}
+          onWaiting={() => { if (!videoRef.current?.paused) reportStatus("loading"); }}
+          onError={() => reportStatus("error")}
           onPause={() => {
             setPlaying(false);
             setShowControls(true);
+            if (!videoRef.current?.error) reportStatus("paused");
           }}
-          onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
-          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-          onEnded={() => setPlaying(false)}
+          onTimeUpdate={(e) => {
+            setCurrent(e.currentTarget.currentTime);
+            onProgress?.(e.currentTarget.currentTime);
+            if (e.currentTarget.currentTime > 0 && !e.currentTarget.paused) reportStatus("playing");
+          }}
+          onLoadedMetadata={(e) => { setDuration(e.currentTarget.duration); if (initialTime > 0 && initialTime < e.currentTarget.duration) e.currentTarget.currentTime = initialTime; }}
+          onEnded={() => { setPlaying(false); onEnded?.(); }}
         />
       ) : (
         <div className="relative h-full w-full">
@@ -206,6 +231,23 @@ export default function VideoPlayer({
             <p className="text-xs uppercase tracking-[0.3em] text-ash keep-light">
               Trailer coming soon
             </p>
+          </div>
+        </div>
+      )}
+
+      {src && !locked && ["loading", "error", "blocked"].includes(playbackStatus) && (
+        <div role="status" className="pointer-events-none absolute inset-x-0 top-12 z-20 flex justify-center px-4 text-center">
+          <div className="pointer-events-auto rounded-lg bg-black/85 px-4 py-2 text-sm text-silver keep-light">
+            {playbackStatus === "loading" && "Loading video…"}
+            {playbackStatus === "blocked" && "Tap play to start the video."}
+            {playbackStatus === "error" && (
+              <span>Unable to play this video. {" "}
+                <button type="button" className="underline" onClick={() => {
+                  const v = videoRef.current;
+                  if (v) { v.load(); playVideo(v); }
+                }}>Try again</button>
+              </span>
+            )}
           </div>
         </div>
       )}
