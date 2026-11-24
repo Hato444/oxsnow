@@ -29,11 +29,7 @@ export function writeCart(cart) {
 
 export function addToCart(item) {
   const cart = readCart();
-  const existing = cart.items.find((i) => i.equipmentId === item.equipmentId);
-  if (existing) {
-    existing.quantity = Math.min(99, Number(existing.quantity) + Number(item.quantity || 1));
-  } else {
-    cart.items.push({
+  cart.items = [{
       equipmentId: item.equipmentId,
       quantity: Math.min(99, Number(item.quantity) || 1),
       name: item.name || "",
@@ -41,8 +37,7 @@ export function addToCart(item) {
       image: item.image || "",
       dailyRateMinor: Number(item.dailyRateMinor) || 0,
       depositMinor: Number(item.depositMinor) || 0,
-    });
-  }
+    }];
   if (item.start) cart.start = item.start;
   if (item.end) cart.end = item.end;
   writeCart(cart);

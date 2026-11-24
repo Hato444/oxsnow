@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { CATALOGUE_VERSION, HIRE_EQUIPMENT_SEED, LEGACY_EQUIPMENT_IDS } from "./hire/catalogue.mjs";
+import { CATALOGUE_VERSION, HIRE_EQUIPMENT_SEED } from "./hire/catalogue.mjs";
 
 let pool;
 let schemaPromise = null;
@@ -395,22 +395,7 @@ async function syncHireCatalogue() {
          daily_rate_minor, deposit_minor, quantity_total, ownership, is_demo,
          active, archived, created_at, updated_at)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,TRUE,TRUE,FALSE,$13,$13)
-       ON CONFLICT (id) DO UPDATE SET
-         slug = EXCLUDED.slug,
-         name = EXCLUDED.name,
-         category = EXCLUDED.category,
-         description = EXCLUDED.description,
-         specs = EXCLUDED.specs,
-         images = EXCLUDED.images,
-         accessories = EXCLUDED.accessories,
-         daily_rate_minor = EXCLUDED.daily_rate_minor,
-         deposit_minor = EXCLUDED.deposit_minor,
-         quantity_total = EXCLUDED.quantity_total,
-         ownership = EXCLUDED.ownership,
-         is_demo = TRUE,
-         active = TRUE,
-         archived = FALSE,
-         updated_at = EXCLUDED.updated_at`,
+       ON CONFLICT (id) DO NOTHING`,
       [
         item.id,
         item.slug,
@@ -426,13 +411,6 @@ async function syncHireCatalogue() {
         item.ownership,
         now,
       ]
-    );
-  }
-
-  if (LEGACY_EQUIPMENT_IDS.length > 0) {
-    await query(
-      "UPDATE hire_equipment SET archived = TRUE, active = FALSE, updated_at = $1 WHERE id = ANY($2::text[])",
-      [now, LEGACY_EQUIPMENT_IDS]
     );
   }
 

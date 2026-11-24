@@ -16,7 +16,7 @@ const inputClass =
 export default function EquipmentBooking({ equipment, today }) {
   const [start, setStart] = useState(today);
   const [end, setEnd] = useState(addDays(today, 1));
-  const [quantity, setQuantity] = useState(1);
+  const quantity = 1;
   const [check, setCheck] = useState(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -42,6 +42,7 @@ export default function EquipmentBooking({ equipment, today }) {
       setCheck(data);
       const line = data.items?.[0];
       if (!line?.exists) setMessage("This item is no longer available.");
+      else if (data.availabilityKnown === false) setMessage("Rental estimate ready. The studio will confirm availability.");
       else if (line.available < quantity) {
         setMessage(`Only ${line.available} available for those dates.`);
       } else {
@@ -70,15 +71,13 @@ export default function EquipmentBooking({ equipment, today }) {
     setMessage("Added to your booking list.");
   }
 
-  if (equipment.quantityTotal === 0) {
+  if (!equipment.requestable) {
     return (
       <div className="card p-6">
         <p className="eyebrow">Enquiry only</p>
-        <h2 className="mt-3 text-xl font-bold text-metal">Model to confirm</h2>
+        <h2 className="mt-3 text-xl font-bold text-metal">Currently unavailable</h2>
         <p className="mt-3 text-sm leading-relaxed text-steel">
-          This item appears in the handwritten inventory, but the exact model has not been
-          confirmed. Studio staff need to verify the model before a price, deposit or availability
-          can be shown.
+          Ask the studio about this item and its availability.
         </p>
         <div className="mt-5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-4 py-3 text-[0.72rem] leading-relaxed text-amber-100">
           No booking can be placed for this item yet. Ask the studio and we will confirm the exact
@@ -97,11 +96,11 @@ export default function EquipmentBooking({ equipment, today }) {
   }
 
   const line = check?.items?.[0];
-  const canAdd = Boolean(check?.ok && line?.exists && line.available >= quantity);
+  const canAdd = Boolean(check?.ok && line?.exists && (check.availabilityKnown === false || line.available >= quantity));
 
   return (
     <div className="card p-6">
-      <p className="eyebrow">Check dates & build your booking</p>
+      <p className="eyebrow">Choose dates & request hire</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-[0.65rem] uppercase tracking-[0.2em] text-ash">Collection</span>
@@ -130,20 +129,6 @@ export default function EquipmentBooking({ equipment, today }) {
             className={inputClass}
           />
         </label>
-        <label className="block">
-          <span className="text-[0.65rem] uppercase tracking-[0.2em] text-ash">Quantity</span>
-          <input
-            type="number"
-            min={1}
-            max={Math.max(1, equipment.quantityTotal)}
-            value={quantity}
-            onChange={(e) => {
-              setQuantity(Math.max(1, Math.min(99, Number(e.target.value) || 1)));
-              setCheck(null);
-            }}
-            className={inputClass}
-          />
-        </label>
         <div className="flex items-end">
           <button
             type="button"
@@ -151,7 +136,7 @@ export default function EquipmentBooking({ equipment, today }) {
             disabled={busy}
             className="btn btn-ghost h-11 w-full disabled:opacity-60"
           >
-            {busy ? "Checking…" : "Check availability"}
+            {busy ? "Calculating…" : "Calculate rental estimate"}
           </button>
         </div>
       </div>
@@ -168,11 +153,11 @@ export default function EquipmentBooking({ equipment, today }) {
               {check.days} rental day{check.days === 1 ? "" : "s"}
             </span>
             <span className="font-semibold text-metal">
-              Rental {money(check.rentalSubtotalMinor)} + deposit {money(check.depositTotalMinor)}
+              Rental {money(check.rentalSubtotalMinor)} · deposit to be confirmed
             </span>
           </div>
           <div className="mt-2 flex flex-wrap justify-between gap-2 border-t border-white/8 pt-2">
-            <span className="text-ash">Estimated total</span>
+            <span className="text-ash">Estimated rental</span>
             <span className="font-black text-fire">{money(check.totalMinor)}</span>
           </div>
         </div>
@@ -206,8 +191,7 @@ export default function EquipmentBooking({ equipment, today }) {
         </Link>
       </div>
       <p className="mt-4 text-[0.7rem] leading-relaxed text-ash">
-        Adding to your list does not reserve equipment. Stock is held only when studio staff approve
-        your request. Demo catalogue — prices and availability are illustrative.
+        Adding to your list does not reserve equipment. Availability and any deposit are confirmed by the studio.
       </p>
     </div>
   );

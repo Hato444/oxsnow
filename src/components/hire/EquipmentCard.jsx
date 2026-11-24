@@ -4,29 +4,15 @@ import Link from "next/link";
 import EquipmentGallery from "./EquipmentGallery";
 import { money } from "@/lib/hire/ui";
 
-export default function EquipmentCard({ item, free = 0 }) {
-  const unresolved = (item.images?.length ?? 0) === 0;
-  const priced = item.dailyRateMinor > 0;
+export default function EquipmentCard({ item }) {
+  const requestable = Boolean(item.requestable);
 
   return (
     <article className="card group flex h-full flex-col overflow-hidden">
       <div className="relative">
         <EquipmentGallery name={item.name} images={item.images} variant="card" />
         <div className="pointer-events-none absolute left-3 top-3 z-20 flex flex-wrap gap-2">
-          <span className="rounded-full bg-ink/85 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.14em] text-silver backdrop-blur">
-            Demo
-          </span>
-          <span
-            className={`rounded-full px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.14em] backdrop-blur ${
-              unresolved
-                ? "bg-amber-500/20 text-amber-200"
-                : free > 0
-                  ? "bg-emerald-500/20 text-emerald-200"
-                  : "bg-red-500/20 text-red-200"
-            }`}
-          >
-            {unresolved ? "Model to confirm" : free > 0 ? `${free} free today` : "Booked today"}
-          </span>
+          <span className="rounded-full bg-ink/90 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.14em] text-silver backdrop-blur">{requestable ? "Request · subject to confirmation" : "Currently unavailable"}</span>
         </div>
       </div>
 
@@ -38,7 +24,7 @@ export default function EquipmentCard({ item, free = 0 }) {
         </p>
         <div className="mt-5 flex items-end justify-between gap-3 border-t border-white/8 pt-4">
           <div>
-            {priced ? (
+            {requestable ? (
               <>
                 <p className="text-lg font-black text-fire">
                   {money(item.dailyRateMinor)}
@@ -47,13 +33,13 @@ export default function EquipmentCard({ item, free = 0 }) {
                   </span>
                 </p>
                 <p className="text-[0.65rem] text-ash">
-                  {money(item.depositMinor)} refundable deposit
+                  Deposit confirmed by studio
                 </p>
               </>
             ) : (
               <>
-                <p className="text-sm font-bold text-amber-200">Price on request</p>
-                <p className="text-[0.65rem] text-ash">Hire details to be confirmed</p>
+                <p className="text-sm font-bold text-silver-2">Currently unavailable</p>
+                <p className="text-[0.65rem] text-ash">Stock not confirmed</p>
               </>
             )}
           </div>
@@ -61,7 +47,7 @@ export default function EquipmentCard({ item, free = 0 }) {
             href={`/hire/${item.slug}`}
             className="rounded-full border border-white/15 px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-silver transition-colors group-hover:border-ember group-hover:text-ember"
           >
-            {unresolved ? "View details" : "View & book"}
+            {requestable ? "Request hire" : "View details"}
           </Link>
         </div>
       </div>

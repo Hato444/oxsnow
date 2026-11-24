@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { ensureSchema, query, withTransaction } from "@/lib/db";
+import { SONY_PACKAGES, SONY_PACKAGE_IDS, isSonyPackage, sonyPackageItem, validateHireRequestItems } from "@/lib/hire/sony-packages.mjs";
 import {
   BOOKING_STATUSES,
   HIRE_CATEGORIES,
@@ -185,7 +186,10 @@ export async function listEquipment({ category = "", q = "", includeInactive = f
      ORDER BY category ASC, name ASC`,
     params
   );
-  return rows.map(mapEquipment);
+  const packages = (!category || category === "cameras")
+    ? SONY_PACKAGES.filter((item) => !q || `${item.name} ${item.description}`.toLowerCase().includes(q.toLowerCase())).map(sonyPackageItem)
+    : [];
+  return [...packages, ...rows.filter((row) => !isSonyPackage(row.id)).map(mapEquipment)];
 }
 
 export async function listAllEquipment() {
@@ -197,6 +201,8 @@ export async function listAllEquipment() {
 }
 
 export async function getEquipmentBySlug(slug) {
+  const packageItem = SONY_PACKAGES.find((item) => item.slug === slug);
+  if (packageItem) return sonyPackageItem(packageItem);
   await ensureSchema();
   const { rows } = await query(
     "SELECT * FROM hire_equipment WHERE slug = $1 AND archived = FALSE LIMIT 1",
@@ -278,44 +284,12 @@ export async function availabilityMap(equipmentRows, start, end, db = { query })
 }
 
 export async function quoteAvailability(items, start, end) {
-  await ensureSchema();
-  const ids = [...new Set((items || []).map((i) => String(i.equipmentId)))];
-  if (ids.length === 0) return { items: [], totals: computeTotals([], 0) };
-  const { rows } = await query(
-    "SELECT * FROM hire_equipment WHERE id = ANY($1::text[]) AND archived = FALSE",
-    [ids]
-  );
-  const equipment = rows.map(mapEquipment);
-  const byId = Object.fromEntries(equipment.map((e) => [e.id, e]));
-  const available = await availabilityMap(equipment, start, end);
+  const policy = validateHireRequestItems(items);
+  if (!policy.ok) throw new HireError(policy.error, 409, "UNAVAILABLE");
+  const item = sonyPackageItem(SONY_PACKAGES.find((entry) => entry.id === items[0].equipmentId));
   const days = rentalDays(start, end) || 0;
-
-  const lines = (items || []).map((requested) => {
-    const found = byId[requested.equipmentId];
-    const quantity = Number(requested.quantity) || 0;
-    return {
-      equipmentId: requested.equipmentId,
-      name: found?.name || "Unavailable item",
-      categoryLabel: found?.categoryLabel || "",
-      quantity,
-      dailyRateMinor: found?.dailyRateMinor || 0,
-      depositMinor: found?.depositMinor || 0,
-      available: found ? available[found.id] || 0 : 0,
-      exists: Boolean(found),
-      active: Boolean(found?.active),
-      isDemo: Boolean(found?.isDemo),
-      images: found?.images || [],
-      slug: found?.slug || "",
-    };
-  });
-  const totals = computeTotals(lines, days);
-  return {
-    days,
-    items: totals.lines,
-    rentalSubtotalMinor: totals.rentalSubtotalMinor,
-    depositTotalMinor: totals.depositTotalMinor,
-    totalMinor: totals.totalMinor,
-  };
+  const totals = computeTotals([{ equipmentId: item.id, name: item.name, quantity: 1, dailyRateMinor: item.dailyRateMinor, depositMinor: 0, exists: true, active: true, requestable: true, availabilityKnown: false, available: null, slug: item.slug, images: item.images }], days);
+  return { days, items: totals.lines, rentalSubtotalMinor: totals.rentalSubtotalMinor, depositTotalMinor: 0, totalMinor: totals.totalMinor, availabilityKnown: false };
 }
 
 /* -------------------------------- Bookings ------------------------------- */
@@ -327,6 +301,7 @@ function newReference(prefix = "OXH") {
 }
 
 function normalizeItems(items) {
+  if (!Array.isArray(items)) throw new HireError("Choose a Sony package.");
   const merged = new Map();
   for (const raw of items || []) {
     const id = String(raw?.equipmentId || "").trim();
@@ -348,6 +323,8 @@ export async function createBooking({ customerId, contact, start, end, items }) 
   const range = validateRentalRange(start, end);
   if (!range.ok) throw new HireError(range.error);
   const requested = normalizeItems(items);
+  const policy = validateHireRequestItems(requested);
+  if (!policy.ok) throw new HireError(policy.error, 409, "UNAVAILABLE");
 
   const name = String(contact?.name || "").trim().slice(0, 120);
   const email = String(contact?.email || "").trim().toLowerCase().slice(0, 200);
@@ -356,7 +333,16 @@ export async function createBooking({ customerId, contact, start, end, items }) 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HireError("Enter a valid email address.");
   if (!/^\+?[\d\s-]{8,20}$/.test(phone)) throw new HireError("Enter a valid phone number.");
 
+  await ensureSchema();
   return withTransaction(async (client) => {
+    // Persist only the chosen request option, without inventing stock or touching existing rows.
+    const selectedPackage = SONY_PACKAGES.find((item) => item.id === requested[0].equipmentId);
+    const now = Date.now();
+    await client.query(
+      `INSERT INTO hire_equipment (id, slug, name, category, description, specs, images, accessories, daily_rate_minor, deposit_minor, quantity_total, ownership, is_demo, active, archived, created_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,0,0,'oxsnow',FALSE,TRUE,FALSE,$10,$10) ON CONFLICT (id) DO NOTHING`,
+      [selectedPackage.id, selectedPackage.slug, selectedPackage.name, selectedPackage.category, selectedPackage.description, JSON.stringify([]), JSON.stringify(["/equipment/sony-zve10.webp"]), JSON.stringify(selectedPackage.accessories), selectedPackage.dailyRateMinor, now]
+    );
     const ids = requested.map((i) => i.equipmentId).sort();
     const { rows } = await client.query(
       "SELECT * FROM hire_equipment WHERE id = ANY($1::text[]) ORDER BY id FOR UPDATE",
@@ -370,27 +356,14 @@ export async function createBooking({ customerId, contact, start, end, items }) 
       if (!found.active || found.archived) throw new HireError(`${found.name} is not available.`, 409);
     }
 
-    const available = await availabilityMap(equipment, start, end, client);
-    for (const item of requested) {
-      const found = byId[item.equipmentId];
-      const left = available[found.id] || 0;
-      if (item.quantity > left) {
-        throw new HireError(
-          `${found.name}: only ${left} available for those dates.`,
-          409,
-          "UNAVAILABLE"
-        );
-      }
-    }
-
     const priced = requested.map((item) => {
       const found = byId[item.equipmentId];
       return {
         equipmentId: found.id,
         name: found.name,
         category: found.category,
-        dailyRateMinor: found.dailyRateMinor,
-        depositMinor: found.depositMinor,
+        dailyRateMinor: selectedPackage.dailyRateMinor,
+        depositMinor: 0,
         quantity: item.quantity,
       };
     });
@@ -403,7 +376,6 @@ export async function createBooking({ customerId, contact, start, end, items }) 
       reference = newReference();
     }
 
-    const now = Date.now();
     const id = `hire_${crypto.randomBytes(8).toString("hex")}`;
     const bookingResult = await client.query(
       `INSERT INTO hire_bookings
@@ -458,7 +430,7 @@ export async function createBooking({ customerId, contact, start, end, items }) 
       [id, `Reference ${reference}`, customerId, now]
     );
 
-    return mapBooking(bookingResult.rows[0]);
+    return { ...mapBooking(bookingResult.rows[0]), items: totals.lines };
   });
 }
 
@@ -922,6 +894,10 @@ export async function transitionBooking({ bookingId, action, actor, extra = {} }
         [bookingId]
       );
       const ids = [...new Set(itemRows.rows.map((r) => r.equipment_id))].sort();
+      if (ids.some(isSonyPackage)) {
+        // Both listings may refer to the same camera; serialize staff approvals.
+        await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", ["oxsnow-sony-zve10"]);
+      }
       const equipmentRows = await client.query(
         "SELECT * FROM hire_equipment WHERE id = ANY($1::text[]) ORDER BY id FOR UPDATE",
         [ids]
@@ -934,6 +910,12 @@ export async function transitionBooking({ bookingId, action, actor, extra = {} }
       for (const item of itemRows.rows) {
         const eq = equipment.find((e) => e.id === item.equipment_id);
         if (!eq) throw new HireError("Equipment for this booking no longer exists.", 409);
+        if (isSonyPackage(eq.id)) {
+          const sharedHold = reservations.some((reservation) => reservation.items.some((line) => SONY_PACKAGE_IDS.includes(line.equipmentId)));
+          const sharedBlock = blocks.some((block) => SONY_PACKAGE_IDS.includes(block.equipmentId));
+          if (sharedHold || sharedBlock) throw new HireError("The Sony camera or kit is already booked or blocked for those dates.", 409, "UNAVAILABLE");
+          continue;
+        }
         const left = availabilityFor(eq, reservations, blocks, booking.starts_on, booking.ends_on);
         if (Number(item.quantity) > left) {
           throw new HireError(

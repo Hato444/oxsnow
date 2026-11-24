@@ -1,6 +1,23 @@
 # Oxsnow Studio — project status and next actions
 
+## 2026-11-23 — Sony ZV-E10 hire redesign (in progress)
+
+- [x] Compared the live `/hire` page with the local repository. Both lacked the requested Sony ZV-E10 packages; the live page displayed the earlier demo inventory. Existing local catalogue edits concern image filenames and must be preserved.
+- [x] Inspected `C:\Users\User\Downloads\oxsnow-equipment-kit.zip` and copied the supplied Sony image into `public/equipment/sony-zve10.webp`. The supplied package contains no photograph establishing the exact support/rig model.
+- [ ] Finish and verify the two requested package options: camera only M600/day and Ready-to-Shoot kit M850/day. Studio must confirm physical availability, deposit and exact support/rig details; do not describe the unknown support as a confirmed gimbal or stabilizer.
+- [ ] Finish the booking and checkout UI and backend integration. Work has begun to accept only the Sony packages as pending requests and reject other inventory and stale-cart requests; this is **not yet verified**. Check existing booking creation, staff approval, shared-camera conflicts, pricing and confirmation emails end to end. Do not invent stock counts or a confirmed deposit.
+- [ ] Finish the hire catalogue/detail pages and homepage showcase, normalize equipment image stages, and remove misleading demo-stock/availability claims. Preserve all existing equipment records and historical prices.
+- [ ] Review the change to catalogue synchronization in `src/lib/db.js`: it has been adjusted to avoid overwriting existing records or archiving legacy equipment. Verify the migration behavior with an isolated test database before release; do not assume the local database is isolated from production.
+- [ ] Run the build, relevant tests and desktop/mobile browser checks. Inspect the working tree and preserve pre-existing changes in `src/lib/hire/catalogue.mjs`, `src/components/VideoPlayer.jsx`, `src/components/watch/WatchModal.jsx`, and untracked equipment images.
+- [ ] Do not commit, push or deploy the Sony redesign until the user approves. The current work is incomplete and may not compile until the remaining integration is finished.
+
 This is an evidence-based snapshot, not a production-readiness claim. Check the current code and deployed configuration before changing status.
+
+### 2026-11-24 — local continuation
+
+- Sony package request UI, rental estimates, server-side request policy, shared-camera approval conflict checks and pending-request emails have been revised. The deposit remains subject to studio confirmation; existing booking records and catalogue data are retained.
+- `npm test` passes 12 tests, including Sony request-policy and pricing checks. `npm run build` passed before the final small follow-up edits. Targeted ESLint passed with image warnings; full lint timed out.
+- Still required: verify booking creation, staff approvals and emails end to end using an isolated test database; test catalogue migration there; perform desktop/mobile browser checks. Docker and `psql` were not available in the current environment. Do not use the configured database for destructive testing without confirming its isolation.
 
 ## Implemented and verified locally
 

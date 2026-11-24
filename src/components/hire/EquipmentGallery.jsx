@@ -137,8 +137,8 @@ export default function EquipmentGallery({ name, images = [], variant = "card" }
 
   const frameClass =
     variant === "detail"
-      ? "aspect-[3/2] rounded-xl border border-white/10 bg-ink-3"
-      : "aspect-[4/3] border-b border-white/8 bg-ink-3";
+      ? "aspect-[3/2] rounded-xl border border-white/10 bg-[#f3f3f3]"
+      : "aspect-[4/3] border-b border-white/8 bg-[#f3f3f3]";
 
   return (
     <>

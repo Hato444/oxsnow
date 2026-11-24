@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { isSonyPackage } from "@/lib/hire/sony-packages.mjs";
 import {
   dateLabel,
   money,
@@ -137,6 +138,7 @@ export default function HireBookingDetail({ reference }) {
   }
 
   const canCancel = ["pending", "approved"].includes(booking.status);
+  const sonyRequest = booking.items.some((item) => isSonyPackage(item.equipmentId));
   const canPay = !["cancelled", "rejected"].includes(booking.status);
   const paidRental = booking.payments
     .filter((p) => p.status === "verified" && p.kind === "rental")
@@ -224,8 +226,8 @@ export default function HireBookingDetail({ reference }) {
             <dd className="text-silver-2">{money(booking.rentalSubtotalMinor)}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-steel">Refundable deposit</dt>
-            <dd className="text-silver-2">{money(booking.depositTotalMinor)}</dd>
+            <dt className="text-steel">Deposit</dt>
+            <dd className="text-silver-2">{sonyRequest ? "To be confirmed by the studio" : money(booking.depositTotalMinor)}</dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-steel">Verified paid (rental)</dt>
@@ -236,7 +238,7 @@ export default function HireBookingDetail({ reference }) {
             <dd className="text-silver-2">{money(paidDeposit)}</dd>
           </div>
           <div className="flex justify-between gap-4 border-t border-white/10 pt-3 sm:col-span-2">
-            <dt className="font-semibold text-metal">Total</dt>
+            <dt className="font-semibold text-metal">{sonyRequest ? "Rental estimate" : "Total"}</dt>
             <dd className="text-xl font-black text-fire">{money(booking.totalMinor)}</dd>
           </div>
         </dl>

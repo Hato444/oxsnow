@@ -46,7 +46,7 @@ export async function POST(request) {
     );
     const mail = await sendHireMail({
       subject: `[Hire booking] ${booking.reference} — ${booking.customerName}`,
-      text: `New hire booking ${booking.reference}\n\n${booking.customerName} (${booking.email}, ${booking.phone})\n${booking.startsOn} → ${booking.endsOn} (${booking.rentalDays} days)\n\n${booking.items.map((i) => `${i.name} x${i.quantity}`).join("\n")}\n\nRental: M ${(booking.rentalSubtotalMinor / 100).toFixed(2)}\nDeposit: M ${(booking.depositTotalMinor / 100).toFixed(2)}\nTotal: M ${(booking.totalMinor / 100).toFixed(2)}`,
+      text: `New hire booking ${booking.reference}\n\n${booking.customerName} (${booking.email}, ${booking.phone})\n${booking.startsOn} → ${booking.endsOn} (${booking.rentalDays} days)\n\n${booking.items.map((i) => `${i.name} x${i.quantity}`).join("\n")}\n\nRental estimate: M ${(booking.rentalSubtotalMinor / 100).toFixed(2)}\nDeposit: to be confirmed by the studio.`,
       html,
       replyTo: `"${booking.customerName}" <${booking.email}>`,
     });
@@ -54,7 +54,7 @@ export async function POST(request) {
     const confirmation = await sendHireMail({
       to: booking.email,
       subject: `We received your hire request — ${booking.reference}`,
-      text: `Hi ${booking.customerName},\n\nWe received your equipment hire request ${booking.reference} for ${booking.startsOn} → ${booking.endsOn}. It is pending studio review — pending requests do not reserve equipment.\n\nTotal: M ${(booking.totalMinor / 100).toFixed(2)} (includes refundable deposit of M ${(booking.depositTotalMinor / 100).toFixed(2)}).\n\nDo not send payment until studio staff confirm your booking and payment details.\n\nOxsnow Studio`,
+      text: `Hi ${booking.customerName},\n\nWe received your equipment hire request ${booking.reference} for ${booking.startsOn} → ${booking.endsOn}. It is pending studio review — pending requests do not reserve equipment.\n\nRental estimate: M ${(booking.rentalSubtotalMinor / 100).toFixed(2)}. Any deposit will be confirmed by the studio.\n\nDo not send payment until studio staff confirm your booking and payment details.\n\nOxsnow Studio`,
       html: bookingEmailHtml(
         booking,
         "Request received",

@@ -27,7 +27,6 @@ export default async function EquipmentPage({ params }) {
   if (!item) notFound();
   const related = await getRelatedEquipment(item.category, item.id);
   const today = todayISO();
-  const unresolved = item.images.length === 0;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-5 pb-24 pt-36 sm:px-8">
@@ -53,22 +52,13 @@ export default async function EquipmentPage({ params }) {
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-steel">
               {item.description}
             </p>
+            {item.requestable && <p className="mt-3 text-sm text-silver-2">Photo shows the camera with a lens; package contents vary.</p>}
             <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-ember/30 bg-ember/5 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-ember">
-                Demo listing
-              </span>
-              {unresolved ? (
-                <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-amber-200">
-                  Model to confirm · Enquiry only
-                </span>
+              {item.requestable ? (
+                <span className="rounded-full border border-ember/30 bg-ember/5 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-ember">Request · subject to confirmation</span>
               ) : (
-                <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">
-                  {item.quantityTotal} unit{item.quantityTotal === 1 ? "" : "s"} in demo stock
-                </span>
+                <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">Currently unavailable</span>
               )}
-              <span className="rounded-full border border-white/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-steel">
-                {item.ownership === "partner" ? "Partner-owned" : "Oxsnow-owned"}
-              </span>
             </div>
           </div>
 
@@ -107,7 +97,7 @@ export default async function EquipmentPage({ params }) {
 
           <div className="mt-10 rounded-xl border border-white/10 bg-ink-2 p-5">
             <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-metal">Pricing</h2>
-            {item.dailyRateMinor > 0 ? (
+            {item.requestable ? (
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                   <p className="text-2xl font-black text-fire">{money(item.dailyRateMinor)}</p>
@@ -116,9 +106,9 @@ export default async function EquipmentPage({ params }) {
                   </p>
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-metal">{money(item.depositMinor)}</p>
+                  <p className="text-lg font-bold text-metal">To be confirmed</p>
                   <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">
-                    refundable deposit
+                    deposit
                   </p>
                 </div>
               </div>
@@ -171,8 +161,8 @@ export default async function EquipmentPage({ params }) {
                     {r.categoryLabel}
                   </p>
                   <h3 className="mt-1.5 font-bold text-metal">{r.name}</h3>
-                  <p className={`mt-1 text-sm ${r.dailyRateMinor > 0 ? "text-fire" : "text-amber-200"}`}>
-                    {r.dailyRateMinor > 0 ? `${money(r.dailyRateMinor)}/day` : "Price on request"}
+                  <p className="mt-1 text-sm text-amber-200">
+                    Currently unavailable
                   </p>
                 </div>
               </Link>

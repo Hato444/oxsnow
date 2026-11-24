@@ -3,8 +3,9 @@ import { connection } from "next/server";
 import Reveal from "@/components/Reveal";
 import EquipmentCard from "@/components/hire/EquipmentCard";
 import HireCartLink from "@/components/hire/HireCartLink";
-import { availabilityMap, listEquipment } from "@/lib/hire/data";
-import { HIRE_CATEGORIES, RENTAL_DAY_RULE, todayISO } from "@/lib/hire/rules.mjs";
+import { listEquipment } from "@/lib/hire/data";
+import { HIRE_CATEGORIES, RENTAL_DAY_RULE } from "@/lib/hire/rules.mjs";
+import SonyShowcase from "@/components/hire/SonyShowcase";
 
 
 export const instant = false;
@@ -12,7 +13,7 @@ export const instant = false;
 export const metadata = {
   title: "Equipment Hire",
   description:
-    "Camera, sound, support and production equipment hire from Oxsnow Studio in Maseru, Lesotho. Demo catalogue — request availability and a quote.",
+    "Request Sony ZV-E10 equipment hire from Oxsnow Studio in Maseru, Lesotho.",
 };
 
 export default async function HirePage({ searchParams }) {
@@ -20,10 +21,6 @@ export default async function HirePage({ searchParams }) {
   const sp = await searchParams;
   const category = typeof sp?.category === "string" ? sp.category : "";
   const items = await listEquipment({ category });
-  const today = todayISO();
-  const available = await availabilityMap(items, today, today);
-  const totalUnits = items.reduce((sum, i) => sum + i.quantityTotal, 0);
-  const freeToday = items.reduce((sum, i) => sum + (available[i.id] || 0), 0);
 
   return (
     <div>
@@ -31,14 +28,13 @@ export default async function HirePage({ searchParams }) {
         <Reveal>
           <p className="eyebrow flex items-center gap-3">
             <span className="rule-fire" />
-            Equipment Hire · Demo Inventory
+            Equipment Hire · Oxsnow Studio
           </p>
           <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-metal sm:text-6xl">
             The gear behind the story.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-steel">
-            Camera, sound, support and production equipment from Oxsnow Studio in Maseru. Build a
-            request, check dates, and let the studio confirm availability.
+            Find the right camera package for your next production. Send your dates and let the studio confirm availability.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#catalogue" className="btn btn-primary">
@@ -53,30 +49,12 @@ export default async function HirePage({ searchParams }) {
 
         <Reveal delay={0.1}>
           <div className="mt-12 rounded-xl border border-ember/25 bg-ember/5 px-5 py-4 text-sm leading-relaxed text-silver-2">
-            <span className="font-bold uppercase tracking-[0.16em] text-ember">Demo catalogue.</span>{" "}
-            Items, prices and availability on this page are illustrative demo data — not confirmed
-            Oxsnow stock. No online payment is taken. Requests are reviewed by studio staff, and
-            stock is held only after approval.
+            <span className="font-bold uppercase tracking-[0.16em] text-ember">Studio confirmation.</span>{" "}
+            The Sony packages can be requested; availability, deposit and exact accessories are confirmed by the studio. No payment is taken with your request.
           </div>
         </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
-            {[
-              { label: "Catalogue items", value: items.length },
-              { label: "Units in demo stock", value: totalUnits },
-              { label: "Free today", value: freeToday },
-              { label: "Categories", value: HIRE_CATEGORIES.length },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-ink-2 px-5 py-7 text-center">
-                <p className="text-3xl font-black tracking-tight text-fire">{stat.value}</p>
-                <p className="mt-2 text-[0.6rem] uppercase tracking-[0.24em] text-ash">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+        <div className="mt-10"><SonyShowcase /></div>
       </section>
 
       <section id="catalogue" className="mx-auto w-full max-w-7xl scroll-mt-28 px-5 pb-24 sm:px-8">
@@ -88,8 +66,7 @@ export default async function HirePage({ searchParams }) {
             </h2>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-steel">
-            Prices where shown are in Lesotho loti (LSL) per rental day. A refundable deposit
-            applies per item and is returned after inspection.
+            Sony package rates are in Lesotho loti per rental day. Deposit and availability are confirmed by the studio.
           </p>
         </div>
 
@@ -130,7 +107,7 @@ export default async function HirePage({ searchParams }) {
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((item, i) => (
               <Reveal key={item.id} delay={Math.min(i * 0.04, 0.3)}>
-                <EquipmentCard item={item} free={available[item.id] || 0} />
+                <EquipmentCard item={item} />
               </Reveal>
             ))}
           </div>
@@ -150,7 +127,7 @@ export default async function HirePage({ searchParams }) {
               {
                 step: "01",
                 title: "Build a request",
-                copy: "Pick equipment and dates. Check demo availability, then add items to your booking list.",
+                copy: "Choose a Sony package and dates, then send a request to the studio.",
               },
               {
                 step: "02",
@@ -160,12 +137,12 @@ export default async function HirePage({ searchParams }) {
               {
                 step: "03",
                 title: "Approve & pay",
-                copy: "Once approved, pay only the verified rental and refundable deposit using the details staff send you.",
+                copy: "Once approved, follow the payment and deposit details confirmed by the studio.",
               },
               {
                 step: "04",
                 title: "Collect & return",
-                copy: "Inspect at collection, use the gear, return on the agreed date. Deposits are refunded after inspection.",
+                copy: "Inspect at collection, use the gear and return it on the agreed date. The studio will confirm the terms.",
               },
             ].map((s, i) => (
               <Reveal key={s.step} delay={i * 0.08}>

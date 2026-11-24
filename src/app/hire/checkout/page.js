@@ -8,7 +8,7 @@ export const instant = false;
 
 export const metadata = {
   title: "Booking list — Equipment Hire",
-  description: "Review your equipment hire list, check availability and submit a booking request.",
+  description: "Review your equipment hire request and send your dates to Oxsnow Studio.",
 };
 
 export default async function CheckoutPage() {
@@ -25,8 +25,7 @@ export default async function CheckoutPage() {
             Build your request.
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-steel">
-            Check dates, confirm demo availability and send the request to studio staff. Submitting
-            does not reserve equipment or take payment.
+            Choose your dates and send the request to studio staff. Submitting does not reserve equipment or take payment; availability is confirmed by the studio.
           </p>
         </div>
         <Link

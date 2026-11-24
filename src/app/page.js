@@ -5,6 +5,7 @@ import FeaturedRail from "@/components/FeaturedRail";
 import SupportPanel from "@/components/SupportPanel";
 import ValueIcon from "@/components/ValueIcon";
 import CulturalPass from "@/components/CulturalPass";
+import SonyShowcase from "@/components/hire/SonyShowcase";
 import { films, pillars, site, stats, values } from "@/lib/site";
 
 export default function Home() {
@@ -191,6 +192,11 @@ export default function Home() {
             <Link href="/community" className="btn btn-primary mt-9">Explore the community <span aria-hidden>→</span></Link>
           </Reveal>
         </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8">
+        <Reveal><p className="eyebrow">Equipment hire</p><h2 className="mt-4 text-3xl font-black tracking-tight text-metal sm:text-4xl">The gear behind the story.</h2></Reveal>
+        <div className="mt-8"><SonyShowcase compact /></div>
       </section>
 
       {/* ============================ VALUES ============================ */}

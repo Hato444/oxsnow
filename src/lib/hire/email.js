@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { isSonyPackage } from "./sony-packages.mjs";
 
 const TO_EMAIL = process.env.HIRE_NOTIFY_EMAIL || "oxsnowstudio@gmail.com";
 const SITE_LABEL = "Oxsnow Studio Hire";
@@ -83,6 +84,7 @@ export async function sendHireMail({ to, subject, text, html, replyTo }) {
 
 export function bookingRows(booking, extra = []) {
   const money = (minor) => `M ${(Number(minor || 0) / 100).toFixed(2)}`;
+  const sonyRequest = (booking.items || []).some((item) => isSonyPackage(item.equipmentId));
   const items = (booking.items || [])
     .map((i) => `${escapeHtml(i.name)} × ${i.quantity}`)
     .join("<br/>");
@@ -94,8 +96,8 @@ export function bookingRows(booking, extra = []) {
     ["Dates", `${escapeHtml(booking.startsOn)} → ${escapeHtml(booking.endsOn)} (${booking.rentalDays} day${booking.rentalDays === 1 ? "" : "s"})`],
     ["Items", items || "—"],
     ["Rental", money(booking.rentalSubtotalMinor)],
-    ["Refundable deposit", money(booking.depositTotalMinor)],
-    ["Total", `<strong>${money(booking.totalMinor)}</strong>`],
+    ["Deposit", sonyRequest ? "To be confirmed by the studio" : money(booking.depositTotalMinor)],
+    [sonyRequest ? "Rental estimate" : "Total", `<strong>${money(booking.totalMinor)}</strong>`],
     ...extra,
   ];
 }

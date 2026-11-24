@@ -9,7 +9,6 @@ import {
   money,
   readCart,
   removeFromCart,
-  updateCartItem,
 } from "@/lib/hire/cart";
 
 const inputClass =
@@ -71,7 +70,7 @@ export default function CartCheckout({ today }) {
 
   useEffect(() => {
     const t = setTimeout(load, 0);
-    const sync = () => setCart(readCart());
+    const sync = () => { setCart(readCart()); setCheck(null); };
     window.addEventListener(CART_EVENT, sync);
     return () => {
       clearTimeout(t);
@@ -84,11 +83,6 @@ export default function CartCheckout({ today }) {
     (sum, i) => sum + (Number(i.dailyRateMinor) || 0) * days * (Number(i.quantity) || 0),
     0
   );
-  const deposit = cart.items.reduce(
-    (sum, i) => sum + (Number(i.depositMinor) || 0) * (Number(i.quantity) || 0),
-    0
-  );
-  const total = rental + deposit;
 
   function setField(key) {
     return (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -111,7 +105,7 @@ export default function CartCheckout({ today }) {
       const data = await r.json();
       if (!r.ok || !data.ok) throw new Error(data.error || "Could not check availability.");
       setCheck(data);
-      const short = data.items.filter((i) => !i.exists || i.available < i.quantity);
+      const short = data.items.filter((i) => !i.exists || (data.availabilityKnown !== false && i.available < i.quantity));
       if (short.length > 0) {
         setError(
           short
@@ -139,10 +133,10 @@ export default function CartCheckout({ today }) {
       return;
     }
     if (!check) {
-      setError("Check availability for your dates before submitting.");
+      setError("Calculate the rental estimate for your dates before submitting.");
       return;
     }
-    const short = check.items.filter((i) => !i.exists || i.available < i.quantity);
+    const short = check.items.filter((i) => !i.exists || (check.availabilityKnown !== false && i.available < i.quantity));
     if (short.length > 0) {
       setError("Some items are unavailable for those dates. Adjust your list or dates.");
       return;
@@ -174,7 +168,7 @@ export default function CartCheckout({ today }) {
       <div className="card mt-10 p-10 text-center">
         <h2 className="text-2xl font-black text-metal">Your booking list is empty.</h2>
         <p className="mt-3 text-sm text-steel">
-          Browse the demo catalogue and add equipment to build a request.
+          Choose a Sony package to build a request.
         </p>
         <Link href="/hire" className="btn btn-primary mt-6">
           Browse equipment
@@ -204,24 +198,10 @@ export default function CartCheckout({ today }) {
                     {item.name}
                   </Link>
                   <p className="mt-1 text-[0.7rem] text-ash">
-                    {money(item.dailyRateMinor)}/day · deposit {money(item.depositMinor)}
+                    {money(item.dailyRateMinor)}/day · deposit to be confirmed
                   </p>
                   <div className="mt-2 flex items-center gap-3">
-                    <label className="text-[0.65rem] uppercase tracking-[0.16em] text-ash">
-                      Qty
-                      <input
-                        type="number"
-                        min={1}
-                        max={99}
-                        value={item.quantity}
-                        onChange={(e) => {
-                          const next = updateCartItem(item.equipmentId, Number(e.target.value));
-                          setCart(next);
-                          setCheck(null);
-                        }}
-                        className="ml-2 h-8 w-16 rounded border border-white/15 bg-ink px-2 text-sm text-silver"
-                      />
-                    </label>
+                    <span className="text-xs text-ash">Quantity: {item.quantity}</span>
                     <button
                       type="button"
                       onClick={() => {
@@ -235,7 +215,7 @@ export default function CartCheckout({ today }) {
                   </div>
                 </div>
                 <div className="text-right text-sm font-semibold text-metal">
-                  {days > 0 ? money((item.dailyRateMinor * days + item.depositMinor) * item.quantity) : "—"}
+                  {days > 0 ? money(item.dailyRateMinor * days * item.quantity) : "—"}
                 </div>
               </li>
             ))}
@@ -284,7 +264,7 @@ export default function CartCheckout({ today }) {
             disabled={busy || !end}
             className="btn btn-ghost mt-5 w-full disabled:opacity-40"
           >
-            {busy ? "Checking…" : "Check availability for these dates"}
+            {busy ? "Calculating…" : "Calculate rental estimate"}
           </button>
         </div>
 
@@ -387,25 +367,24 @@ export default function CartCheckout({ today }) {
               <dd className="text-silver-2">{money(rental)}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-steel">Refundable deposit</dt>
-              <dd className="text-silver-2">{money(deposit)}</dd>
+              <dt className="text-steel">Deposit</dt>
+              <dd className="text-silver-2">To be confirmed</dd>
             </div>
             <div className="flex justify-between gap-3 border-t border-white/10 pt-3">
-              <dt className="font-semibold text-metal">Total due</dt>
-              <dd className="font-black text-fire">{money(total)}</dd>
+              <dt className="font-semibold text-metal">Estimated rental</dt>
+              <dd className="font-black text-fire">{money(check?.rentalSubtotalMinor ?? rental)}</dd>
             </div>
           </dl>
           {check && (
             <p className="mt-4 text-[0.7rem] text-emerald-300">
-              Availability confirmed for {check.days} day{check.days === 1 ? "" : "s"}.
+              Estimate for {check.days} day{check.days === 1 ? "" : "s"}. Availability is subject to studio confirmation.
             </p>
           )}
         </div>
         <div className="rounded-xl border border-ember/25 bg-ember/5 p-5 text-[0.75rem] leading-relaxed text-silver-2">
-          <p className="font-bold uppercase tracking-[0.18em] text-ember">Demo inventory</p>
+          <p className="font-bold uppercase tracking-[0.18em] text-ember">Studio confirmation</p>
           <p className="mt-2">
-            Items, prices and availability shown here are illustrative demo data, not real Oxsnow
-            stock. No online payment is taken. See{" "}
+            Availability and any deposit are confirmed by the studio. No online payment is taken. See{" "}
             <Link href="/hire/terms" className="underline hover:text-ember">
               hire terms
             </Link>

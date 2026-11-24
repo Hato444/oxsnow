@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { quoteAvailability } from "@/lib/hire/data";
+import { HireError, quoteAvailability } from "@/lib/hire/data";
 import { validateRentalRange } from "@/lib/hire/rules.mjs";
 
 export async function POST(request) {
@@ -23,6 +23,7 @@ export async function POST(request) {
     const quote = await quoteAvailability(items, body.start, body.end);
     return NextResponse.json({ ok: true, ...quote });
   } catch (err) {
+    if (err instanceof HireError) return NextResponse.json({ ok: false, error: err.message }, { status: err.status });
     console.error("[hire/availability] failed:", err);
     return NextResponse.json({ ok: false, error: "Could not check availability." }, { status: 500 });
   }
