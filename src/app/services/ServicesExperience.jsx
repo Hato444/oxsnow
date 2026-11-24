@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
-import { ArrowDown, ArrowUpRight, AudioLines, BookOpen, Camera, Clapperboard, Film, HelpCircle, MonitorPlay, Radio, SlidersHorizontal } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowDown, ArrowUpRight, BookOpen, Camera, HelpCircle, Radio, SlidersHorizontal } from "lucide-react";
 import { films, services } from "@/lib/site";
 import ProjectBuilder from "./ProjectBuilder";
 
@@ -18,44 +18,34 @@ const descriptions = {
 };
 const helpService = { id: "general", title: "Help me choose", tag: "Not sure yet?", copy: descriptions.general, includes: [] };
 const sequences = [
-  { title: "Brief", copy: "Tell us your idea, who it is for and when you need it.", icon: Clapperboard },
-  { title: "Plan", copy: "We discuss the work, budget, schedule and people needed.", icon: Clapperboard },
-  { title: "Produce", copy: "The team brings the agreed idea to life.", icon: Camera },
-  { title: "Deliver", copy: "We prepare and share the finished work in the agreed format.", icon: Film },
+  { title: "Brief", copy: "Tell us your idea, who it is for and when you need it." },
+  { title: "Plan", copy: "We discuss the work, budget, schedule and people needed." },
+  { title: "Produce", copy: "The team brings the agreed idea to life." },
+  { title: "Deliver", copy: "We prepare and share the finished work in the agreed format." },
 ];
 
+// Illustrative Unsplash photographs; these do not depict Oxsnow productions.
+const imagery = {
+  commercial: { src: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=80", alt: "Camera and lenses on a dark surface" },
+  broadcast: { src: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80", alt: "An empty cinema auditorium" },
+  education: { src: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&w=1400&q=80", alt: "A speaker addressing an audience" },
+  studio: { src: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1400&q=80", alt: "A video editing timeline on a screen" },
+};
+
 function ServiceVisual({ id }) {
-  if (id === "commercial") return <div className="service-visual service-viewfinder" aria-hidden="true"><div className="service-frame"><span className="service-cross">+</span><Camera size={78} strokeWidth={0.8} /><span className="service-rec">● REC</span><span className="service-meta">CAM / 01 &nbsp; • &nbsp; FRAME</span></div></div>;
-  if (id === "broadcast") return <div className="service-visual service-broadcast" aria-hidden="true"><div className="service-screen"><MonitorPlay size={64} strokeWidth={0.8} /><span>OXSNOW / DISTRIBUTION</span></div><div className="service-signal"><span /><span /><span /><span /><span /></div></div>;
-  if (id === "education") return <div className="service-visual service-education" aria-hidden="true"><div className="service-book"><span>STORIES</span><Film size={58} strokeWidth={0.8} /><small>SCREEN / DISCOVER / DISCUSS</small></div><div className="service-orbit" /></div>;
-  if (id === "studio") return <div className="service-visual service-studio" aria-hidden="true"><AudioLines size={94} strokeWidth={0.8} /><div className="service-faders">{[35, 65, 45, 75, 55].map((height, i) => <span key={i}><i style={{ bottom: `${height}%` }} /></span>)}</div><small>STUDIO / PRODUCTION</small></div>;
-  return <div className="service-visual service-education" aria-hidden="true"><HelpCircle size={80} strokeWidth={0.8} /><div className="service-orbit" /></div>;
+  const photo = imagery[id];
+  if (!photo) return null;
+  return <figure className="services-photo"><img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" /><figcaption>Illustrative photo · Unsplash</figcaption></figure>;
 }
 
 function ProductionTimeline() {
-  const ref = useRef(null);
-  const [stage, setStage] = useState(0);
-  const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  useMotionValueEvent(scrollYProgress, "change", (value) => {
-    if (!reduced) setStage(Math.min(3, Math.floor(value * 4)));
-  });
-  const selected = sequences[stage];
-  const Icon = selected.icon;
   return (
-    <section ref={ref} className="service-timeline-wrap border-y border-white/10 py-20 sm:py-28">
+    <section className="services-process border-y border-white/10 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <p className="eyebrow">How we work</p>
         <h2 className="mt-4 max-w-2xl text-3xl font-black text-metal sm:text-5xl">From your idea to the finished work.</h2>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-silver-2">We start by listening, agree on a plan, make the work and share the finished result. Select a step to learn more.</p>
-        <div className="service-timeline mt-10">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4"><span className="text-sm font-bold text-silver-2">The four steps</span><span className="font-mono text-xs text-ash">0{stage + 1} / 04</span></div>
-          <div className="p-4 sm:p-7">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{sequences.map((item, index) => <button type="button" key={item.title} onClick={() => setStage(index)} aria-pressed={stage === index} className={`service-sequence-button ${stage === index ? "is-active" : ""}`}><span>0{index + 1}</span><strong>{item.title}</strong></button>)}</div>
-            <div className="relative mt-4 h-12 border-y border-white/10"><div className="service-waveform" aria-hidden="true" /><span className="service-playhead" style={{ left: `${stage * 25 + 12.5}%` }} aria-hidden="true" /></div>
-            <div className="mt-6 flex min-h-28 items-start gap-5"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5 text-ember"><Icon size={22} aria-hidden="true" /></span><div aria-live="polite"><p className="text-xs uppercase tracking-[0.22em] text-ash">Step 0{stage + 1}</p><h3 className="mt-2 text-xl font-bold text-white">{selected.title}</h3><p className="mt-2 max-w-xl text-sm leading-relaxed text-silver-2">{selected.copy}</p></div></div>
-          </div>
-        </div>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-silver-2">We start by listening, agree on a plan, make the work and share the finished result.</p>
+        <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{sequences.map((item, index) => <li key={item.title} className="border-t border-white/20 pt-5"><span className="text-xs font-bold tracking-[0.2em] text-ember">0{index + 1}</span><h3 className="mt-4 text-xl font-bold text-white">{item.title}</h3><p className="mt-3 max-w-xs text-sm leading-relaxed text-silver-2">{item.copy}</p></li>)}</ol>
       </div>
     </section>
   );
@@ -67,7 +57,12 @@ export default function ServicesExperience() {
   const service = services.find((item) => item.id === selected) || helpService;
   return (
     <main>
-      <section className="service-hero overflow-hidden pt-36"><div className="mx-auto grid min-h-[600px] max-w-7xl items-center gap-12 px-5 pb-20 sm:px-8 lg:grid-cols-[1fr_0.9fr]"><div><p className="eyebrow flex items-center gap-3"><span className="rule-fire" /> Oxsnow / Services</p><h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.03] tracking-tight text-metal sm:text-6xl xl:text-7xl">From imagination<br />to the final frame.</h1><p className="mt-6 text-lg font-semibold text-white sm:text-xl">One studio. Endless creative possibilities.</p><p className="mt-4 max-w-xl text-sm leading-relaxed text-silver-2">We help make videos, share films, organise screenings and support productions.</p><div className="mt-9 flex flex-wrap gap-3"><a href="#project-builder" className="btn btn-primary">Start a Project <ArrowUpRight size={16} aria-hidden="true" /></a><a href="#services" className="btn btn-ghost">Explore Our Services <ArrowDown size={16} aria-hidden="true" /></a></div></div><div className="service-hero-graphic" aria-hidden="true"><div className="service-hero-frame"><span className="service-hero-top">OXSNOW STUDIO <i>●</i> FRAME 001</span><div className="service-hero-cross">+</div><div className="service-hero-lens"><span /><span /><span /></div><span className="service-hero-bottom">CONCEPT &nbsp; / &nbsp; PRODUCTION &nbsp; / &nbsp; DELIVERY</span></div></div></div></section>
+      <section className="services-hero relative overflow-hidden pt-32 sm:pt-36">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-20 sm:px-8 lg:min-h-[700px] lg:grid-cols-[1fr_1fr] lg:gap-16">
+          <div className="relative z-10"><p className="eyebrow flex items-center gap-3"><span className="rule-fire" /> Oxsnow / Services</p><h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.03] tracking-tight text-metal sm:text-6xl xl:text-7xl">From imagination<br />to the final frame.</h1><p className="mt-6 max-w-lg text-lg leading-relaxed text-silver-2 sm:text-xl">Professional filmmaking and production services for businesses, institutions and creatives.</p><div className="mt-9 flex flex-wrap gap-3"><a href="#project-builder" className="btn btn-primary">Start a Project <ArrowUpRight size={16} aria-hidden="true" /></a><a href="#services" className="btn btn-ghost">Explore Services <ArrowDown size={16} aria-hidden="true" /></a></div></div>
+          <figure className="services-hero-photo"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&q=85" alt="A film clapperboard on location" fetchPriority="high" /><figcaption>Illustrative photo · Unsplash</figcaption></figure>
+        </div>
+      </section>
 
       <section id="services" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 sm:px-8 sm:py-28">
         <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="eyebrow">What we offer</p><h2 className="mt-4 text-3xl font-black text-metal sm:text-5xl">How can we help?</h2></div><p className="max-w-sm text-sm leading-relaxed text-silver-2">Choose an option to learn more. If you&apos;re unsure, we can help you decide.</p></div>
