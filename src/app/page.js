@@ -194,9 +194,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8">
-        <Reveal><p className="eyebrow">Equipment hire</p><h2 className="mt-4 text-3xl font-black tracking-tight text-metal sm:text-4xl">The gear behind the story.</h2></Reveal>
-        <div className="mt-8"><SonyShowcase compact /></div>
+      <section className="border-b border-white/10 bg-black">
+        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-24"><SonyShowcase compact /></div>
       </section>
 
       {/* ============================ VALUES ============================ */}

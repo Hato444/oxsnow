@@ -32,7 +32,7 @@ This is an evidence-based snapshot, not a production-readiness claim. Check the 
 
 - Reworked the Academy hero, discipline selector and guided application. The selected discipline is shared with the existing application payload. The API now returns an error when database persistence fails instead of reporting a successful submission.
 - The Academy admin API reads `academy_applications`, but actual persistence and admin visibility have not been tested against an isolated database. The existing duration, intake, sponsorship and on-set/screen-credit claims require studio confirmation. Production-specific behind-the-scenes and discipline imagery still need verification; the interface currently uses existing community photography and film posters.
-- Desktop and mobile-sized headless browser screenshots were captured for the hero; interaction, reduced motion and full application submission remain to be checked in a browser. The Sony rotation MP4 was not found under the supplied filename; no substitute video was added.
+- Desktop and mobile-sized headless browser screenshots were captured for the hero; interaction, reduced motion and full application submission remain to be checked in a browser. The supplied Sony turntable GIF was found and converted to MP4 for the homepage showcase.
 
 ### 2026-11-24 — VOD credit implementation in progress
 
