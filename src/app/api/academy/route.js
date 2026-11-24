@@ -65,7 +65,7 @@ export async function POST(request) {
   const why = String(body.why || "").trim();
   const honeypot = String(body.website || "").trim();
 
-  if (honeypot) return NextResponse.json({ ok: true });
+  if (honeypot) return NextResponse.json({ ok: false, error: "Invalid application." }, { status: 400 });
 
   if (!name || !email || !phone || !district || !why) {
     return NextResponse.json(
@@ -75,6 +75,9 @@ export async function POST(request) {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ ok: false, error: "Enter a valid email." }, { status: 400 });
+  }
+  if (!Object.hasOwn(TRACK_LABELS, track)) {
+    return NextResponse.json({ ok: false, error: "Choose a preferred track." }, { status: 400 });
   }
   if (why.length > 2000) {
     return NextResponse.json({ ok: false, error: "Answer is too long." }, { status: 400 });
@@ -109,8 +112,8 @@ export async function POST(request) {
       ]
     );
   } catch (err) {
-    // DB down shouldn't block the applicant — still email the studio
     console.error("[academy] db save failed:", err);
+    return NextResponse.json({ ok: false, error: "Your application could not be saved. Please try again." }, { status: 503 });
   }
 
   if (!process.env.GMAIL_APP_PASSWORD) {
