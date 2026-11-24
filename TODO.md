@@ -28,6 +28,14 @@ This is an evidence-based snapshot, not a production-readiness claim. Check the 
 
 ## Implemented, production behavior unverified
 
+### 2026-11-24 — Services experience
+
+- Refined the project builder with five plain-language starting choices, an idea field, an optional recommendation request, expandable advanced requirements and a direct contact link. The "not sure yet" choice is accepted by server validation and stored with the enquiry.
+- Headless browser checks on the revised desktop and mobile layouts verified the five choices, help selection, live summary, contact step, direct contact link, studio-specific advanced fields and absence of horizontal overflow. The existing floating back-to-top button can overlap part of the mobile viewport and needs usability review. These checks do not replace testing with real visitors.
+- Added a Services navigator with original interface illustrations, a selectable production timeline, a live project brief builder and a dedicated founder-only project-brief dashboard. Existing catalogue posters are used only for the production portfolio; no additional stock photography was added.
+- `npm run build` passed. `npm test` passed 17 tests, including service validation and persistence/retrieval in an in-memory PostgreSQL emulator. Focused lint passed. Browser checks at desktop, tablet and mobile sizes verified layout width, service switching, conditional fields, live brief updates, empty-brief validation, contact-stage navigation and manual timeline selection. Unauthenticated admin access returned 401 and invalid API submission returned 400.
+- Still required: a valid end-to-end submission and founder retrieval using an isolated real PostgreSQL database, production migration verification, and review of the studio's service/portfolio claims. The browser checks did not submit data to the configured database because its isolation is unconfirmed.
+
 ### 2026-11-24 — Academy interface continuation
 
 - Reworked the Academy hero, discipline selector and guided application. The selected discipline is shared with the existing application payload. The API now returns an error when database persistence fails instead of reporting a successful submission.

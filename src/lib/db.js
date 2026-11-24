@@ -130,6 +130,18 @@ CREATE TABLE IF NOT EXISTS academy_applications (
   created_at BIGINT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS service_enquiries (
+  id TEXT PRIMARY KEY,
+  service TEXT NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL DEFAULT '',
+  budget TEXT NOT NULL DEFAULT '',
+  timeline TEXT NOT NULL DEFAULT '',
+  details JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at BIGINT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS customers (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,

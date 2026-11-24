@@ -163,6 +163,7 @@ export default function AdminPage() {
     { id: "overview", label: "Overview" },
     { id: "orders", label: `Orders (${orders.length})` },
     { id: "academy", label: `Academy (${data?.academy?.length || 0})` },
+    { id: "services", label: `Project briefs (${data?.serviceEnquiries?.length || 0})` },
     { id: "hire", label: "Equipment Hire" },
     { id: "films", label: "Film Drafts" },
     { id: "newsletter", label: `Newsletter (${data?.newsletter?.length || 0})` },
@@ -226,6 +227,21 @@ export default function AdminPage() {
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className="mt-8"
         >
+          {tab === "services" && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold text-metal">Project briefs</h2>
+              {(data?.serviceEnquiries || []).map((enquiry) => (
+                <article key={enquiry.id} className="card p-6">
+                  <div className="flex flex-wrap justify-between gap-3"><h3 className="font-bold text-white">{enquiry.name} · {enquiry.service}</h3><span className="text-xs text-steel">{timeLabel(enquiry.created_at)}</span></div>
+                  <p className="mt-2 break-all text-sm text-silver-2">{enquiry.email}{enquiry.phone ? ` · ${enquiry.phone}` : ""}</p>
+                  <p className="mt-2 text-sm text-steel">Estimated budget: {enquiry.budget ? `M ${enquiry.budget}` : "Not provided"} · Timeline: {enquiry.timeline || "Not provided"}</p>
+                  <dl className="mt-4 grid gap-3 sm:grid-cols-2">{Object.entries(enquiry.details || {}).map(([key, value]) => <div key={key}><dt className="text-xs font-semibold uppercase tracking-wider text-ash">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm text-silver-2">{String(value)}</dd></div>)}</dl>
+                  <p className="mt-4 text-xs text-ash">Reference: {enquiry.id}</p>
+                </article>
+              ))}
+              {!data?.serviceEnquiries?.length && <p className="text-sm text-steel">No project briefs yet.</p>}
+            </div>
+          )}
           {tab === "overview" && (
             <div className="space-y-8">
               <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 md:grid-cols-5">

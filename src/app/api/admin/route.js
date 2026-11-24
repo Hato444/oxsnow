@@ -11,7 +11,7 @@ export async function GET() {
   try {
     await ensureSchema();
 
-    const [orders, revenue, entitlements, customers, newsletter, academyApps, audit, passHolders] =
+    const [orders, revenue, entitlements, customers, newsletter, academyApps, audit, passHolders, enquiries] =
       await Promise.all([
         query(
           `SELECT id, movie_id, amount_minor, currency, status, phone, provider, provider_ref, created_at, expires_at
@@ -45,6 +45,7 @@ export async function GET() {
            WHERE movie_id = '__cultural_pass__' AND paid_at > $1`,
           [Date.now() - 30 * 24 * 60 * 60 * 1000]
         ),
+        query("SELECT id, service, name, email, phone, budget, timeline, details, created_at FROM service_enquiries ORDER BY created_at DESC LIMIT 100"),
       ]);
 
     return NextResponse.json({
@@ -57,6 +58,7 @@ export async function GET() {
       academy: academyApps.rows,
       audit: audit.rows,
       passHolders: passHolders.rows[0],
+      serviceEnquiries: enquiries.rows,
     });
   } catch (err) {
     console.error("[admin] overview failed:", err);
